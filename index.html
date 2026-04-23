@@ -212,10 +212,7 @@ window.toggleAddTask=function(emoji){ const el=document.getElementById('add-'+em
 window.confirmAddTask=function(emoji,catFull){ const inp=document.getElementById('inp-'+emoji); const val=inp.value.trim(); if(!val)return; addChip(emoji,val,catFull); const chip=document.querySelector('#chips-'+emoji+' .chip:last-child'); chip.click(); inp.value=''; document.getElementById('add-'+emoji).classList.remove('open'); };
 
 document.getElementById('btn-google').addEventListener('click', ()=>{
-  alert('Connexion Google non disponible pour le moment. Utilise email/mot de passe.');
-});
-  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
-  if(error) document.getElementById('auth-err').textContent=error.message;
+  document.getElementById('auth-err').textContent='Connexion Google non disponible pour le moment.';
 });
 
 document.getElementById('btn-signin').addEventListener('click', async()=>{
