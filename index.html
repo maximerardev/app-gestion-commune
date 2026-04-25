@@ -3,53 +3,50 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="Tâches"/>
-<title>Tâches domestiques</title>
+<title>Tâches à deux</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#f7f6f3;--surface:#fff;--border:rgba(0,0,0,0.09);--border-md:rgba(0,0,0,0.16);--text:#1a1a18;--muted:#6b6b68;--hint:#a8a8a5;--anais:#1a6fbf;--partner:#0d7a5f;--amber:#BA7517;--radius:12px;--radius-sm:8px;}
-@media(prefers-color-scheme:dark){:root{--bg:#141413;--surface:#1e1e1c;--border:rgba(255,255,255,0.08);--border-md:rgba(255,255,255,0.14);--text:#f0efe9;--muted:#9a9a96;--hint:#5a5a57;--anais:#5da0e8;--partner:#3db88a;}}
+:root{--bg:#f7f6f3;--surface:#fff;--border:rgba(0,0,0,0.09);--border-md:rgba(0,0,0,0.16);--text:#1a1a18;--muted:#6b6b68;--hint:#a8a8a5;--p1:#1a6fbf;--p1-bg:#e8f1fb;--p2:#0d7a5f;--p2-bg:#e0f4ed;--radius:12px;--radius-sm:8px;}
+@media(prefers-color-scheme:dark){:root{--bg:#141413;--surface:#1e1e1c;--border:rgba(255,255,255,0.08);--border-md:rgba(255,255,255,0.14);--text:#f0efe9;--muted:#9a9a96;--hint:#5a5a57;--p1:#5da0e8;--p1-bg:#1a2e42;--p2:#3db88a;--p2-bg:#122e24;}}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);min-height:100dvh;}
-body{max-width:480px;margin:0 auto;padding:0 0 env(safe-area-inset-bottom);}
+body{max-width:480px;margin:0 auto;}
 .screen{display:none;min-height:100dvh;flex-direction:column;}
 .screen.active{display:flex;}
 .pad{padding:24px 20px;}
-.logo{font-size:28px;margin-bottom:16px;}
+.logo{font-size:32px;margin-bottom:16px;}
 .h1{font-size:26px;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;}
 .sub{font-size:15px;color:var(--muted);line-height:1.5;margin-bottom:28px;}
 .step-ind{font-size:11px;font-weight:600;color:var(--hint);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;}
 .field{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
 .field label{font-size:12px;color:var(--muted);}
-.field input{font-size:15px;padding:11px 13px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;}
-.field input:focus{outline:none;border-color:var(--anais);box-shadow:0 0 0 2px rgba(26,111,191,0.12);}
+.field input{font-size:15px;padding:11px 13px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;}
+.field input:focus{border-color:var(--p1);box-shadow:0 0 0 2px rgba(26,111,191,0.12);}
 .btn{width:100%;padding:13px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;}
 .btn:active{opacity:.75;}
 .btn-primary{background:var(--text);color:var(--bg);}
 .btn-secondary{background:var(--surface);color:var(--text);border:0.5px solid var(--border-md);}
-.btn-google{background:var(--surface);color:var(--text);border:0.5px solid var(--border-md);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;}
-.divider{display:flex;align-items:center;gap:10px;margin:4px 0 14px;}
-.divider-line{flex:1;height:0.5px;background:var(--border-md);}
-.divider-txt{font-size:12px;color:var(--hint);}
 .err{font-size:12px;color:#e24b4a;text-align:center;margin-top:8px;min-height:16px;}
-.link-btn{background:none;border:none;color:var(--anais);font-size:13px;cursor:pointer;text-decoration:underline;}
+.link-btn{background:none;border:none;color:var(--p1);font-size:13px;cursor:pointer;}
 .avatar-row{display:flex;gap:12px;margin-bottom:16px;}
 .avatar-field{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.avatar-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;cursor:pointer;position:relative;}
-.avatar-circle.p1{background:var(--anais-bg,#e8f1fb);color:var(--anais);}
-.avatar-circle.p2{background:#e0f4ed;color:var(--partner);}
-.avatar-input{width:100%;font-size:14px;padding:8px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);text-align:center;}
-.avatar-input:focus{outline:none;border-color:var(--anais);}
-.foyer-input{font-size:15px;padding:11px 13px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;margin-bottom:14px;}
-.foyer-input:focus{outline:none;border-color:var(--anais);}
+.avatar-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;}
+.avatar-circle.p1{background:var(--p1-bg);color:var(--p1);}
+.avatar-circle.p2{background:var(--p2-bg);color:var(--p2);}
+.avatar-input{width:100%;font-size:14px;padding:8px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);text-align:center;outline:none;}
+.avatar-input:focus{border-color:var(--p1);}
+.foyer-input{font-size:15px;padding:11px 13px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;margin-bottom:14px;outline:none;}
+.foyer-input:focus{border-color:var(--p1);}
 .invite-card{background:#EFF6FF;border:0.5px solid #B5D4F4;border-radius:var(--radius);padding:16px;margin-top:16px;}
 .invite-card-title{font-size:12px;color:#185FA5;font-weight:600;margin-bottom:10px;}
-.invite-code{font-size:28px;font-weight:700;letter-spacing:6px;color:var(--anais);text-align:center;padding:10px;background:#fff;border-radius:var(--radius-sm);border:0.5px solid #B5D4F4;margin-bottom:10px;cursor:pointer;}
+.invite-code{font-size:28px;font-weight:700;letter-spacing:6px;color:var(--p1);text-align:center;padding:10px;background:#fff;border-radius:var(--radius-sm);border:0.5px solid #B5D4F4;margin-bottom:10px;cursor:pointer;}
 .invite-or{font-size:12px;color:var(--muted);text-align:center;margin:8px 0;}
-.btn-invite{width:100%;padding:10px;background:var(--anais);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;}
-.join-input{font-size:18px;padding:12px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;text-align:center;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;}
-.join-input:focus{outline:none;border-color:var(--anais);}
+.btn-invite{width:100%;padding:10px;background:var(--p1);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;}
+.join-input{font-size:18px;padding:12px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;text-align:center;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;outline:none;}
+.join-input:focus{border-color:var(--p1);}
 .tasks-scroll{flex:1;overflow-y:auto;padding:0 20px 20px;}
 .cat-section{margin-bottom:16px;}
 .cat-header{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);margin-bottom:8px;}
@@ -59,34 +56,44 @@ body{max-width:480px;margin:0 auto;padding:0 0 env(safe-area-inset-bottom);}
 .task-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
 .chip{font-size:12px;padding:6px 12px;border-radius:20px;border:0.5px solid var(--border-md);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;}
 .chip.selected{background:var(--text);color:var(--bg);border-color:var(--text);}
-.add-task-link{font-size:12px;color:var(--anais);cursor:pointer;padding:4px 0;display:inline-block;}
+.add-task-link{font-size:12px;color:var(--p1);cursor:pointer;padding:4px 0;display:inline-block;}
 .add-task-inline{display:none;flex-direction:column;gap:6px;margin-top:6px;}
 .add-task-inline.open{display:flex;}
 .add-task-row{display:flex;gap:6px;}
-.add-task-inp{flex:1;font-size:13px;padding:7px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);}
-.add-task-inp:focus{outline:none;border-color:var(--anais);}
+.add-task-inp{flex:1;font-size:13px;padding:7px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;}
+.add-task-inp:focus{border-color:var(--p1);}
 .add-task-confirm{padding:7px 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;}
 .sticky-bottom{padding:16px 20px;background:var(--surface);border-top:0.5px solid var(--border);}
+.loading{display:flex;align-items:center;justify-content:center;min-height:100dvh;font-size:14px;color:var(--muted);}
 </style>
 </head>
 <body>
 
+<div class="loading" id="loading">Chargement…</div>
+
 <!-- AUTH -->
-<div class="screen active" id="screen-auth">
+<div class="screen" id="screen-auth">
   <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
     <div class="logo">🏠</div>
     <div class="h1">Tâches à deux</div>
     <div class="sub">Suivez et équilibrez les tâches du quotidien en couple.</div>
-    <button class="btn btn-google" id="btn-google">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuer avec Google
-    </button>
-    <div class="divider"><div class="divider-line"></div><div class="divider-txt">ou par email</div><div class="divider-line"></div></div>
     <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="vous@exemple.com" autocomplete="email"/></div>
     <div class="field"><label>Mot de passe</label><input type="password" id="auth-password" placeholder="8 caractères minimum" autocomplete="current-password"/></div>
     <button class="btn btn-primary" id="btn-signin" style="margin-bottom:10px;">Se connecter</button>
     <button class="btn btn-secondary" id="btn-signup">Créer un compte</button>
     <div class="err" id="auth-err"></div>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">Un lien de confirmation sera envoyé par email.</div>
+  </div>
+</div>
+
+<!-- CONFIRM EMAIL -->
+<div class="screen" id="screen-confirm">
+  <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="logo">📧</div>
+    <div class="h1">Confirmez votre email</div>
+    <div class="sub">Un lien de confirmation a été envoyé à <strong id="confirm-email"></strong>. Cliquez dessus puis revenez ici.</div>
+    <button class="btn btn-primary" id="btn-after-confirm">J'ai confirmé, continuer</button>
+    <div class="err" id="confirm-err"></div>
   </div>
 </div>
 
@@ -117,11 +124,29 @@ body{max-width:480px;margin:0 auto;padding:0 0 env(safe-area-inset-bottom);}
   </div>
 </div>
 
-<!-- ONBOARDING 1b : Rejoindre -->
+<!-- INVITE -->
+<div class="screen" id="screen-invite">
+  <div class="pad" style="flex:1;">
+    <div class="h1">Invitez votre partenaire</div>
+    <div class="sub">Partagez ce code ou ce lien pour qu'il/elle rejoigne votre foyer.</div>
+    <div class="invite-card">
+      <div class="invite-card-title">Code d'invitation</div>
+      <div class="invite-code" id="invite-code-display" title="Appuyer pour copier">–</div>
+      <div class="invite-or">ou partagez le lien</div>
+      <button class="btn-invite" id="btn-share-link">Copier le lien d'invitation</button>
+    </div>
+    <div style="margin-top:16px;text-align:center;font-size:13px;color:var(--muted)">Votre partenaire peut rejoindre plus tard.</div>
+  </div>
+  <div class="sticky-bottom">
+    <button class="btn btn-primary" id="btn-invite-next">Continuer vers les tâches</button>
+  </div>
+</div>
+
+<!-- REJOINDRE -->
 <div class="screen" id="screen-join">
   <div class="pad" style="flex:1;">
     <div class="h1">Rejoindre un foyer</div>
-    <div class="sub">Entre le code ou le lien partagé par ton partenaire.</div>
+    <div class="sub">Entre le code partagé par ton partenaire.</div>
     <input class="join-input" id="join-code" placeholder="ABC-123" maxlength="10"/>
     <div class="err" id="join-err"></div>
     <button class="btn btn-primary" id="btn-join">Rejoindre</button>
@@ -136,169 +161,164 @@ body{max-width:480px;margin:0 auto;padding:0 0 env(safe-area-inset-bottom);}
   <div class="pad" style="padding-bottom:0;">
     <div class="step-ind">Étape 2 sur 2</div>
     <div class="h1">Vos tâches</div>
-    <div class="sub">Cochez ce qui vous concerne. Vous pourrez modifier à tout moment.</div>
+    <div class="sub">Cochez ce qui vous concerne. Modifiable à tout moment.</div>
   </div>
   <div class="tasks-scroll" id="tasks-scroll"></div>
   <div class="sticky-bottom">
-    <button class="btn btn-primary" id="btn-ob2-finish">Commencer</button>
-  </div>
-</div>
-
-<!-- INVITE après création foyer -->
-<div class="screen" id="screen-invite">
-  <div class="pad" style="flex:1;">
-    <div class="h1">Invitez votre partenaire</div>
-    <div class="sub">Partagez ce code ou ce lien pour qu'il/elle rejoigne votre foyer.</div>
-    <div class="invite-card">
-      <div class="invite-card-title">Code d'invitation</div>
-      <div class="invite-code" id="invite-code-display" title="Appuyer pour copier">APR-42X</div>
-      <div class="invite-or">ou partagez le lien directement</div>
-      <button class="btn-invite" id="btn-share-link">Copier le lien d'invitation</button>
-    </div>
-    <div style="margin-top:16px;text-align:center;font-size:13px;color:var(--muted)">Votre partenaire peut rejoindre plus tard.</div>
-  </div>
-  <div class="sticky-bottom">
-    <button class="btn btn-primary" id="btn-invite-next">Continuer vers les tâches</button>
+    <button class="btn btn-primary" id="btn-ob2-finish">Commencer !</button>
   </div>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://fdcorgoppgldblhjghjd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ovMhEOZKI7Cxmg5YmUcMCQ_DUFBcorp';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const DEFAULT_TASKS = [
-  {cat:'🍳 Cuisine & repas', items:['Cuisine','Vaisselle','Planification des repas']},
-  {cat:'🧹 Entretien', items:['Ménage','Linge','Bricolage','Poubelle']},
-  {cat:'📋 Organisation', items:['Planification des vacances','Planification des loisirs','Achat de cadeaux','Organisation de fête','Gestion de l\'agenda']},
-  {cat:'🌿 Extérieur', items:['Arrosage des plantes','Jardinage']},
-  {cat:'👶 Enfants', items:['Routine du matin','Routine du soir','Trajet à l\'école','Garde des enfants','Aide aux devoirs','Activités','RDV médicaux','Bain','Réveil nocturne']},
-  {cat:'🐾 Animaux', items:['Alimentation','Promenade','Litière / nettoyage','Vétérinaire']},
-  {cat:'🚗 Voiture', items:['Entretien','Plein d\'essence','Contrôle technique']},
+const DEFAULT_TASKS=[
+  {cat:'🍳 Cuisine & repas',items:['Cuisine','Vaisselle','Planification des repas']},
+  {cat:'🧹 Entretien',items:['Ménage','Linge','Bricolage','Poubelle']},
+  {cat:'📋 Organisation',items:['Planification des vacances','Planification des loisirs','Achat de cadeaux','Organisation de fête','Gestion de l\'agenda']},
+  {cat:'🌿 Extérieur',items:['Arrosage des plantes','Jardinage']},
+  {cat:'👶 Enfants',items:['Routine du matin','Routine du soir','Trajet à l\'école','Garde des enfants','Aide aux devoirs','Activités','RDV médicaux','Bain','Réveil nocturne']},
+  {cat:'🐾 Animaux',items:['Alimentation','Promenade','Litière / nettoyage','Vétérinaire']},
+  {cat:'🚗 Voiture',items:['Entretien','Plein d\'essence','Contrôle technique']},
 ];
 
-let selectedTasks = [];
-let houseData = {};
+let selectedTasks=[];
+let houseData={};
+let pendingEmail='';
 
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function show(id){document.getElementById('loading').style.display='none';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function initials(n){return n?n.trim()[0].toUpperCase():'?';}
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<3;i++)s+=c[Math.floor(Math.random()*c.length)];s+='-';for(let i=0;i<3;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
 
-function initials(name){ return name ? name.trim()[0].toUpperCase() : '?'; }
-
-document.getElementById('name1').addEventListener('input', e => { document.getElementById('av1').textContent = initials(e.target.value)||'A'; });
-document.getElementById('name2').addEventListener('input', e => { document.getElementById('av2').textContent = initials(e.target.value)||'P'; });
-
-function buildTasksUI(){
-  const scroll = document.getElementById('tasks-scroll');
-  scroll.innerHTML = '';
-  DEFAULT_TASKS.forEach(cat => {
-    const sec = document.createElement('div'); sec.className='cat-section';
-    const [emoji, ...nameParts] = cat.cat.split(' ');
-    sec.innerHTML = `<div class="cat-header"><span class="cat-emoji">${emoji}</span><span class="cat-name">${nameParts.join(' ')}</span><span class="cat-count" id="cnt-${emoji}">0 sélectionné(s)</span></div><div class="task-chips" id="chips-${emoji}"></div><span class="add-task-link" onclick="toggleAddTask('${emoji}')">+ Ajouter une tâche</span><div class="add-task-inline" id="add-${emoji}"><div class="add-task-row"><input class="add-task-inp" id="inp-${emoji}" placeholder="Nom de la tâche"/><button class="add-task-confirm" onclick="confirmAddTask('${emoji}','${cat.cat}')">Ajouter</button></div></div>`;
-    scroll.appendChild(sec);
-    cat.items.forEach(item => addChip(emoji, item, cat.cat));
-  });
-}
-
-function addChip(emoji, item, catFull){
-  const chips = document.getElementById('chips-'+emoji);
-  const chip = document.createElement('div'); chip.className='chip'; chip.textContent=item;
-  chip.onclick=()=>{ chip.classList.toggle('selected'); updateCatCount(emoji); if(chip.classList.contains('selected')) selectedTasks.push({cat:catFull,task:item}); else selectedTasks=selectedTasks.filter(t=>!(t.cat===catFull&&t.task===item)); };
-  chips.appendChild(chip);
-}
-
-function updateCatCount(emoji){ const cnt=document.querySelectorAll('#chips-'+emoji+' .chip.selected').length; document.getElementById('cnt-'+emoji).textContent=cnt+' sélectionné'+(cnt>1?'s':''); }
-
-window.toggleAddTask=function(emoji){ const el=document.getElementById('add-'+emoji); el.classList.toggle('open'); if(el.classList.contains('open')) document.getElementById('inp-'+emoji).focus(); };
-window.confirmAddTask=function(emoji,catFull){ const inp=document.getElementById('inp-'+emoji); const val=inp.value.trim(); if(!val)return; addChip(emoji,val,catFull); const chip=document.querySelector('#chips-'+emoji+' .chip:last-child'); chip.click(); inp.value=''; document.getElementById('add-'+emoji).classList.remove('open'); };
-
-document.getElementById('btn-google').addEventListener('click', ()=>{
-  document.getElementById('auth-err').textContent='Connexion Google non disponible pour le moment.';
-});
-
-document.getElementById('btn-signin').addEventListener('click', async()=>{
-  const email=document.getElementById('auth-email').value.trim();
-  const password=document.getElementById('auth-password').value;
-  const{error}=await sb.auth.signInWithPassword({email,password});
-  if(error) document.getElementById('auth-err').textContent=error.message;
-  else checkUserHouse();
-});
-
-document.getElementById('btn-signup').addEventListener('click', async()=>{
-  const email=document.getElementById('auth-email').value.trim();
-  const password=document.getElementById('auth-password').value;
-  if(password.length<8){document.getElementById('auth-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
-  const{error}=await sb.auth.signUp({email,password});
-  if(error) document.getElementById('auth-err').textContent=error.message;
-  else { checkUserHouse(); }
-});
+document.getElementById('name1').addEventListener('input',e=>{document.getElementById('av1').textContent=initials(e.target.value)||'A';});
+document.getElementById('name2').addEventListener('input',e=>{document.getElementById('av2').textContent=initials(e.target.value)||'P';});
 
 async function checkUserHouse(){
-  const{data:{user}}=await sb.auth.getUser();
-  if(!user) return;
-  const{data}=await sb.from('members').select('house_id').eq('user_id',user.id).single();
-  if(data?.house_id){ window.location.href='app.html'; }
-  else {
-    const url=new URL(window.location.href);
-    const inviteCode=url.searchParams.get('invite');
-    if(inviteCode){ document.getElementById('join-code').value=inviteCode; show('screen-join'); }
-    else { show('screen-ob1'); }
-  }
+  const{data:{user},error:ue}=await sb.auth.getUser();
+  if(ue||!user){show('screen-auth');return;}
+  const{data:member,error:me}=await sb.from('members').select('house_id').eq('user_id',user.id).maybeSingle();
+  if(me){console.error('checkUserHouse error:',me);show('screen-auth');return;}
+  if(member?.house_id){window.location.href='app.html';return;}
+  const url=new URL(window.location.href);
+  const inv=url.searchParams.get('invite');
+  if(inv){document.getElementById('join-code').value=inv;show('screen-join');}
+  else show('screen-ob1');
 }
 
-document.getElementById('btn-ob1-next').addEventListener('click', async()=>{
+document.getElementById('btn-signin').addEventListener('click',async()=>{
+  const email=document.getElementById('auth-email').value.trim();
+  const pwd=document.getElementById('auth-password').value;
+  const{error}=await sb.auth.signInWithPassword({email,password:pwd});
+  if(error){document.getElementById('auth-err').textContent=error.message;return;}
+  checkUserHouse();
+});
+
+document.getElementById('btn-signup').addEventListener('click',async()=>{
+  const email=document.getElementById('auth-email').value.trim();
+  const pwd=document.getElementById('auth-password').value;
+  if(pwd.length<8){document.getElementById('auth-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
+  const{error}=await sb.auth.signUp({email,password:pwd,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
+  if(error){document.getElementById('auth-err').textContent=error.message;return;}
+  pendingEmail=email;
+  document.getElementById('confirm-email').textContent=email;
+  show('screen-confirm');
+});
+
+document.getElementById('btn-after-confirm').addEventListener('click',async()=>{
+  const{data:{user},error}=await sb.auth.getUser();
+  if(error||!user){document.getElementById('confirm-err').textContent='Session expirée, reconnectez-vous.';show('screen-auth');return;}
+  if(!user.email_confirmed_at){document.getElementById('confirm-err').textContent='Email pas encore confirmé. Vérifiez vos emails.';return;}
+  checkUserHouse();
+});
+
+document.getElementById('btn-ob1-next').addEventListener('click',()=>{
   const n1=document.getElementById('name1').value.trim();
   const n2=document.getElementById('name2').value.trim();
   if(!n1||!n2){document.getElementById('ob1-err').textContent='Entrez les deux prénoms.';return;}
   const foyer=document.getElementById('foyer-name').value.trim()||`Chez ${n1} & ${n2}`;
-  houseData={name1:n1,name2:n2,foyer};
   const code=genCode();
-  houseData.code=code;
+  houseData={name1:n1,name2:n2,foyer,code};
   document.getElementById('invite-code-display').textContent=code;
   show('screen-invite');
 });
 
-document.getElementById('btn-invite-next').addEventListener('click', async()=>{
-  buildTasksUI(); show('screen-ob2');
+document.getElementById('btn-invite-next').addEventListener('click',()=>{buildTasksUI();show('screen-ob2');});
+
+document.getElementById('invite-code-display').addEventListener('click',()=>{
+  navigator.clipboard.writeText(document.getElementById('invite-code-display').textContent).then(()=>alert('Code copié !'));
 });
 
-document.getElementById('btn-ob2-finish').addEventListener('click', async()=>{
+document.getElementById('btn-share-link').addEventListener('click',()=>{
+  const url=`${window.location.origin}${window.location.pathname}?invite=${houseData.code}`;
+  if(navigator.share)navigator.share({title:'Rejoins mon foyer',url});
+  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
+});
+
+document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
+  const btn=document.getElementById('btn-ob2-finish');
+  btn.textContent='Création…';btn.disabled=true;
   const{data:{user}}=await sb.auth.getUser();
-  if(!user) return;
-  const tasks=selectedTasks.length>0?selectedTasks:[];
-  const{data:house,error}=await sb.from('houses').insert({name:houseData.foyer,invite_code:houseData.code,member1_name:houseData.name1,member2_name:houseData.name2}).select().single();
-  if(error){console.error(error);return;}
-  await sb.from('members').insert({house_id:house.id,user_id:user.id,name:houseData.name1,is_owner:true});
-  if(tasks.length>0) await sb.from('house_tasks').insert(tasks.map(t=>({house_id:house.id,category:t.cat,task_name:t.task})));
+  if(!user){show('screen-auth');return;}
+  const{data:house,error:he}=await sb.from('houses').insert({name:houseData.foyer,invite_code:houseData.code,member1_name:houseData.name1,member2_name:houseData.name2}).select().single();
+  if(he){console.error('house insert error:',he);btn.textContent='Commencer !';btn.disabled=false;alert('Erreur création foyer: '+he.message);return;}
+  const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:houseData.name1,is_owner:true});
+  if(me){console.error('member insert error:',me);btn.textContent='Commencer !';btn.disabled=false;alert('Erreur création membre: '+me.message);return;}
+  if(selectedTasks.length>0){
+    const{error:te}=await sb.from('house_tasks').insert(selectedTasks.map(t=>({house_id:house.id,category:t.cat,task_name:t.task})));
+    if(te)console.error('tasks insert error:',te);
+  }
   window.location.href='app.html';
 });
 
-document.getElementById('btn-join').addEventListener('click', async()=>{
+document.getElementById('btn-join').addEventListener('click',async()=>{
   const code=document.getElementById('join-code').value.trim().toUpperCase();
-  const{data:house}=await sb.from('houses').select('*').eq('invite_code',code).single();
-  if(!house){document.getElementById('join-err').textContent='Code invalide ou expiré.';return;}
+  const{data:house,error}=await sb.from('houses').select('*').eq('invite_code',code).maybeSingle();
+  if(error||!house){document.getElementById('join-err').textContent='Code invalide ou expiré.';return;}
   const{data:{user}}=await sb.auth.getUser();
   const memberName=house.member2_name||'Partenaire';
-  await sb.from('members').insert({house_id:house.id,user_id:user.id,name:memberName,is_owner:false});
+  const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:memberName,is_owner:false});
+  if(me){document.getElementById('join-err').textContent='Erreur: '+me.message;return;}
   window.location.href='app.html';
 });
 
 document.getElementById('btn-create-instead').addEventListener('click',()=>show('screen-ob1'));
 
-document.getElementById('btn-share-link').addEventListener('click',()=>{
-  const code=document.getElementById('invite-code-display').textContent;
-  const url=`${window.location.origin}${window.location.pathname}?invite=${code}`;
-  if(navigator.share) navigator.share({title:'Rejoins mon foyer',text:'Rejoins-moi sur Tâches à deux',url});
-  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
+function buildTasksUI(){
+  const scroll=document.getElementById('tasks-scroll');scroll.innerHTML='';selectedTasks=[];
+  DEFAULT_TASKS.forEach(cat=>{
+    const[emoji,...nameParts]=cat.cat.split(' ');
+    const sec=document.createElement('div');sec.className='cat-section';
+    sec.innerHTML=`<div class="cat-header"><span class="cat-emoji">${emoji}</span><span class="cat-name">${nameParts.join(' ')}</span><span class="cat-count" id="cnt-${emoji}">0 sélectionné(s)</span></div><div class="task-chips" id="chips-${emoji}"></div><span class="add-task-link" onclick="toggleAdd('${emoji}')">+ Ajouter une tâche</span><div class="add-task-inline" id="add-${emoji}"><div class="add-task-row"><input class="add-task-inp" id="inp-${emoji}" placeholder="Nom de la tâche"/><button class="add-task-confirm" onclick="confirmAdd('${emoji}','${cat.cat}')">Ajouter</button></div></div>`;
+    scroll.appendChild(sec);
+    cat.items.forEach(item=>addChip(emoji,item,cat.cat));
+  });
+}
+
+function addChip(emoji,item,catFull){
+  const chips=document.getElementById('chips-'+emoji);
+  const chip=document.createElement('div');chip.className='chip';chip.textContent=item;
+  chip.onclick=()=>{chip.classList.toggle('selected');updateCnt(emoji);if(chip.classList.contains('selected'))selectedTasks.push({cat:catFull,task:item});else selectedTasks=selectedTasks.filter(t=>!(t.cat===catFull&&t.task===item));};
+  chips.appendChild(chip);
+}
+
+function updateCnt(emoji){const n=document.querySelectorAll('#chips-'+emoji+' .chip.selected').length;document.getElementById('cnt-'+emoji).textContent=n+' sélectionné'+(n>1?'s':'');}
+window.toggleAdd=function(e){const el=document.getElementById('add-'+e);el.classList.toggle('open');if(el.classList.contains('open'))document.getElementById('inp-'+e).focus();};
+window.confirmAdd=function(e,cf){const inp=document.getElementById('inp-'+e);const v=inp.value.trim();if(!v)return;addChip(e,v,cf);document.querySelector('#chips-'+e+' .chip:last-child').click();inp.value='';document.getElementById('add-'+e).classList.remove('open');};
+
+sb.auth.onAuthStateChange((event,session)=>{
+  if(event==='SIGNED_IN'&&session){
+    const loading=document.getElementById('loading');
+    if(loading.style.display!=='none')checkUserHouse();
+  }
 });
 
-document.getElementById('invite-code-display').addEventListener('click',()=>{
-  const code=document.getElementById('invite-code-display').textContent;
-  navigator.clipboard.writeText(code).then(()=>alert('Code copié !'));
-});
-
-function genCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c=''; for(let i=0;i<3;i++)c+=chars[Math.floor(Math.random()*chars.length)]; c+='-'; for(let i=0;i<3;i++)c+=chars[Math.floor(Math.random()*chars.length)]; return c; }
-
-sb.auth.onAuthStateChange((_event,session)=>{ if(session) checkUserHouse(); });
+(async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){checkUserHouse();}
+  else{document.getElementById('loading').style.display='none';show('screen-auth');}
+})();
 </script>
 </body>
 </html>
