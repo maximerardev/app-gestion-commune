@@ -496,7 +496,7 @@ function buildCatsList(){
   houseTasks.forEach(t=>{if(!cats[t.category])cats[t.category]=[];cats[t.category].push(t);});
   card.innerHTML=Object.entries(cats).map(([cat,tasks])=>{
     const[e,...n]=cat.split(' ');
-    return`<div class="cat-settings-row" data-cat="${cat}">
+    return`<div class="cat-settings-row" data-cat="${cat}" draggable="true">
       <span class="cat-drag">⠿</span>
       <span class="cat-emoji">${e}</span>
       <span class="cat-name-s">${n.join(' ')}</span>
@@ -506,6 +506,45 @@ function buildCatsList(){
   }).join('')+`<div style="padding:11px 14px;border-top:0.5px solid var(--border);"><span class="cat-add-link" id="btn-add-cat" style="font-size:13px;color:var(--p1);cursor:pointer;">+ Ajouter une catégorie</span></div>`;
   card.querySelectorAll('.cat-settings-row').forEach(row=>{
     row.addEventListener('click',()=>openCatDetail(row.dataset.cat));
+  });
+  initCatDrag(card);
+  document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
+}
+
+function addNewCategory(){
+  const name=prompt('Nom de la nouvelle catégorie (ex : 🏠 Logement) :');
+  if(!name||!name.trim())return;
+  const catName=name.trim();
+  const maxOrder=houseTasks.reduce((m,t)=>Math.max(m,t.sort_order||0),0);
+  sb.from('house_tasks').insert({house_id:house.id,category:catName,task_name:'Nouvelle tâche',sort_order:maxOrder+1,hidden:false})
+    .then(async({error})=>{
+      if(error){alert('Erreur: '+error.message);return;}
+      await loadTasks();
+      openCatDetail(catName);
+    });
+}
+
+function initCatDrag(card){
+  let dragSrc=null;
+  card.querySelectorAll('.cat-settings-row').forEach(row=>{
+    row.addEventListener('dragstart',e=>{dragSrc=row;row.style.opacity='0.4';e.dataTransfer.effectAllowed='move';});
+    row.addEventListener('dragend',()=>{card.querySelectorAll('.cat-settings-row').forEach(r=>{r.style.opacity='1';r.style.borderTop='';});});
+    row.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';row.style.borderTop='2px solid var(--p1)';return false;});
+    row.addEventListener('dragleave',()=>{row.style.borderTop='';});
+    row.addEventListener('drop',async e=>{
+      e.stopPropagation();
+      if(dragSrc===row)return;
+      const rows=[...card.querySelectorAll('.cat-settings-row')];
+      const fromIdx=rows.indexOf(dragSrc);
+      const toIdx=rows.indexOf(row);
+      const cats=rows.map(r=>r.dataset.cat);
+      cats.splice(toIdx,0,cats.splice(fromIdx,1)[0]);
+      for(let i=0;i<cats.length;i++){
+        await sb.from('house_tasks').update({sort_order:i*10}).eq('house_id',house.id).eq('category',cats[i]);
+      }
+      await loadTasks();
+      return false;
+    });
   });
 }
 
@@ -522,11 +561,37 @@ function renderTaskEditList(cat){
   const tasks=houseTasks.filter(t=>t.category===cat);
   const list=document.getElementById('task-edit-list');
   if(!tasks.length){list.innerHTML='<div class="empty" style="padding:12px">Aucune tâche.</div>';return;}
-  list.innerHTML=tasks.map(t=>`<div class="task-edit-row" data-id="${t.id}">
+  list.innerHTML=tasks.map(t=>`<div class="task-edit-row" data-id="${t.id}" draggable="true">
     <span class="task-edit-drag">⠿</span>
     <span class="task-edit-name">${t.task_name}</span>
     <button class="task-edit-del" onclick="deleteTask('${t.id}')">×</button>
   </div>`).join('');
+  initTaskDrag(list,cat);
+}
+
+function initTaskDrag(list,cat){
+  let dragSrc=null;
+  list.querySelectorAll('.task-edit-row').forEach(row=>{
+    row.addEventListener('dragstart',e=>{dragSrc=row;row.style.opacity='0.4';e.dataTransfer.effectAllowed='move';});
+    row.addEventListener('dragend',()=>{list.querySelectorAll('.task-edit-row').forEach(r=>{r.style.opacity='1';r.style.borderTop='';});});
+    row.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';row.style.borderTop='2px solid var(--p1)';return false;});
+    row.addEventListener('dragleave',()=>{row.style.borderTop='';});
+    row.addEventListener('drop',async e=>{
+      e.stopPropagation();
+      if(dragSrc===row)return;
+      const rows=[...list.querySelectorAll('.task-edit-row')];
+      const fromIdx=rows.indexOf(dragSrc);
+      const toIdx=rows.indexOf(row);
+      const ids=rows.map(r=>r.dataset.id);
+      ids.splice(toIdx,0,ids.splice(fromIdx,1)[0]);
+      for(let i=0;i<ids.length;i++){
+        await sb.from('house_tasks').update({sort_order:i*10}).eq('id',ids[i]);
+      }
+      await loadTasks();
+      renderTaskEditList(cat);
+      return false;
+    });
+  });
 }
 
 document.getElementById('cat-detail-back').addEventListener('click',()=>{
