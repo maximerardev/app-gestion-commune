@@ -10,6 +10,7 @@
 <title>Tâches à deux</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
 :root{--bg:#f7f6f3;--surface:#fff;--border:rgba(0,0,0,0.09);--border-md:rgba(0,0,0,0.16);--text:#1a1a18;--muted:#6b6b68;--hint:#a8a8a5;--p1:#1a6fbf;--p1-bg:#e8f1fb;--p2:#0d7a5f;--p2-bg:#e0f4ed;--amber:#BA7517;--amber-bg:#fdf6e3;--radius:12px;--radius-sm:8px;}
 @media(prefers-color-scheme:dark){:root{--bg:#141413;--surface:#1e1e1c;--border:rgba(255,255,255,0.08);--border-md:rgba(255,255,255,0.14);--text:#f0efe9;--muted:#9a9a96;--hint:#5a5a57;--p1:#5da0e8;--p1-bg:#1a2e42;--p2:#3db88a;--p2-bg:#122e24;--amber:#EF9F27;--amber-bg:#2a1e06;}}
@@ -494,59 +495,61 @@ function buildCatsList(){
   const card=document.getElementById('cats-list-card');
   const cats={};
   houseTasks.forEach(t=>{if(!cats[t.category])cats[t.category]=[];cats[t.category].push(t);});
-  card.innerHTML=Object.entries(cats).map(([cat,tasks])=>{
-    const[e,...n]=cat.split(' ');
-    return`<div class="cat-settings-row" data-cat="${cat}" draggable="true">
-      <span class="cat-drag">⠿</span>
-      <span class="cat-emoji">${e}</span>
-      <span class="cat-name-s">${n.join(' ')}</span>
-      <span class="cat-count-s">${tasks.length}</span>
-      <span class="cat-arrow">›</span>
-    </div>`;
-  }).join('')+`<div style="padding:11px 14px;border-top:0.5px solid var(--border);"><span class="cat-add-link" id="btn-add-cat" style="font-size:13px;color:var(--p1);cursor:pointer;">+ Ajouter une catégorie</span></div>`;
-  card.querySelectorAll('.cat-settings-row').forEach(row=>{
-    row.addEventListener('click',()=>openCatDetail(row.dataset.cat));
+  // Also load hidden categories to show them separately
+  sb.from('house_tasks').select('category').eq('house_id',house.id).eq('hidden',true).then(({data:hiddenData})=>{
+    const hiddenCats=[...new Set((hiddenData||[]).map(t=>t.category))];
+    card.innerHTML=Object.entries(cats).map(([cat,tasks])=>{
+      const[e,...n]=cat.split(' ');
+      return`<div class="cat-settings-row" data-cat="${cat}" draggable="true">
+        <span class="cat-drag">⠿</span>
+        <span class="cat-emoji">${e}</span>
+        <span class="cat-name-s">${n.join(' ')}</span>
+        <span class="cat-count-s">${tasks.length}</span>
+        <span class="cat-arrow">›</span>
+      </div>`;
+    }).join('')+
+    `<div style="padding:11px 14px;border-top:0.5px solid var(--border);"><span id="btn-add-cat" style="font-size:13px;color:var(--p1);cursor:pointer;">+ Ajouter une catégorie</span></div>`+
+    (hiddenCats.length>0?`<div style="padding:8px 14px 4px;font-size:10px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;border-top:0.5px solid var(--border);margin-top:4px;">Masquées</div>`+
+    hiddenCats.map(cat=>{const[e,...n]=cat.split(' ');return`<div style="display:flex;align-items:center;padding:10px 14px;border-top:0.5px solid var(--border);gap:10px;"><span style="font-size:16px">${e}</span><span style="font-size:13px;flex:1;color:var(--muted)">${n.join(' ')}</span><button onclick="restoreCat('${cat}')" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;">Restaurer</button></div>`;}).join(''):'');
+    card.querySelectorAll('.cat-settings-row').forEach(row=>{
+      row.addEventListener('click',()=>openCatDetail(row.dataset.cat));
+    });
+    initCatDrag(card);
+    document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
   });
-  initCatDrag(card);
-  document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
+  return;
 }
 
 function addNewCategory(){
   const name=prompt('Nom de la nouvelle catégorie (ex : 🏠 Logement) :');
   if(!name||!name.trim())return;
   const catName=name.trim();
-  const maxOrder=houseTasks.reduce((m,t)=>Math.max(m,t.sort_order||0),0);
-  sb.from('house_tasks').insert({house_id:house.id,category:catName,task_name:'Nouvelle tâche',sort_order:maxOrder+1,hidden:false})
-    .then(async({error})=>{
-      if(error){alert('Erreur: '+error.message);return;}
-      await loadTasks();
-      openCatDetail(catName);
-    });
+  currentCatEdit=catName;
+  document.getElementById('cat-detail-title').textContent=catName;
+  document.getElementById('cats-list-view').style.display='none';
+  document.getElementById('cat-detail-view').classList.add('active');
+  document.getElementById('task-edit-list').innerHTML='<div class="empty" style="padding:12px">Aucune tâche. Ajoutez-en une ci-dessous.</div>';
+  setTimeout(()=>document.getElementById('task-add-inp').focus(),100);
+  document._newCatPending=catName;
 }
 
 function initCatDrag(card){
-  let dragSrc=null;
-  card.querySelectorAll('.cat-settings-row').forEach(row=>{
-    row.addEventListener('dragstart',e=>{dragSrc=row;row.style.opacity='0.4';e.dataTransfer.effectAllowed='move';});
-    row.addEventListener('dragend',()=>{card.querySelectorAll('.cat-settings-row').forEach(r=>{r.style.opacity='1';r.style.borderTop='';});});
-    row.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';row.style.borderTop='2px solid var(--p1)';return false;});
-    row.addEventListener('dragleave',()=>{row.style.borderTop='';});
-    row.addEventListener('drop',async e=>{
-      e.stopPropagation();
-      if(dragSrc===row)return;
-      const rows=[...card.querySelectorAll('.cat-settings-row')];
-      const fromIdx=rows.indexOf(dragSrc);
-      const toIdx=rows.indexOf(row);
-      const cats=rows.map(r=>r.dataset.cat);
-      cats.splice(toIdx,0,cats.splice(fromIdx,1)[0]);
-      for(let i=0;i<cats.length;i++){
-        await sb.from('house_tasks').update({sort_order:i*10}).eq('house_id',house.id).eq('category',cats[i]);
+  if(typeof Sortable==="undefined")return;
+  const addRow=card.querySelector('[id="btn-add-cat"]')?.parentElement;
+  Sortable.create(card,{
+    handle:".cat-drag",
+    animation:150,
+    draggable:".cat-settings-row",
+    onEnd:async evt=>{
+      const rows=[...card.querySelectorAll(".cat-settings-row")];
+      for(let i=0;i<rows.length;i++){
+        await sb.from("house_tasks").update({sort_order:i*10}).eq("house_id",house.id).eq("category",rows[i].dataset.cat);
       }
       await loadTasks();
-      return false;
-    });
+    }
   });
 }
+
 
 function openCatDetail(cat){
   currentCatEdit=cat;
@@ -570,31 +573,29 @@ function renderTaskEditList(cat){
 }
 
 function initTaskDrag(list,cat){
-  let dragSrc=null;
-  list.querySelectorAll('.task-edit-row').forEach(row=>{
-    row.addEventListener('dragstart',e=>{dragSrc=row;row.style.opacity='0.4';e.dataTransfer.effectAllowed='move';});
-    row.addEventListener('dragend',()=>{list.querySelectorAll('.task-edit-row').forEach(r=>{r.style.opacity='1';r.style.borderTop='';});});
-    row.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';row.style.borderTop='2px solid var(--p1)';return false;});
-    row.addEventListener('dragleave',()=>{row.style.borderTop='';});
-    row.addEventListener('drop',async e=>{
-      e.stopPropagation();
-      if(dragSrc===row)return;
+  if(typeof Sortable==='undefined')return;
+  Sortable.create(list,{
+    handle:'.task-edit-drag',
+    animation:150,
+    draggable:'.task-edit-row',
+    onEnd:async evt=>{
       const rows=[...list.querySelectorAll('.task-edit-row')];
-      const fromIdx=rows.indexOf(dragSrc);
-      const toIdx=rows.indexOf(row);
-      const ids=rows.map(r=>r.dataset.id);
-      ids.splice(toIdx,0,ids.splice(fromIdx,1)[0]);
-      for(let i=0;i<ids.length;i++){
-        await sb.from('house_tasks').update({sort_order:i*10}).eq('id',ids[i]);
+      for(let i=0;i<rows.length;i++){
+        await sb.from('house_tasks').update({sort_order:i*10}).eq('id',rows[i].dataset.id);
       }
       await loadTasks();
-      renderTaskEditList(cat);
-      return false;
-    });
+    }
   });
 }
 
 document.getElementById('cat-detail-back').addEventListener('click',()=>{
+  if(document._newCatPending){
+    const tasks=houseTasks.filter(t=>t.category===document._newCatPending);
+    if(tasks.length===0){
+      if(!confirm('Cette catégorie est vide. Annuler sa création ?')){document.getElementById('task-add-inp').focus();return;}
+      document._newCatPending=null;
+    } else document._newCatPending=null;
+  }
   document.getElementById('cats-list-view').style.display='block';
   document.getElementById('cat-detail-view').classList.remove('active');
   currentCatEdit=null;
@@ -603,13 +604,17 @@ document.getElementById('cat-detail-back').addEventListener('click',()=>{
 document.getElementById('task-add-btn').addEventListener('click',async()=>{
   const inp=document.getElementById('task-add-inp');
   const name=inp.value.trim();
-  if(!name||!currentCatEdit)return;
-  const maxOrder=houseTasks.filter(t=>t.category===currentCatEdit).reduce((m,t)=>Math.max(m,t.sort_order||0),0);
-  const{error}=await sb.from('house_tasks').insert({house_id:house.id,category:currentCatEdit,task_name:name,sort_order:maxOrder+1,hidden:false});
+  if(!name){inp.focus();return;}
+  const cat=currentCatEdit||document._newCatPending;
+  if(!cat)return;
+  currentCatEdit=cat;
+  const maxOrder=houseTasks.filter(t=>t.category===cat).reduce((m,t)=>Math.max(m,t.sort_order||0),0);
+  const{error}=await sb.from('house_tasks').insert({house_id:house.id,category:cat,task_name:name,sort_order:maxOrder+1,hidden:false});
   if(error){alert('Erreur: '+error.message);return;}
   inp.value='';
+  document._newCatPending=null;
   await loadTasks();
-  renderTaskEditList(currentCatEdit);
+  renderTaskEditList(cat);
 });
 
 window.deleteTask=async function(id){
@@ -626,6 +631,11 @@ document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   document.getElementById('cat-detail-back').click();
   await loadTasks();
 });
+
+window.restoreCat=async function(cat){
+  await sb.from('house_tasks').update({hidden:false}).eq('house_id',house.id).eq('category',cat);
+  await loadTasks();
+};
 
 function buildMembersCard(members){
   const mc=document.getElementById('members-card');
