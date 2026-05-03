@@ -671,6 +671,7 @@ function filterM(m,y){return allEntries.filter(e=>{const d=new Date(e.date+'T12:
 function filterRange(from,to){const f=new Date(from+'T00:00:00'),t=new Date(to+'T23:59:59');return allEntries.filter(e=>{const d=new Date(e.date+'T12:00:00');return d>=f&&d<=t;});}
 
 function calcStats(entries){
+  if(!me)return{totals:{},byTask:{},byCat:{}};
   const n1=me.name,n2=partner?.name||'P2';
   const totals={[n1]:{min:0,cnt:0,cm:0},[n2]:{min:0,cnt:0,cm:0}};
   const byTask={};const byCat={};
@@ -688,6 +689,7 @@ function calcStats(entries){
 
 function render(){
   document.getElementById('week-label').textContent='sem. '+currentWeek;
+  if(!me)return;
   const entries=filterW(currentWeek,currentYear);
   const{totals}=calcStats(entries);
   const n1=me.name,n2=partner?.name||'P2';
@@ -961,16 +963,7 @@ document.addEventListener('click',e=>{
   if(e.target.id==='btn-settings-share'||e.target.id==='btn-invite-settings'||e.target.closest('#btn-invite-settings'))shareInviteLink();
 });
 
-document.getElementById('btn-send-recap').addEventListener('click',()=>{
-  const entries=filterW(currentWeek,currentYear);
-  const{totals}=calcStats(entries);
-  const n1=me.name,n2=partner?.name||'P2';
-  const pers=totals[n1].min+totals[n2].min;
-  const pct=pers>0?Math.round(totals[n1].min/pers*100):50;
-  document.getElementById('modal-title').textContent='Récap — semaine '+currentWeek;
-  document.getElementById('modal-content').innerHTML=`<div class="recap-block"><div class="recap-block-title">Totaux</div><div class="recap-line">${n1} : <strong>${totals[n1].min} min</strong>, ${totals[n1].cnt} tâche(s), ${totals[n1].cm} charge(s) mentale(s)</div><div class="recap-line">${n2} : <strong>${totals[n2].min} min</strong>, ${totals[n2].cnt} tâche(s), ${totals[n2].cm} charge(s) mentale(s)</div>${pers>0?`<div class="recap-line" style="color:var(--muted)">Répartition : ${n1} ${pct}% / ${n2} ${100-pct}%</div>`:''}</div>`;
-  document.getElementById('modal-bg').classList.add('open');
-});
+// recap removed from settings
 
 document.getElementById('modal-close').addEventListener('click',()=>document.getElementById('modal-bg').classList.remove('open'));
 document.getElementById('modal-copy').addEventListener('click',()=>{
