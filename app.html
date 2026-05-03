@@ -10,7 +10,6 @@
 <title>Tâches à deux</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
 :root{--bg:#f7f6f3;--surface:#fff;--border:rgba(0,0,0,0.09);--border-md:rgba(0,0,0,0.16);--text:#1a1a18;--muted:#6b6b68;--hint:#a8a8a5;--p1:#1a6fbf;--p1-bg:#e8f1fb;--p2:#0d7a5f;--p2-bg:#e0f4ed;--amber:#BA7517;--amber-bg:#fdf6e3;--radius:12px;--radius-sm:8px;}
 @media(prefers-color-scheme:dark){:root{--bg:#141413;--surface:#1e1e1c;--border:rgba(255,255,255,0.08);--border-md:rgba(255,255,255,0.14);--text:#f0efe9;--muted:#9a9a96;--hint:#5a5a57;--p1:#5da0e8;--p1-bg:#1a2e42;--p2:#3db88a;--p2-bg:#122e24;--amber:#EF9F27;--amber-bg:#2a1e06;}}
@@ -231,6 +230,13 @@ body{max-width:480px;margin:0 auto;}
 .task-add-inp:focus{border-color:var(--p1);}
 .task-add-btn{font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;font-weight:600;white-space:nowrap;}
 .hide-cat-btn{width:100%;padding:10px;background:none;border:0.5px solid rgba(226,75,74,.3);border-radius:var(--radius-sm);font-size:13px;color:#e24b4a;cursor:pointer;margin-top:4px;}
+.chip-cat{font-size:12px;padding:6px 12px;border-radius:20px;border:0.5px solid var(--border-md);background:var(--surface);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;}
+.chip-cat.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+.chip-cat:active{opacity:.75;}
+.chip-task{font-size:12px;padding:6px 12px;border-radius:20px;border:0.5px solid var(--border-md);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.chip-task.active{background:var(--p1);color:#fff;border-color:var(--p1);}
+.chip-task:active{opacity:.75;}
+.chip-emoji{font-size:14px;}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center;}
 .modal-bg.open{display:flex;}
 .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:18px 16px 28px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;}
@@ -272,7 +278,7 @@ body{max-width:480px;margin:0 auto;}
     <button class="tab-btn active" data-tab="add">Ajouter</button>
     <button class="tab-btn" data-tab="stats">Stats</button>
     <button class="tab-btn" data-tab="history">Historique</button>
-    <button class="tab-btn" data-tab="settings">Réglages</button>
+    <button class="tab-btn" data-tab="settings">Paramètres</button>
   </div>
 
   <!-- AJOUTER -->
@@ -284,9 +290,13 @@ body{max-width:480px;margin:0 auto;}
           <div class="date-hint" id="date-hint"></div>
         </div>
       </div>
-      <div class="field-full">
-        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Tâche</label>
-        <select class="task-select" id="f-task"></select>
+      <div class="field-full" style="margin-bottom:9px;">
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">Catégorie</label>
+        <div id="cat-chips-wrap" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+      </div>
+      <div class="field-full" id="task-chips-section" style="margin-bottom:9px;display:none;">
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">Tâche — <span id="task-chips-cat-label" style="color:var(--p1);"></span></label>
+        <div id="task-chips-wrap" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
       </div>
       <div class="field-full">
         <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Durée (minutes) <span style="color:var(--hint);font-weight:400">— optionnel si charge mentale</span></label>
@@ -350,25 +360,27 @@ body{max-width:480px;margin:0 auto;}
 
   <!-- RÉGLAGES -->
   <div class="pane" id="pane-settings">
+    <!-- Foyer -->
+    <div class="settings-section">
+      <div class="settings-title">Foyer</div>
+      <div class="settings-card">
+        <div class="settings-row" style="cursor:default;">
+          <div class="settings-row-label" id="foyer-name-display" style="font-size:14px;font-weight:500;">–</div>
+          <button id="btn-rename-foyer" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;">Modifier</button>
+        </div>
+      </div>
+    </div>
+    <!-- Membres -->
     <div class="settings-section">
       <div class="settings-title">Membres</div>
       <div class="settings-card" id="members-card"></div>
     </div>
-    <div class="settings-section">
-      <div class="settings-title">Invitation</div>
-      <div class="invite-mini">
-        <div style="font-size:11px;color:#185FA5;margin-bottom:6px;">Code d'invitation du foyer</div>
-        <div class="invite-mini-code" id="settings-invite-code">–</div>
-        <button style="width:100%;padding:8px;background:var(--p1);color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;" id="btn-settings-share">Copier le lien d'invitation</button>
-      </div>
-    </div>
+    <!-- Catégories -->
     <div class="settings-section" id="settings-cats-section">
       <div class="settings-title">Catégories</div>
-      <!-- Vue liste des catégories -->
       <div id="cats-list-view">
-        <div class="cat-settings-list" id="cats-list-card"></div>
+        <div class="settings-card" id="cats-list-card"></div>
       </div>
-      <!-- Vue détail d'une catégorie -->
       <div class="cat-detail-view" id="cat-detail-view">
         <div class="cat-detail-header">
           <span class="cat-detail-back" id="cat-detail-back">‹ Retour</span>
@@ -382,17 +394,12 @@ body{max-width:480px;margin:0 auto;}
         <button class="hide-cat-btn" id="hide-cat-btn">Masquer cette catégorie</button>
       </div>
     </div>
+    <!-- Compte -->
     <div class="settings-section">
-      <div class="settings-title">Récap hebdomadaire</div>
-      <div class="settings-card">
-        <div class="settings-row" style="cursor:default;">
-          <div style="font-size:13px;flex:1;">Email récap</div>
-          <input style="font-size:12px;border:0.5px solid var(--border-md);border-radius:6px;padding:5px 8px;background:var(--bg);color:var(--text);width:160px;outline:none;" id="cfg-email" placeholder="vous@exemple.com"/>
-        </div>
-      </div>
-      <button class="btn-save" id="btn-send-recap" style="margin-top:8px;background:var(--p1);">Envoyer le récap maintenant</button>
+      <div class="settings-title">Compte</div>
+      <button class="btn-danger" id="btn-leave-house" style="margin-bottom:8px;background:rgba(226,75,74,.08);color:#e24b4a;border:0.5px solid rgba(226,75,74,.2);">Se déconnecter du foyer</button>
+      <button class="btn-danger" id="btn-signout">Se déconnecter</button>
     </div>
-    <button class="btn-danger" id="btn-signout">Se déconnecter</button>
   </div>
 </div>
 
@@ -408,8 +415,8 @@ body{max-width:480px;margin:0 auto;}
 </div>
 
 <script>
-const SUPABASE_URL = 'https://fdcorgoppgldblhjghjd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_ovMhEOZKI7Cxmg5YmUcMCQ_DUFBcorp';
+const SUPABASE_URL='https://fdcorgoppgldblhjghjd.supabase.co';
+const SUPABASE_KEY='sb_publishable_ovMhEOZKI7Cxmg5YmUcMCQ_DUFBcorp';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const CAT_COLORS=['#378ADD','#1D9E75','#7F77DD','#EF9F27','#D85A30','#639922','#D4537E','#5DCAA5','#888780','#BA7517'];
@@ -443,6 +450,7 @@ async function init(){
   partner=others[0]||null;
   document.getElementById('app-title').textContent=house.name||'Tâches à deux';
   document.getElementById('settings-invite-code').textContent=house.invite_code||'–';
+  document.getElementById('foyer-name-display').textContent=house.name||'–';
   setNames();
   await loadTasks();
   buildMembersCard(members);
@@ -457,9 +465,9 @@ async function loadTasks(){
   const{data:tasks}=await sb.from('house_tasks')
     .select('*').eq('house_id',house.id)
     .eq('hidden',false)
-    .order('sort_order').order('category').order('task_name');
+    .order('category').order('task_name');
   houseTasks=tasks||[];
-  buildTaskSelect();
+  buildTaskChips();
   buildCatsList();
 }
 
@@ -471,24 +479,49 @@ function setNames(){
   sel.innerHTML=`<option value="${me.name}">${me.name}</option>${partner?`<option value="${partner.name}">${partner.name}</option>`:''}`;
 }
 
-function buildTaskSelect(){
-  const sel=document.getElementById('f-task');
-  sel.innerHTML='';
-  const cats={};
-  houseTasks.forEach(t=>{if(!cats[t.category])cats[t.category]=[];cats[t.category].push(t);});
-  Object.entries(cats).forEach(([cat,tasks])=>{
-    const grp=document.createElement('optgroup');
-    grp.label=cat;
-    tasks.forEach(t=>{
-      const opt=document.createElement('option');
-      opt.value=t.id;
-      opt.textContent=t.task_name;
-      opt.dataset.taskName=t.task_name;
-      opt.dataset.cat=t.category;
-      grp.appendChild(opt);
-    });
-    sel.appendChild(grp);
+let selectedCat=null;
+let selectedTask=null;
+
+function buildTaskChips(){
+  const wrap=document.getElementById('cat-chips-wrap');
+  wrap.innerHTML='';
+  selectedCat=null;selectedTask=null;
+  document.getElementById('task-chips-section').style.display='none';
+  const cats=[...new Set(houseTasks.map(t=>t.category))].sort((a,b)=>a.localeCompare(b));
+  cats.forEach(cat=>{
+    const[emoji,...nameParts]=cat.split(' ');
+    const shortName=nameParts.join(' ').length>8?nameParts.join(' ').slice(0,7)+'…':nameParts.join(' ');
+    const chip=document.createElement('button');
+    chip.className='chip-cat';
+    chip.innerHTML=`<span class="chip-emoji">${emoji}</span>${shortName}`;
+    chip.addEventListener('click',()=>selectCat(cat,chip));
+    wrap.appendChild(chip);
   });
+}
+
+function selectCat(cat,chip){
+  document.querySelectorAll('.chip-cat').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  selectedCat=cat;selectedTask=null;
+  const taskWrap=document.getElementById('task-chips-wrap');
+  taskWrap.innerHTML='';
+  const[emoji,...nameParts]=cat.split(' ');
+  document.getElementById('task-chips-cat-label').textContent=emoji+' '+nameParts.join(' ');
+  const tasks=houseTasks.filter(t=>t.category===cat).sort((a,b)=>a.task_name.localeCompare(b.task_name));
+  tasks.forEach(t=>{
+    const chip=document.createElement('button');
+    chip.className='chip-task';
+    chip.textContent=t.task_name;
+    chip.dataset.taskName=t.task_name;
+    chip.dataset.cat=t.category;
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('.chip-task').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedTask=chip;
+    });
+    taskWrap.appendChild(chip);
+  });
+  document.getElementById('task-chips-section').style.display='block';
 }
 
 function buildCatsList(){
@@ -533,22 +566,7 @@ function addNewCategory(){
   document._newCatPending=catName;
 }
 
-function initCatDrag(card){
-  if(typeof Sortable==="undefined")return;
-  const addRow=card.querySelector('[id="btn-add-cat"]')?.parentElement;
-  Sortable.create(card,{
-    handle:".cat-drag",
-    animation:150,
-    draggable:".cat-settings-row",
-    onEnd:async evt=>{
-      const rows=[...card.querySelectorAll(".cat-settings-row")];
-      for(let i=0;i<rows.length;i++){
-        await sb.from("house_tasks").update({sort_order:i*10}).eq("house_id",house.id).eq("category",rows[i].dataset.cat);
-      }
-      await loadTasks();
-    }
-  });
-}
+
 
 
 function openCatDetail(cat){
@@ -564,8 +582,7 @@ function renderTaskEditList(cat){
   const tasks=houseTasks.filter(t=>t.category===cat);
   const list=document.getElementById('task-edit-list');
   if(!tasks.length){list.innerHTML='<div class="empty" style="padding:12px">Aucune tâche.</div>';return;}
-  list.innerHTML=tasks.map(t=>`<div class="task-edit-row" data-id="${t.id}" draggable="true">
-    <span class="task-edit-drag">⠿</span>
+  list.innerHTML=tasks.map(t=>`<div class="task-edit-row" data-id="${t.id}">
     <span class="task-edit-name">${t.task_name}</span>
     <button class="task-edit-del" onclick="deleteTask('${t.id}')">×</button>
   </div>`).join('');
@@ -573,19 +590,7 @@ function renderTaskEditList(cat){
 }
 
 function initTaskDrag(list,cat){
-  if(typeof Sortable==='undefined')return;
-  Sortable.create(list,{
-    handle:'.task-edit-drag',
-    animation:150,
-    draggable:'.task-edit-row',
-    onEnd:async evt=>{
-      const rows=[...list.querySelectorAll('.task-edit-row')];
-      for(let i=0;i<rows.length;i++){
-        await sb.from('house_tasks').update({sort_order:i*10}).eq('id',rows[i].dataset.id);
-      }
-      await loadTasks();
-    }
-  });
+  // No drag & drop — tasks sorted alphabetically
 }
 
 document.getElementById('cat-detail-back').addEventListener('click',()=>{
@@ -639,8 +644,19 @@ window.restoreCat=async function(cat){
 
 function buildMembersCard(members){
   const mc=document.getElementById('members-card');
-  mc.innerHTML=members.map(m=>`<div class="member-row"><div class="member-avatar ${m.id===me.id?'p1':'p2'}">${(m.name||'?')[0].toUpperCase()}</div><div class="member-name">${m.name||'–'}</div><div class="member-badge">${m.id===me.id?'Vous':'Membre'}</div></div>`).join('')+`<div class="member-row" style="justify-content:center;cursor:pointer;" id="btn-invite-settings"><span style="font-size:12px;color:var(--p1)">+ Inviter par lien</span></div>`;
+  mc.innerHTML=members.map(m=>`<div class="member-row"><div class="member-avatar ${m.id===me.id?'p1':'p2'}">${(m.name||'?')[0].toUpperCase()}</div><div class="member-name">${m.name||'–'}</div><button onclick="renameMember('${m.id}','${(m.name||'').replace(/'/g,"\'")}','${m.id===me.id?'y':'n'}')" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;">Renommer</button><span class="member-badge">${m.id===me.id?'Vous':'Membre'}</span></div>`).join('')+`<div class="member-row" style="justify-content:center;cursor:pointer;" id="btn-invite-settings"><span style="font-size:12px;color:var(--p1)">+ Inviter par lien</span></div>`;
 }
+
+window.renameMember=async function(memberId,currentName,isMe){
+  const name=prompt('Nouveau prénom :',currentName);
+  if(!name||!name.trim()||name.trim()===currentName)return;
+  const{error}=await sb.from('members').update({name:name.trim()}).eq('id',memberId);
+  if(error){alert('Erreur: '+error.message);return;}
+  if(isMe==='y'){me.name=name.trim();setNames();}
+  else if(partner&&partner.id===memberId){partner.name=name.trim();setNames();}
+  const{data:members}=await sb.from('members').select('*').eq('house_id',house.id);
+  buildMembersCard(members||[]);
+};
 
 function subscribeEntries(){
   sb.from('entries').select('*').eq('house_id',house.id).order('date',{ascending:false}).then(({data})=>{allEntries=data||[];setSyncDot('ok');render();renderStats();renderHistoryPane();});
@@ -873,12 +889,11 @@ document.getElementById('cm-box').addEventListener('click',()=>{
 document.getElementById('btn-save').addEventListener('click',async()=>{
   const who=document.getElementById('f-who').value;
   const date=document.getElementById('f-date').value;
-  const selOpt=document.getElementById('f-task').selectedOptions[0];
-  const taskName=selOpt?selOpt.dataset.taskName:'';
-  const taskCat=selOpt?selOpt.dataset.cat:'';
+  const taskName=selectedTask?selectedTask.dataset.taskName:'';
+  const taskCat=selectedTask?selectedTask.dataset.cat:'';
   const minVal=document.getElementById('f-min').value;
   const minutes=minVal===''?0:parseInt(minVal)||0;
-  if(!date||!taskName){showToast(false,'Sélectionne une tâche et une date.');return;}
+  if(!date||!taskName){showToast(false,'Sélectionne une catégorie, une tâche et une date.');return;}
   if(!cmChecked&&(!minVal||isNaN(parseInt(minVal))||parseInt(minVal)<1)){showToast(false,'Saisis une durée ou coche Charge mentale.');return;}
   setSyncDot('ing');
   const{error}=await sb.from('entries').insert({house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked});
@@ -888,6 +903,9 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   document.getElementById('date-hint').textContent='↺ remis à aujourd\'hui';
   setTimeout(()=>document.getElementById('date-hint').textContent='',3000);
   if(cmChecked){cmChecked=false;document.getElementById('cm-checkbox').classList.remove('checked');document.getElementById('f-min').placeholder='ex : 30';}
+  // Reset task chips selection
+  document.querySelectorAll('.chip-task').forEach(c=>c.classList.remove('active'));
+  selectedTask=null;
   showToast(true,(minutes>0?minutes+' min':'Charge mentale')+' · '+taskName+' · '+who);
 });
 
@@ -933,11 +951,14 @@ document.getElementById('prev-month').addEventListener('click',()=>{currentMonth
 document.getElementById('next-month').addEventListener('click',()=>{currentMonth++;if(currentMonth>11){currentMonth=0;currentMonthYear++;}renderSubMois();});
 document.getElementById('btn-calc').addEventListener('click',renderSubPlage);
 
-document.getElementById('btn-settings-share').addEventListener('click',()=>{
+function shareInviteLink(){
   const code=house.invite_code;
   const url=`${window.location.origin}${window.location.pathname.replace('app.html','index.html')}?invite=${code}`;
   if(navigator.share)navigator.share({title:'Rejoins mon foyer',url});
-  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
+  else navigator.clipboard.writeText(url).then(()=>alert('Lien d\'invitation copié !'));
+}
+document.addEventListener('click',e=>{
+  if(e.target.id==='btn-settings-share'||e.target.id==='btn-invite-settings'||e.target.closest('#btn-invite-settings'))shareInviteLink();
 });
 
 document.getElementById('btn-send-recap').addEventListener('click',()=>{
@@ -956,6 +977,24 @@ document.getElementById('modal-copy').addEventListener('click',()=>{
   navigator.clipboard.writeText(document.getElementById('modal-content').innerText).then(()=>alert('Récap copié !'));
 });
 document.getElementById('btn-signout').addEventListener('click',async()=>{await sb.auth.signOut();window.location.href='index.html';});
+
+document.getElementById('btn-rename-foyer').addEventListener('click',async()=>{
+  const cur=document.getElementById('foyer-name-display').textContent;
+  const name=prompt('Nouveau nom du foyer :',cur);
+  if(!name||!name.trim()||name.trim()===cur)return;
+  const{error}=await sb.from('houses').update({name:name.trim()}).eq('id',house.id);
+  if(error){alert('Erreur: '+error.message);return;}
+  house.name=name.trim();
+  document.getElementById('app-title').textContent=name.trim();
+  document.getElementById('foyer-name-display').textContent=name.trim();
+});
+
+document.getElementById('btn-leave-house').addEventListener('click',async()=>{
+  if(!confirm('Se déconnecter du foyer ? Vous pourrez rejoindre un autre foyer ou en créer un nouveau.'))return;
+  const{error}=await sb.from('members').delete().eq('user_id',me.id).eq('house_id',house.id);
+  if(error){alert('Erreur: '+error.message);return;}
+  window.location.href='index.html';
+});
 
 init();
 </script>
