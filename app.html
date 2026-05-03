@@ -222,7 +222,7 @@ body{max-width:480px;margin:0 auto;}
 .task-edit-list{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px;}
 .task-edit-row{display:flex;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--border);gap:10px;}
 .task-edit-row:last-child{border-bottom:none;}
-.task-edit-drag{color:var(--hint);font-size:16px;cursor:grab;flex-shrink:0;}
+.task-edit-drag{display:none;}
 .task-edit-name{font-size:13px;flex:1;}
 .task-edit-del{background:none;border:none;cursor:pointer;color:#e24b4a;font-size:16px;padding:2px 4px;flex-shrink:0;}
 .task-add-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:0.5px solid var(--border);background:var(--surface);}
@@ -489,10 +489,10 @@ function buildTaskChips(){
   const cats=[...new Set(houseTasks.map(t=>t.category))].sort((a,b)=>a.localeCompare(b));
   cats.forEach(cat=>{
     const[emoji,...nameParts]=cat.split(' ');
-    const shortName=nameParts.join(' ').length>8?nameParts.join(' ').slice(0,7)+'…':nameParts.join(' ');
+    const fullName=nameParts.join(' ');
     const chip=document.createElement('button');
     chip.className='chip-cat';
-    chip.innerHTML=`<span class="chip-emoji">${emoji}</span>${shortName}`;
+    chip.innerHTML=nameParts.length?`<span class="chip-emoji">${emoji}</span>${fullName}`:`${emoji}`;
     chip.addEventListener('click',()=>selectCat(cat,chip));
     wrap.appendChild(chip);
   });
@@ -553,16 +553,27 @@ function buildCatsList(){
 }
 
 function addNewCategory(){
-  const name=prompt('Nom de la nouvelle catégorie (ex : 🏠 Logement) :');
+  const name=prompt('Nom de la nouvelle catégorie\nUtilise un emoji au début, ex : 🏠 Logement');
   if(!name||!name.trim())return;
   const catName=name.trim();
-  currentCatEdit=catName;
-  document.getElementById('cat-detail-title').textContent=catName;
-  document.getElementById('cats-list-view').style.display='none';
-  document.getElementById('cat-detail-view').classList.add('active');
-  document.getElementById('task-edit-list').innerHTML='<div class="empty" style="padding:12px">Aucune tâche. Ajoutez-en une ci-dessous.</div>';
-  setTimeout(()=>document.getElementById('task-add-inp').focus(),100);
-  document._newCatPending=catName;
+  // Insert a placeholder task so category exists in DB immediately
+  const maxOrder=houseTasks.reduce((m,t)=>Math.max(m,t.sort_order||0),0);
+  sb.from('house_tasks').insert({house_id:house.id,category:catName,task_name:'__placeholder__',sort_order:maxOrder+1,hidden:false})
+    .then(async({error})=>{
+      if(error){alert('Erreur création catégorie: '+error.message);return;}
+      await loadTasks();
+      // Remove placeholder immediately and open detail for user to add real tasks
+      const ph=houseTasks.find(t=>t.category===catName&&t.task_name==='__placeholder__');
+      if(ph)await sb.from('house_tasks').delete().eq('id',ph.id);
+      await loadTasks();
+      currentCatEdit=catName;
+      document.getElementById('cat-detail-title').textContent=catName;
+      document.getElementById('cats-list-view').style.display='none';
+      document.getElementById('cat-detail-view').classList.add('active');
+      document.getElementById('task-edit-list').innerHTML='<div class="empty" style="padding:12px">Aucune tâche. Ajoutez-en une ci-dessous.</div>';
+      setTimeout(()=>document.getElementById('task-add-inp').focus(),100);
+      document._newCatPending=catName;
+    });
 }
 
 
@@ -570,8 +581,7 @@ function addNewCategory(){
 
 function openCatDetail(cat){
   currentCatEdit=cat;
-  const[e,...n]=cat.split(' ');
-  document.getElementById('cat-detail-title').textContent=e+' '+n.join(' ');
+  document.getElementById('cat-detail-title').textContent=cat;
   document.getElementById('cats-list-view').style.display='none';
   document.getElementById('cat-detail-view').classList.add('active');
   renderTaskEditList(cat);
@@ -630,9 +640,14 @@ window.deleteTask=async function(id){
 
 document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   if(!currentCatEdit)return;
-  if(!confirm('Masquer cette catégorie ? Elle n\'apparaîtra plus dans la saisie. Les données existantes sont conservées.'))return;
-  await sb.from('house_tasks').update({hidden:true}).eq('house_id',house.id).eq('category',currentCatEdit);
-  document.getElementById('cat-detail-back').click();
+  if(!window.confirm('Masquer cette catégorie ? Les données existantes sont conservées.'))return;
+  const catToHide=currentCatEdit;
+  const{error}=await sb.from('house_tasks').update({hidden:true}).eq('house_id',house.id).eq('category',catToHide);
+  if(error){alert('Erreur: '+error.message);return;}
+  currentCatEdit=null;
+  document._newCatPending=null;
+  document.getElementById('cats-list-view').style.display='block';
+  document.getElementById('cat-detail-view').classList.remove('active');
   await loadTasks();
 });
 
@@ -643,7 +658,17 @@ window.restoreCat=async function(cat){
 
 function buildMembersCard(members){
   const mc=document.getElementById('members-card');
-  mc.innerHTML=members.map(m=>`<div class="member-row"><div class="member-avatar ${m.id===me.id?'p1':'p2'}">${(m.name||'?')[0].toUpperCase()}</div><div class="member-name">${m.name||'–'}</div><button onclick="renameMember('${m.id}','${(m.name||'').replace(/'/g,"\'")}','${m.id===me.id?'y':'n'}')" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;">Renommer</button><span class="member-badge">${m.id===me.id?'Vous':'Membre'}</span></div>`).join('')+`<div class="member-row" style="justify-content:center;cursor:pointer;" id="btn-invite-settings"><span style="font-size:12px;color:var(--p1)">+ Inviter par lien</span></div>`;
+  mc.innerHTML=members.map(m=>{
+    const isOwn=m.id===me.id;
+    const safeName=(m.name||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    return`<div class="member-row" data-mid="${m.id}" data-mname="${safeName}" data-isme="${isOwn?'y':'n'}"><div class="member-avatar ${isOwn?'p1':'p2'}">${(m.name||'?')[0].toUpperCase()}</div><div class="member-name">${m.name||'–'}</div><button class="btn-rename-member" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;">Renommer</button><span class="member-badge">${isOwn?'Vous':'Membre'}</span></div>`;
+  }).join('')+`<div class="member-row" style="justify-content:center;cursor:pointer;" id="btn-invite-settings"><span style="font-size:12px;color:var(--p1)">+ Inviter par lien</span></div>`;
+  mc.querySelectorAll('.btn-rename-member').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const row=btn.closest('.member-row');
+      renameMember(row.dataset.mid,row.dataset.mname,row.dataset.isme);
+    });
+  });
 }
 
 window.renameMember=async function(memberId,currentName,isMe){
@@ -918,7 +943,12 @@ function showToast(ok,msg){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-window.deleteEntry=async function(id){await sb.from('entries').delete().eq('id',id);};
+window.deleteEntry=async function(id){
+  const{error}=await sb.from('entries').delete().eq('id',id);
+  if(error){alert('Erreur suppression: '+error.message);return;}
+  allEntries=allEntries.filter(e=>e.id!==id);
+  render();renderHistoryPane();
+};
 
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
