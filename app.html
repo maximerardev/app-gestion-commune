@@ -449,7 +449,6 @@ async function init(){
   const others=members.filter(m=>m.id!==me.id);
   partner=others[0]||null;
   document.getElementById('app-title').textContent=house.name||'Tâches à deux';
-  document.getElementById('settings-invite-code').textContent=house.invite_code||'–';
   document.getElementById('foyer-name-display').textContent=house.name||'–';
   setNames();
   await loadTasks();
