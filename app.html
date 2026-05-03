@@ -384,7 +384,8 @@ body{max-width:480px;margin:0 auto;}
       <div class="cat-detail-view" id="cat-detail-view">
         <div class="cat-detail-header">
           <span class="cat-detail-back" id="cat-detail-back">‹ Retour</span>
-          <span class="cat-detail-title" id="cat-detail-title">–</span>
+          <span class="cat-detail-title" id="cat-detail-title" style="flex:1;">–</span>
+          <button id="btn-rename-cat" style="font-size:12px;color:var(--p1);background:none;border:none;cursor:pointer;flex-shrink:0;">Renommer</button>
         </div>
         <div class="task-edit-list" id="task-edit-list"></div>
         <div class="task-add-row">
@@ -444,10 +445,17 @@ async function init(){
   if(!user){window.location.href='index.html';return;}
   const{data:member}=await sb.from('members').select('*,houses(*)').eq('user_id',user.id).single();
   if(!member){window.location.href='index.html';return;}
-  house=member.houses;me=member;
+  me=member;
+  // Re-fetch house separately to get latest name
+  const{data:freshHouse}=await sb.from('houses').select('*').eq('id',member.house_id).single();
+  house=freshHouse||member.houses;
   const{data:members}=await sb.from('members').select('*').eq('house_id',house.id);
   const others=members.filter(m=>m.id!==me.id);
   partner=others[0]||null;
+  // Use partner's fresh data for me's name too
+  const myFreshData=members.find(m=>m.id===me.id);
+  if(myFreshData)me.name=myFreshData.name;
+  if(partner){const pFresh=members.find(m=>m.id===partner.id);if(pFresh)partner.name=pFresh.name;}
   document.getElementById('app-title').textContent=house.name||'Tâches à deux';
   document.getElementById('foyer-name-display').textContent=house.name||'–';
   setNames();
@@ -488,11 +496,9 @@ function buildTaskChips(){
   document.getElementById('task-chips-section').style.display='none';
   const cats=[...new Set(houseTasks.map(t=>t.category))].sort((a,b)=>a.localeCompare(b));
   cats.forEach(cat=>{
-    const[emoji,...nameParts]=cat.split(' ');
-    const fullName=nameParts.join(' ');
     const chip=document.createElement('button');
     chip.className='chip-cat';
-    chip.innerHTML=nameParts.length?`<span class="chip-emoji">${emoji}</span>${fullName}`:`${emoji}`;
+    chip.innerHTML=`<span style="font-size:13px">${cat}</span>`;
     chip.addEventListener('click',()=>selectCat(cat,chip));
     wrap.appendChild(chip);
   });
@@ -585,17 +591,50 @@ function openCatDetail(cat){
   renderTaskEditList(cat);
 }
 
+async function renameCategory(oldName){
+  const newName=prompt('Nouveau nom de la catégorie :',oldName);
+  if(!newName||!newName.trim()||newName.trim()===oldName)return;
+  const{error}=await sb.from('house_tasks').update({category:newName.trim()}).eq('house_id',house.id).eq('category',oldName);
+  if(error){alert('Erreur: '+error.message);return;}
+  // Also update entries that reference this category
+  await sb.from('entries').update({category:newName.trim()}).eq('house_id',house.id).eq('category',oldName);
+  currentCatEdit=newName.trim();
+  document.getElementById('cat-detail-title').textContent=newName.trim();
+  await loadTasks();
+  renderTaskEditList(newName.trim());
+}
+
+async function renameTask(taskId,oldName,cat){
+  const newName=prompt('Nouveau nom de la tâche :',oldName);
+  if(!newName||!newName.trim()||newName.trim()===oldName)return;
+  const{error}=await sb.from('house_tasks').update({task_name:newName.trim()}).eq('id',taskId);
+  if(error){alert('Erreur: '+error.message);return;}
+  // Also update entries that reference this task name
+  await sb.from('entries').update({task_name:newName.trim()}).eq('house_id',house.id).eq('task_name',oldName).eq('category',cat);
+  await loadTasks();
+  renderTaskEditList(cat);
+}
+
 function renderTaskEditList(cat){
   const tasks=houseTasks.filter(t=>t.category===cat);
   const list=document.getElementById('task-edit-list');
   if(!tasks.length){list.innerHTML='<div class="empty" style="padding:12px">Aucune tâche.</div>';return;}
-  list.innerHTML=tasks.map(t=>`<div class="task-edit-row" data-id="${t.id}">
-    <span class="task-edit-name">${t.task_name}</span>
-    <button class="task-edit-del" onclick="deleteTask('${t.id}')">×</button>
-  </div>`).join('');
+  list.innerHTML=tasks.map(t=>{
+    const safeName=t.task_name.replace(/'/g,"\'").replace(/"/g,'&quot;');
+    const safeCat=(t.category||'').replace(/'/g,"\'");
+    return`<div class="task-edit-row" data-id="${t.id}">
+      <span class="task-edit-name" style="flex:1;">${t.task_name}</span>
+      <button onclick="renameTask('${t.id}','${safeName}','${safeCat}')" style="font-size:11px;color:var(--p1);background:none;border:none;cursor:pointer;margin-right:8px;">Renommer</button>
+      <button class="task-edit-del" onclick="deleteTask('${t.id}')">×</button>
+    </div>`;
+  }).join('');
 }
 
 
+
+document.getElementById('btn-rename-cat').addEventListener('click',()=>{
+  if(currentCatEdit)renameCategory(currentCatEdit);
+});
 
 document.getElementById('cat-detail-back').addEventListener('click',()=>{
   if(document._newCatPending){
@@ -637,8 +676,16 @@ document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   if(!currentCatEdit)return;
   if(!window.confirm('Masquer cette catégorie ? Les données existantes sont conservées.'))return;
   const catToHide=currentCatEdit;
-  const{error}=await sb.from('house_tasks').update({hidden:true}).eq('house_id',house.id).eq('category',catToHide);
-  if(error){alert('Erreur: '+error.message);return;}
+  // Update ALL tasks in this category to hidden (no filter on current hidden state)
+  const{error,data:updatedRows}=await sb.from('house_tasks').update({hidden:true}).eq('house_id',house.id).eq('category',catToHide).select();
+  if(error){alert('Erreur masquage: '+error.message);return;}
+  if(!updatedRows||updatedRows.length===0){
+    // Fallback: try updating one by one using all task ids in this category
+    const allTasksInCat=houseTasks.filter(t=>t.category===catToHide);
+    for(const t of allTasksInCat){
+      await sb.from('house_tasks').update({hidden:true}).eq('id',t.id);
+    }
+  }
   currentCatEdit=null;
   document._newCatPending=null;
   document.getElementById('cats-list-view').style.display='block';
@@ -671,12 +718,20 @@ window.renameMember=async function(memberId,currentName,isMe){
   if(!name||!name.trim()||name.trim()===currentName)return;
   const{error}=await sb.from('members').update({name:name.trim()}).eq('id',memberId);
   if(error){alert('Erreur: '+error.message);return;}
-  if(isMe==='y'){me.name=name.trim();}
-  else if(partner&&partner.id===memberId){partner.name=name.trim();}
-  setNames();
-  const{data:members}=await sb.from('members').select('*').eq('house_id',house.id);
-  buildMembersCard(members||[]);
-  render();
+  // Update local state
+  if(isMe==='y')me.name=name.trim();
+  else if(partner&&partner.id===memberId)partner.name=name.trim();
+  setNames();render();
+  // Reload members from DB and rebuild card
+  const{data:freshMembers}=await sb.from('members').select('*').eq('house_id',house.id);
+  if(freshMembers){
+    const myFresh=freshMembers.find(m=>m.id===me.id);
+    if(myFresh)me.name=myFresh.name;
+    const pFresh=partner?freshMembers.find(m=>m.id===partner.id):null;
+    if(pFresh&&partner)partner.name=pFresh.name;
+    setNames();render();
+    buildMembersCard(freshMembers);
+  }
 };
 
 function subscribeEntries(){
