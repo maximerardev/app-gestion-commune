@@ -460,11 +460,13 @@ function setNames(){
   if(sel)sel.innerHTML=`<option value="${n1}">${n1}</option>${partner?`<option value="${n2}">${n2}</option>`:''}`;
 }
 
-async function loadTasks(){
+async function loadTasks(rebuildUI=true){
   const{data}=await sb.from('house_tasks').select('*').eq('house_id',house.id).eq('hidden',false).order('category').order('task_name');
   houseTasks=data||[];
-  buildCatChips();
-  buildCatsList();
+  if(rebuildUI){
+    buildCatChips();
+    buildCatsList();
+  }
 }
 
 // ============ CAT CHIPS (Onglet Ajouter) ============
@@ -928,16 +930,15 @@ async function renameCategory(oldName){
   const newName=prompt('Nouveau nom de la catégorie :',oldName);
   if(!newName||!newName.trim()||newName.trim()===oldName)return;
   const n=newName.trim();
-  // Fetch ALL tasks in this category (hidden or visible) and update each
   const{data:allTasks}=await sb.from('house_tasks').select('id').eq('house_id',house.id).eq('category',oldName);
   for(const t of(allTasks||[])){
     await sb.from('house_tasks').update({category:n}).eq('id',t.id);
   }
-  // Update entries
   await sb.from('entries').update({category:n}).eq('house_id',house.id).eq('category',oldName);
   currentCatEdit=n;
   document.getElementById('cat-detail-title').textContent=n;
-  await loadTasks();
+  await loadTasks(false);
+  buildCatsList();
   renderTaskEditList(n);
 }
 
@@ -946,16 +947,17 @@ async function renameTask(taskId,oldName,cat){
   if(!newName||!newName.trim()||newName.trim()===oldName)return;
   const n=newName.trim();
   await sb.from('house_tasks').update({task_name:n}).eq('id',taskId);
-  // Update entries
   await sb.from('entries').update({task_name:n}).eq('house_id',house.id).eq('task_name',oldName).eq('category',cat);
-  await loadTasks();
+  await loadTasks(false);
+  buildCatsList();
   renderTaskEditList(cat);
 }
 
 async function deleteTask(id){
   if(!confirm('Supprimer cette tâche ? Les entrées existantes ne seront pas affectées.'))return;
   await sb.from('house_tasks').delete().eq('id',id);
-  await loadTasks();
+  await loadTasks(false);
+  buildCatsList();
   renderTaskEditList(currentCatEdit);
 }
 
@@ -992,7 +994,6 @@ document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   if(!currentCatEdit)return;
   if(!confirm('Masquer cette catégorie ? Elle disparaîtra de la saisie. Les données existantes sont conservées.'))return;
   const cat=currentCatEdit;
-  // Fetch ALL tasks in this category then hide each
   const{data:allTasks}=await sb.from('house_tasks').select('id').eq('house_id',house.id).eq('category',cat);
   for(const t of(allTasks||[])){
     await sb.from('house_tasks').update({hidden:true}).eq('id',t.id);
@@ -1000,7 +1001,8 @@ document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   currentCatEdit=null;
   document.getElementById('cats-list-view').style.display='block';
   document.getElementById('cat-detail-view').classList.remove('active');
-  await loadTasks();
+  await loadTasks(false);
+  buildCatsList();
 });
 
 document.getElementById('btn-rename-foyer').addEventListener('click',async()=>{
