@@ -1036,6 +1036,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',
   document.getElementById('pane-'+btn.dataset.tab).classList.add('active');
   if(btn.dataset.tab==='history'){historyWeek=currentWeek;historyYear=currentYear;renderHistoryPane();}
   if(btn.dataset.tab==='stats'){statsWeek=currentWeek;statsYear=currentYear;renderStats();}
+  if(btn.dataset.tab==='add'){buildCatChips();}
 }));
 
 document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',()=>{
