@@ -392,11 +392,13 @@ window.confirmAdd=function(e,cf){const inp=document.getElementById('inp-'+e);con
 // ============ AUTH STATE CHANGE — détecte le retour depuis le lien email ============
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){
-    // L'utilisateur arrive depuis le lien de réinitialisation
     show('screen-reset');
     return;
   }
   if(event==='SIGNED_IN'&&session){
+    // Ne pas rediriger si on est sur l'écran de réinitialisation
+    const resetActive=document.getElementById('screen-reset').classList.contains('active');
+    if(resetActive)return;
     const loading=document.getElementById('loading');
     if(loading.style.display!=='none')checkUserHouse();
   }
