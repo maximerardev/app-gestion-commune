@@ -396,7 +396,7 @@ body{max-width:480px;margin:0 auto;}
       <div class="settings-title">Compte</div>
       <button class="btn-danger soft" id="btn-leave-house">Se déconnecter du foyer</button>
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
-      <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un ami à tester Partâche</button>
+      <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
     </div>
   </div>
 
@@ -407,7 +407,7 @@ body{max-width:480px;margin:0 auto;}
     <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Donner son avis</a>
     <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Déclarer une erreur</a>
     <a class="footer-link" href="#" target="_blank" rel="noopener">Nous soutenir</a>
-    <button class="footer-link" id="btn-footer-share-app">Inviter un ami</button>
+    <button class="footer-link" id="btn-footer-share-app">Inviter un.e ami.e</button>
   </div>
   <div class="footer-copy">Partâche — 2026</div>
 </div>
@@ -1000,9 +1000,13 @@ async function shareInviteLink(){
 
 async function shareAppLink(){
   const url='https://maximerardev.github.io/app-gestion-commune/index.html';
-  const msg=`Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! ${url}`;
-  if(navigator.share)navigator.share({title:'Partâche',text:msg,url});
-  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Prêt à être collé dans un message.'));
+  const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile&&navigator.share){
+    const msg=`Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! ${url}`;
+    navigator.share({title:'Partâche',text:msg,url});
+  } else {
+    navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Prêt à être collé dans un message.'));
+  }
 }
 
 // ============ EVENT LISTENERS ============
