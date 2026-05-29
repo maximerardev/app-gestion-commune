@@ -1000,7 +1000,7 @@ async function shareInviteLink(){
 
 async function shareAppLink(){
   const url='https://maximerardev.github.io/app-gestion-commune/index.html';
-  const msg='Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! '+url;
+  const msg=`Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! ${url}`;
   if(navigator.share)navigator.share({title:'Partâche',text:msg,url});
   else navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Prêt à être collé dans un message.'));
 }
