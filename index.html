@@ -67,6 +67,12 @@ body{max-width:480px;margin:0 auto;}
 .sticky-bottom{padding:16px 20px;background:var(--surface);border-top:0.5px solid var(--border);}
 .loading{display:flex;align-items:center;justify-content:center;min-height:100dvh;font-size:14px;color:var(--muted);}
 .hint-text{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;line-height:1.5;}
+
+/* Footer */
+.app-footer{padding:16px;text-align:center;border-top:0.5px solid var(--border);margin-top:8px;}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
+.footer-link{font-size:11px;color:var(--p1);text-decoration:none;background:none;border:none;cursor:pointer;}
+.footer-copy{font-size:10px;color:var(--hint);}
 </style>
 </head>
 <body>
@@ -412,5 +418,16 @@ sb.auth.onAuthStateChange((event,session)=>{
   else{document.getElementById('loading').style.display='none';show('screen-auth');}
 })();
 </script>
+
+<div class="app-footer">
+  <div class="footer-links">
+    <a class="footer-link" href="faq.html">FAQ</a>
+    <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Donner son avis</a>
+    <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Déclarer une erreur</a>
+    <a class="footer-link" href="#" target="_blank" rel="noopener">Nous soutenir</a>
+  </div>
+  <div class="footer-copy">Partâche — 2026</div>
+</div>
+
 </body>
 </html>
