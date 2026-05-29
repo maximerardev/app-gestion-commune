@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Tâches"/>
-<title>Tâches à deux</title>
+<meta name="apple-mobile-web-app-title" content="Partâche"/>
+<title>Partâche</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f7f6f3;--surface:#fff;--border:rgba(0,0,0,0.09);--border-md:rgba(0,0,0,0.16);--text:#1a1a18;--muted:#6b6b68;--hint:#a8a8a5;--p1:#1a6fbf;--p1-bg:#e8f1fb;--p2:#0d7a5f;--p2-bg:#e0f4ed;--radius:12px;--radius-sm:8px;}
@@ -30,6 +30,7 @@ body{max-width:480px;margin:0 auto;}
 .btn-primary{background:var(--text);color:var(--bg);}
 .btn-secondary{background:var(--surface);color:var(--text);border:0.5px solid var(--border-md);}
 .err{font-size:12px;color:#e24b4a;text-align:center;margin-top:8px;min-height:16px;}
+.success{font-size:12px;color:var(--p2);text-align:center;margin-top:8px;min-height:16px;}
 .link-btn{background:none;border:none;color:var(--p1);font-size:13px;cursor:pointer;}
 .avatar-row{display:flex;gap:12px;margin-bottom:16px;}
 .avatar-field{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
@@ -65,6 +66,7 @@ body{max-width:480px;margin:0 auto;}
 .add-task-confirm{padding:7px 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;}
 .sticky-bottom{padding:16px 20px;background:var(--surface);border-top:0.5px solid var(--border);}
 .loading{display:flex;align-items:center;justify-content:center;min-height:100dvh;font-size:14px;color:var(--muted);}
+.hint-text{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -75,14 +77,45 @@ body{max-width:480px;margin:0 auto;}
 <div class="screen" id="screen-auth">
   <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
     <div class="logo">🏠</div>
-    <div class="h1">Tâches à deux</div>
-    <div class="sub">Suivez et équilibrez les tâches du quotidien en couple.</div>
+    <div class="h1">Partâche</div>
+    <div class="sub">Liberté · Équité · Partâché !</div>
     <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="vous@exemple.com" autocomplete="email"/></div>
     <div class="field"><label>Mot de passe</label><input type="password" id="auth-password" placeholder="8 caractères minimum" autocomplete="current-password"/></div>
     <button class="btn btn-primary" id="btn-signin" style="margin-bottom:10px;">Se connecter</button>
-    <button class="btn btn-secondary" id="btn-signup">Créer un compte</button>
+    <button class="btn btn-secondary" id="btn-signup" style="margin-bottom:10px;">Créer un compte</button>
+    <div style="text-align:center;margin-bottom:6px;">
+      <button class="link-btn" id="btn-forgot">Mot de passe oublié ?</button>
+    </div>
     <div class="err" id="auth-err"></div>
-    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">Un lien de confirmation sera envoyé par email.</div>
+    <div class="hint-text">Un lien de confirmation sera envoyé par email lors de la création de compte.</div>
+  </div>
+</div>
+
+<!-- MOT DE PASSE OUBLIÉ -->
+<div class="screen" id="screen-forgot">
+  <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="logo">🔑</div>
+    <div class="h1">Mot de passe oublié</div>
+    <div class="sub">Entrez votre email. Vous recevrez un lien pour réinitialiser votre mot de passe.</div>
+    <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="vous@exemple.com" autocomplete="email"/></div>
+    <button class="btn btn-primary" id="btn-forgot-send" style="margin-bottom:10px;">Envoyer le lien</button>
+    <button class="btn btn-secondary" id="btn-forgot-back">Retour à la connexion</button>
+    <div class="err" id="forgot-err"></div>
+    <div class="success" id="forgot-success"></div>
+  </div>
+</div>
+
+<!-- NOUVEAU MOT DE PASSE (après clic sur le lien email) -->
+<div class="screen" id="screen-reset">
+  <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="logo">🔒</div>
+    <div class="h1">Nouveau mot de passe</div>
+    <div class="sub">Choisissez un nouveau mot de passe pour votre compte.</div>
+    <div class="field"><label>Nouveau mot de passe</label><input type="password" id="reset-password" placeholder="8 caractères minimum" autocomplete="new-password"/></div>
+    <div class="field"><label>Confirmer le mot de passe</label><input type="password" id="reset-password2" placeholder="Répétez le mot de passe" autocomplete="new-password"/></div>
+    <button class="btn btn-primary" id="btn-reset-save" style="margin-bottom:10px;">Enregistrer</button>
+    <div class="err" id="reset-err"></div>
+    <div class="success" id="reset-success"></div>
   </div>
 </div>
 
@@ -207,9 +240,11 @@ async function checkUserHouse(){
   else show('screen-ob1');
 }
 
+// ============ AUTH ============
 document.getElementById('btn-signin').addEventListener('click',async()=>{
   const email=document.getElementById('auth-email').value.trim();
   const pwd=document.getElementById('auth-password').value;
+  document.getElementById('auth-err').textContent='';
   const{error}=await sb.auth.signInWithPassword({email,password:pwd});
   if(error){document.getElementById('auth-err').textContent=error.message;return;}
   checkUserHouse();
@@ -218,6 +253,7 @@ document.getElementById('btn-signin').addEventListener('click',async()=>{
 document.getElementById('btn-signup').addEventListener('click',async()=>{
   const email=document.getElementById('auth-email').value.trim();
   const pwd=document.getElementById('auth-password').value;
+  document.getElementById('auth-err').textContent='';
   if(pwd.length<8){document.getElementById('auth-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
   const{error}=await sb.auth.signUp({email,password:pwd,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
   if(error){document.getElementById('auth-err').textContent=error.message;return;}
@@ -226,6 +262,49 @@ document.getElementById('btn-signup').addEventListener('click',async()=>{
   show('screen-confirm');
 });
 
+// ============ MOT DE PASSE OUBLIÉ ============
+document.getElementById('btn-forgot').addEventListener('click',()=>{
+  document.getElementById('forgot-email').value=document.getElementById('auth-email').value;
+  document.getElementById('forgot-err').textContent='';
+  document.getElementById('forgot-success').textContent='';
+  show('screen-forgot');
+});
+
+document.getElementById('btn-forgot-back').addEventListener('click',()=>show('screen-auth'));
+
+document.getElementById('btn-forgot-send').addEventListener('click',async()=>{
+  const email=document.getElementById('forgot-email').value.trim();
+  document.getElementById('forgot-err').textContent='';
+  document.getElementById('forgot-success').textContent='';
+  if(!email){document.getElementById('forgot-err').textContent='Entrez votre adresse email.';return;}
+  const btn=document.getElementById('btn-forgot-send');
+  btn.textContent='Envoi…';btn.disabled=true;
+  const{error}=await sb.auth.resetPasswordForEmail(email,{
+    redirectTo:window.location.origin+window.location.pathname
+  });
+  btn.textContent='Envoyer le lien';btn.disabled=false;
+  if(error){document.getElementById('forgot-err').textContent=error.message;return;}
+  document.getElementById('forgot-success').textContent='Lien envoyé ! Vérifiez votre boîte email.';
+});
+
+// ============ RÉINITIALISATION MOT DE PASSE ============
+document.getElementById('btn-reset-save').addEventListener('click',async()=>{
+  const pwd=document.getElementById('reset-password').value;
+  const pwd2=document.getElementById('reset-password2').value;
+  document.getElementById('reset-err').textContent='';
+  document.getElementById('reset-success').textContent='';
+  if(pwd.length<8){document.getElementById('reset-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
+  if(pwd!==pwd2){document.getElementById('reset-err').textContent='Les mots de passe ne correspondent pas.';return;}
+  const btn=document.getElementById('btn-reset-save');
+  btn.textContent='Enregistrement…';btn.disabled=true;
+  const{error}=await sb.auth.updateUser({password:pwd});
+  btn.textContent='Enregistrer';btn.disabled=false;
+  if(error){document.getElementById('reset-err').textContent=error.message;return;}
+  document.getElementById('reset-success').textContent='Mot de passe mis à jour ! Redirection…';
+  setTimeout(()=>checkUserHouse(),1500);
+});
+
+// ============ CONFIRM EMAIL ============
 document.getElementById('btn-after-confirm').addEventListener('click',async()=>{
   const{data:{user},error}=await sb.auth.getUser();
   if(error||!user){document.getElementById('confirm-err').textContent='Session expirée, reconnectez-vous.';show('screen-auth');return;}
@@ -233,6 +312,7 @@ document.getElementById('btn-after-confirm').addEventListener('click',async()=>{
   checkUserHouse();
 });
 
+// ============ ONBOARDING ============
 document.getElementById('btn-ob1-next').addEventListener('click',()=>{
   const n1=document.getElementById('name1').value.trim();
   const n2=document.getElementById('name2').value.trim();
@@ -252,7 +332,7 @@ document.getElementById('invite-code-display').addEventListener('click',()=>{
 
 document.getElementById('btn-share-link').addEventListener('click',()=>{
   const url=`${window.location.origin}${window.location.pathname}?invite=${houseData.code}`;
-  if(navigator.share)navigator.share({title:'Rejoins mon foyer',url});
+  if(navigator.share)navigator.share({title:'Rejoins mon foyer Partâche',url});
   else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
 });
 
@@ -274,6 +354,7 @@ document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
 
 document.getElementById('btn-join').addEventListener('click',async()=>{
   const code=document.getElementById('join-code').value.trim().toUpperCase();
+  document.getElementById('join-err').textContent='';
   const{data:house,error}=await sb.from('houses').select('*').eq('invite_code',code).maybeSingle();
   if(error||!house){document.getElementById('join-err').textContent='Code invalide ou expiré.';return;}
   const{data:{user}}=await sb.auth.getUser();
@@ -285,6 +366,7 @@ document.getElementById('btn-join').addEventListener('click',async()=>{
 
 document.getElementById('btn-create-instead').addEventListener('click',()=>show('screen-ob1'));
 
+// ============ TÂCHES ONBOARDING ============
 function buildTasksUI(){
   const scroll=document.getElementById('tasks-scroll');scroll.innerHTML='';selectedTasks=[];
   DEFAULT_TASKS.forEach(cat=>{
@@ -307,13 +389,20 @@ function updateCnt(emoji){const n=document.querySelectorAll('#chips-'+emoji+' .c
 window.toggleAdd=function(e){const el=document.getElementById('add-'+e);el.classList.toggle('open');if(el.classList.contains('open'))document.getElementById('inp-'+e).focus();};
 window.confirmAdd=function(e,cf){const inp=document.getElementById('inp-'+e);const v=inp.value.trim();if(!v)return;addChip(e,v,cf);document.querySelector('#chips-'+e+' .chip:last-child').click();inp.value='';document.getElementById('add-'+e).classList.remove('open');};
 
+// ============ AUTH STATE CHANGE — détecte le retour depuis le lien email ============
 sb.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    // L'utilisateur arrive depuis le lien de réinitialisation
+    show('screen-reset');
+    return;
+  }
   if(event==='SIGNED_IN'&&session){
     const loading=document.getElementById('loading');
     if(loading.style.display!=='none')checkUserHouse();
   }
 });
 
+// ============ INIT ============
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
   if(session){checkUserHouse();}
