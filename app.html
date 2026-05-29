@@ -879,14 +879,28 @@ function buildCatsList(){
       const restoreBtn=document.createElement('button');restoreBtn.className='link-btn';restoreBtn.textContent='Restaurer';
       restoreBtn.addEventListener('click',async()=>{
         await sb.from('house_tasks').update({hidden:false}).eq('house_id',house.id).eq('category',cat);
-        await loadTasks();
+        await loadTasks(false);
+        buildCatsList();
+        buildCatChips();
       });
       hRow.appendChild(restoreBtn);
+      const delBtn=document.createElement('button');
+      delBtn.className='link-btn';
+      delBtn.style.cssText='color:#e24b4a;margin-left:8px;';
+      delBtn.textContent='Supprimer';
+      delBtn.addEventListener('click',async()=>{
+        if(!confirm(`Supprimer définitivement "${cat}" ? Les tâches seront supprimées mais les entrées historiques sont conservées.`))return;
+        await sb.from('house_tasks').delete().eq('house_id',house.id).eq('category',cat);
+        await loadTasks(false);
+        buildCatsList();
+        buildCatChips();
+      });
+      hRow.appendChild(delBtn);
       card.appendChild(hRow);
     });
   });
 }
-
+  
 function openCatDetail(cat){
   currentCatEdit=cat;
   document.getElementById('cat-detail-title').textContent=cat;
