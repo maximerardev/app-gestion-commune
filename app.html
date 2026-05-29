@@ -430,7 +430,6 @@ async function init(){
   if(!user){window.location.href='index.html';return;}
   const{data:member}=await sb.from('members').select('*').eq('user_id',user.id).maybeSingle();
   if(!member?.house_id){window.location.href='index.html';return;}
-  // Fetch house and all members fresh
   const[{data:freshHouse},{data:members}]=await Promise.all([
     sb.from('houses').select('*').eq('id',member.house_id).single(),
     sb.from('members').select('*').eq('house_id',member.house_id)
@@ -438,7 +437,6 @@ async function init(){
   house=freshHouse;
   me=members.find(m=>m.user_id===user.id)||member;
   partner=members.find(m=>m.user_id!==user.id)||null;
-  // Set UI
   document.getElementById('app-title').textContent=house?.name||'Partâche';
   document.getElementById('foyer-display').textContent=house?.name||'–';
   document.getElementById('f-date').value=today();
@@ -460,6 +458,7 @@ function setNames(){
   if(sel)sel.innerHTML=`<option value="${n1}">${n1}</option>${partner?`<option value="${n2}">${n2}</option>`:''}`;
 }
 
+// ============ LOAD TASKS — rebuildUI=false pour éviter de réinitialiser l'état UI ============
 async function loadTasks(rebuildUI=true){
   const{data}=await sb.from('house_tasks').select('*').eq('house_id',house.id).eq('hidden',false).order('category').order('task_name');
   houseTasks=data||[];
@@ -726,7 +725,6 @@ function renderSubMois(){
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
-  // Last 4 weeks bars
   const last4=getLast4Weeks(currentMonth,currentMonthYear);
   const allMins=last4.flatMap(({w,y})=>{const{totals:wt}=calcStats(filterW(w,y));return[wt[n1]?.min||0,wt[n2]?.min||0];});
   const gMax=Math.max(...allMins,1);
@@ -826,7 +824,6 @@ function buildMembersCard(members){
     row.appendChild(renBtn);
     mc.appendChild(row);
   });
-  // Invite link row
   const invRow=document.createElement('div');invRow.className='member-row';invRow.style.justifyContent='center';invRow.style.cursor='pointer';
   invRow.innerHTML=`<span style="font-size:12px;color:var(--p1);">+ Inviter par lien</span>`;
   invRow.addEventListener('click',shareInviteLink);
@@ -839,13 +836,10 @@ async function renameMember(memberId,currentName,isOwn){
   const newName=name.trim();
   const{error}=await sb.from('members').update({name:newName}).eq('id',memberId);
   if(error){alert('Erreur: '+error.message);return;}
-  // Update entries who field
   await sb.from('entries').update({who:newName}).eq('house_id',house.id).eq('who',currentName);
-  // Update local state
   if(isOwn)me.name=newName;
   else if(partner&&partner.id===memberId)partner.name=newName;
   setNames();render();renderHistoryPane();
-  // Reload members
   const{data:fresh}=await sb.from('members').select('*').eq('house_id',house.id);
   if(fresh)buildMembersCard(fresh);
 }
@@ -853,7 +847,6 @@ async function renameMember(memberId,currentName,isOwn){
 function buildCatsList(){
   const card=document.getElementById('cats-list-card');
   card.innerHTML='';
-  // Visible categories sorted alphabetically
   const cats={};
   houseTasks.forEach(t=>{if(!cats[t.category])cats[t.category]=[];cats[t.category].push(t);});
   Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0],'fr')).forEach(([cat,tasks])=>{
@@ -876,6 +869,7 @@ function buildCatsList(){
     hiddenCats.forEach(cat=>{
       const hRow=document.createElement('div');hRow.className='cat-hidden-row';
       hRow.innerHTML=`<span class="cat-hidden-name">${cat}</span>`;
+      // Bouton Restaurer
       const restoreBtn=document.createElement('button');restoreBtn.className='link-btn';restoreBtn.textContent='Restaurer';
       restoreBtn.addEventListener('click',async()=>{
         await sb.from('house_tasks').update({hidden:false}).eq('house_id',house.id).eq('category',cat);
@@ -884,6 +878,7 @@ function buildCatsList(){
         buildCatChips();
       });
       hRow.appendChild(restoreBtn);
+      // Bouton Supprimer définitivement
       const delBtn=document.createElement('button');
       delBtn.className='link-btn';
       delBtn.style.cssText='color:#e24b4a;margin-left:8px;';
@@ -900,7 +895,7 @@ function buildCatsList(){
     });
   });
 }
-  
+
 function openCatDetail(cat){
   currentCatEdit=cat;
   document.getElementById('cat-detail-title').textContent=cat;
@@ -930,7 +925,6 @@ async function addNewCategory(){
   const name=prompt('Nom de la nouvelle catégorie\n(Utilise un emoji au début, ex : 🏠 Logement)');
   if(!name||!name.trim())return;
   const catName=name.trim();
-  // Insert a placeholder task to create the category, then delete it
   const{data:ph,error}=await sb.from('house_tasks').insert({house_id:house.id,category:catName,task_name:'__ph__',sort_order:0,hidden:false}).select().single();
   if(error){alert('Erreur: '+error.message);return;}
   await sb.from('house_tasks').delete().eq('id',ph.id);
@@ -1000,7 +994,8 @@ document.getElementById('task-add-btn').addEventListener('click',async()=>{
   const{error}=await sb.from('house_tasks').insert({house_id:house.id,category:currentCatEdit,task_name:name,sort_order:0,hidden:false});
   if(error){alert('Erreur: '+error.message);return;}
   inp.value='';
-  await loadTasks();
+  await loadTasks(false);
+  buildCatsList();
   renderTaskEditList(currentCatEdit);
 });
 
