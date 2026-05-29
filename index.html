@@ -220,6 +220,7 @@ const DEFAULT_TASKS=[
 let selectedTasks=[];
 let houseData={};
 let pendingEmail='';
+let isPasswordRecovery=false;
 
 function show(id){document.getElementById('loading').style.display='none';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function initials(n){return n?n.trim()[0].toUpperCase():'?';}
@@ -301,6 +302,7 @@ document.getElementById('btn-reset-save').addEventListener('click',async()=>{
   btn.textContent='Enregistrer';btn.disabled=false;
   if(error){document.getElementById('reset-err').textContent=error.message;return;}
   document.getElementById('reset-success').textContent='Mot de passe mis à jour ! Redirection…';
+  isPasswordRecovery=false;
   setTimeout(()=>checkUserHouse(),1500);
 });
 
@@ -389,16 +391,15 @@ function updateCnt(emoji){const n=document.querySelectorAll('#chips-'+emoji+' .c
 window.toggleAdd=function(e){const el=document.getElementById('add-'+e);el.classList.toggle('open');if(el.classList.contains('open'))document.getElementById('inp-'+e).focus();};
 window.confirmAdd=function(e,cf){const inp=document.getElementById('inp-'+e);const v=inp.value.trim();if(!v)return;addChip(e,v,cf);document.querySelector('#chips-'+e+' .chip:last-child').click();inp.value='';document.getElementById('add-'+e).classList.remove('open');};
 
-// ============ AUTH STATE CHANGE — détecte le retour depuis le lien email ============
+// ============ AUTH STATE CHANGE ============
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){
+    isPasswordRecovery=true;
     show('screen-reset');
     return;
   }
   if(event==='SIGNED_IN'&&session){
-    // Ne pas rediriger si on est sur l'écran de réinitialisation
-    const resetActive=document.getElementById('screen-reset').classList.contains('active');
-    if(resetActive)return;
+    if(isPasswordRecovery)return;
     const loading=document.getElementById('loading');
     if(loading.style.display!=='none')checkUserHouse();
   }
