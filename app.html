@@ -396,6 +396,7 @@ body{max-width:480px;margin:0 auto;}
       <div class="settings-title">Compte</div>
       <button class="btn-danger soft" id="btn-leave-house">Se déconnecter du foyer</button>
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
+      <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un ami à tester Partâche</button>
     </div>
   </div>
 
@@ -406,6 +407,7 @@ body{max-width:480px;margin:0 auto;}
     <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Donner son avis</a>
     <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Déclarer une erreur</a>
     <a class="footer-link" href="#" target="_blank" rel="noopener">Nous soutenir</a>
+    <button class="footer-link" id="btn-footer-share-app">Inviter un ami</button>
   </div>
   <div class="footer-copy">Partâche — 2026</div>
 </div>
@@ -841,10 +843,13 @@ function buildMembersCard(members){
     row.appendChild(renBtn);
     mc.appendChild(row);
   });
-  const invRow=document.createElement('div');invRow.className='member-row';invRow.style.justifyContent='center';invRow.style.cursor='pointer';
-  invRow.innerHTML=`<span style="font-size:12px;color:var(--p1);">+ Inviter par lien</span>`;
-  invRow.addEventListener('click',shareInviteLink);
-  mc.appendChild(invRow);
+  // Bouton invitation foyer — visible seulement si moins de 2 membres
+  if(members.length<2){
+    const invRow=document.createElement('div');invRow.className='member-row';invRow.style.justifyContent='center';invRow.style.cursor='pointer';
+    invRow.innerHTML=`<span style="font-size:12px;color:var(--p1);">+ Inviter quelqu'un à rejoindre le foyer</span>`;
+    invRow.addEventListener('click',shareInviteLink);
+    mc.appendChild(invRow);
+  }
 }
 
 async function renameMember(memberId,currentName,isOwn){
@@ -989,8 +994,15 @@ async function deleteTask(id){
 async function shareInviteLink(){
   const code=house?.invite_code||'';
   const url=`${window.location.origin}${window.location.pathname.replace('app.html','index.html')}?invite=${code}`;
-  if(navigator.share)navigator.share({title:'Rejoins mon foyer',url});
-  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
+  if(navigator.share)navigator.share({title:'Rejoins mon foyer Partâche',url});
+  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Colle-le dans un message pour inviter ton partenaire.'));
+}
+
+async function shareAppLink(){
+  const url='https://maximerardev.github.io/app-gestion-commune/index.html';
+  const msg='Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! '+url;
+  if(navigator.share)navigator.share({title:'Partâche',text:msg,url});
+  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Prêt à être collé dans un message.'));
 }
 
 // ============ EVENT LISTENERS ============
@@ -1053,6 +1065,9 @@ document.getElementById('btn-signout').addEventListener('click',async()=>{
   await sb.auth.signOut();
   window.location.href='index.html';
 });
+
+document.getElementById('btn-share-app').addEventListener('click',shareAppLink);
+document.getElementById('btn-footer-share-app').addEventListener('click',shareAppLink);
 
 // Tab navigation
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
