@@ -1003,6 +1003,7 @@ document.getElementById('hide-cat-btn').addEventListener('click',async()=>{
   document.getElementById('cat-detail-view').classList.remove('active');
   await loadTasks(false);
   buildCatsList();
+  buildCatChips();
 });
 
 document.getElementById('btn-rename-foyer').addEventListener('click',async()=>{
