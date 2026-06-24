@@ -87,6 +87,12 @@ body{max-width:480px;margin:0 auto;}
     <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="vous@exemple.com" autocomplete="email"/></div>
     <div class="field"><label>Mot de passe</label><input type="password" id="auth-password" placeholder="8 caractères minimum" autocomplete="current-password"/></div>
     <button class="btn btn-primary" id="btn-signin" style="margin-bottom:10px;">Se connecter</button>
+    <div id="cgu-check-wrap" style="display:none;margin-bottom:10px;background:var(--p1-bg);border:0.5px solid rgba(26,111,191,.2);border-radius:var(--radius-sm);padding:10px 12px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+        <input type="checkbox" id="cgu-checkbox" style="margin-top:2px;flex-shrink:0;accent-color:var(--p1);width:16px;height:16px;"/>
+        <span style="font-size:12px;color:var(--muted);line-height:1.5;">J'ai lu et j'accepte la <a href="cgu.html" target="_blank" style="color:var(--p1);font-weight:600;">politique de confidentialité</a> de Partâche.</span>
+      </label>
+    </div>
     <button class="btn btn-secondary" id="btn-signup" style="margin-bottom:10px;">Créer un compte</button>
     <div style="text-align:center;margin-bottom:6px;">
       <button class="link-btn" id="btn-forgot">Mot de passe oublié ?</button>
@@ -95,6 +101,7 @@ body{max-width:480px;margin:0 auto;}
     <div class="hint-text">Un lien de confirmation sera envoyé par email lors de la création de compte.</div>
     <div class="app-footer" style="padding:16px 0 0;">
       <div class="footer-links">
+        <a class="footer-link" href="cgu.html">Confidentialité</a>
         <a class="footer-link" href="faq.html">FAQ</a>
         <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Donner son avis</a>
         <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Déclarer une erreur</a>
@@ -139,7 +146,7 @@ body{max-width:480px;margin:0 auto;}
     <div class="logo">📧</div>
     <div class="h1">Confirmez votre email</div>
     <div class="sub">Un lien de confirmation a été envoyé à <strong id="confirm-email"></strong>. Cliquez dessus puis revenez ici.</div>
-    <button class="btn btn-primary" id="btn-after-confirm">J'ai confirmé, continuer</button>
+    <button class="btn btn-primary" id="btn-after-confirm" style="font-size:13px;">J'ai confirmé, continuer</button>
     <div class="err" id="confirm-err"></div>
   </div>
 </div>
@@ -205,7 +212,7 @@ body{max-width:480px;margin:0 auto;}
   <div class="pad" style="flex:1;">
     <div class="h1">Rejoindre un foyer</div>
     <div class="sub">Entre le code partagé par ton partenaire.</div>
-    <input class="join-input" id="join-code" placeholder="ABC-123" maxlength="10"/>
+    <input class="join-input" id="join-code" placeholder="ABCDEF" maxlength="6"/>
     <div class="err" id="join-err"></div>
     <button class="btn btn-primary" id="btn-join">Rejoindre</button>
     <div style="text-align:center;margin-top:14px;">
@@ -249,7 +256,7 @@ let isPasswordRecovery=false;
 
 function show(id){document.getElementById('loading').style.display='none';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function initials(n){return n?n.trim()[0].toUpperCase():'?';}
-function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<3;i++)s+=c[Math.floor(Math.random()*c.length)];s+='-';for(let i=0;i<3;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
 
 document.getElementById('name1').addEventListener('input',e=>{document.getElementById('av1').textContent=initials(e.target.value)||'A';});
 document.getElementById('name2').addEventListener('input',e=>{document.getElementById('av2').textContent=initials(e.target.value)||'P';});
@@ -280,6 +287,13 @@ document.getElementById('btn-signup').addEventListener('click',async()=>{
   const email=document.getElementById('auth-email').value.trim();
   const pwd=document.getElementById('auth-password').value;
   document.getElementById('auth-err').textContent='';
+  // Afficher la case CGU si pas encore visible
+  const cguWrap=document.getElementById('cgu-check-wrap');
+  if(cguWrap.style.display==='none'){cguWrap.style.display='block';return;}
+  // Vérifier que la case est cochée
+  if(!document.getElementById('cgu-checkbox').checked){
+    document.getElementById('auth-err').textContent='Veuillez accepter la politique de confidentialité pour continuer.';return;
+  }
   if(pwd.length<8){document.getElementById('auth-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
   const{error}=await sb.auth.signUp({email,password:pwd,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
   if(error){document.getElementById('auth-err').textContent=error.message;return;}
@@ -385,7 +399,7 @@ document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
 });
 
 document.getElementById('btn-join').addEventListener('click',async()=>{
-  const code=document.getElementById('join-code').value.trim().toUpperCase();
+  const code=document.getElementById('join-code').value.trim().toUpperCase().replace(/-/g,'');
   document.getElementById('join-err').textContent='';
   const{data:house,error}=await sb.from('houses').select('*').eq('invite_code',code).maybeSingle();
   if(error||!house){document.getElementById('join-err').textContent='Code invalide ou expiré.';return;}
