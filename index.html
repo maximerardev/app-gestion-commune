@@ -144,6 +144,17 @@ body{max-width:480px;margin:0 auto;}
   </div>
 </div>
 
+<!-- CHOIX : Créer ou Rejoindre -->
+<div class="screen" id="screen-choice">
+  <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="logo">🏠</div>
+    <div class="h1">Bienvenue sur Partâche !</div>
+    <div class="sub">Vous n'avez pas encore de foyer. Souhaitez-vous en créer un ou rejoindre celui de votre partenaire ?</div>
+    <button class="btn btn-primary" id="btn-choice-create" style="margin-bottom:10px;">Créer un foyer</button>
+    <button class="btn btn-secondary" id="btn-choice-join">Rejoindre un foyer existant</button>
+  </div>
+</div>
+
 <!-- ONBOARDING 1 : Membres -->
 <div class="screen" id="screen-ob1">
   <div class="pad" style="flex:1;">
@@ -252,7 +263,7 @@ async function checkUserHouse(){
   const url=new URL(window.location.href);
   const inv=url.searchParams.get('invite');
   if(inv){document.getElementById('join-code').value=inv;show('screen-join');}
-  else show('screen-ob1');
+  else show('screen-choice');
 }
 
 // ============ AUTH ============
@@ -348,8 +359,13 @@ document.getElementById('invite-code-display').addEventListener('click',()=>{
 
 document.getElementById('btn-share-link').addEventListener('click',()=>{
   const url=`${window.location.origin}${window.location.pathname}?invite=${houseData.code}`;
-  if(navigator.share)navigator.share({title:'Rejoins mon foyer Partâche',url});
-  else navigator.clipboard.writeText(url).then(()=>alert('Lien copié !'));
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.getElementById('btn-share-link');
+    const orig=btn.textContent;
+    btn.textContent='✓ Lien copié !';
+    btn.style.background='var(--p2)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2500);
+  });
 });
 
 document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
@@ -381,6 +397,8 @@ document.getElementById('btn-join').addEventListener('click',async()=>{
 });
 
 document.getElementById('btn-create-instead').addEventListener('click',()=>show('screen-ob1'));
+document.getElementById('btn-choice-create').addEventListener('click',()=>show('screen-ob1'));
+document.getElementById('btn-choice-join').addEventListener('click',()=>show('screen-join'));
 
 // ============ TÂCHES ONBOARDING ============
 function buildTasksUI(){
