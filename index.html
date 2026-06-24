@@ -408,8 +408,10 @@ window.confirmAdd=function(e,cf){const inp=document.getElementById('inp-'+e);con
 
 // ============ AUTH STATE CHANGE ============
 sb.auth.onAuthStateChange((event,session)=>{
+  console.log('Auth event:', event, 'isPasswordRecovery:', isPasswordRecovery); // ligne à ajouter
   if(event==='PASSWORD_RECOVERY'){
     isPasswordRecovery=true;
+    console.log('PASSWORD_RECOVERY détecté, flag=', isPasswordRecovery); // ligne à ajouter
     show('screen-reset');
     return;
   }
@@ -419,7 +421,7 @@ sb.auth.onAuthStateChange((event,session)=>{
     if(loading.style.display!=='none')checkUserHouse();
   }
 });
-
+  
 // ============ INIT ============
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
