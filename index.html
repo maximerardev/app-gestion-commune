@@ -67,7 +67,6 @@ body{max-width:480px;margin:0 auto;}
 .sticky-bottom{padding:16px 20px;background:var(--surface);border-top:0.5px solid var(--border);}
 .loading{display:flex;align-items:center;justify-content:center;min-height:100dvh;font-size:14px;color:var(--muted);}
 .hint-text{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;line-height:1.5;}
-/* Footer */
 .app-footer{padding:16px;text-align:center;border-top:0.5px solid var(--border);margin-top:8px;}
 .footer-links{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
 .footer-link{font-size:11px;color:var(--p1);text-decoration:none;background:none;border:none;cursor:pointer;}
@@ -126,7 +125,7 @@ body{max-width:480px;margin:0 auto;}
   </div>
 </div>
 
-<!-- NOUVEAU MOT DE PASSE (après clic sur le lien email) -->
+<!-- NOUVEAU MOT DE PASSE -->
 <div class="screen" id="screen-reset">
   <div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
     <div class="logo">🔒</div>
@@ -199,6 +198,7 @@ body{max-width:480px;margin:0 auto;}
       <div class="invite-code" id="invite-code-display" title="Appuyer pour copier">–</div>
       <div class="invite-or">ou partagez le lien</div>
       <button class="btn-invite" id="btn-share-link">Copier le lien d'invitation</button>
+      <div id="share-link-confirm" style="font-size:12px;color:var(--p2);text-align:center;margin-top:8px;min-height:16px;"></div>
     </div>
     <div style="margin-top:16px;text-align:center;font-size:13px;color:var(--muted)">Votre partenaire peut rejoindre plus tard.</div>
   </div>
@@ -235,8 +235,8 @@ body{max-width:480px;margin:0 auto;}
 </div>
 
 <script>
-const SUPABASE_URL = 'https://fdcorgoppgldblhjghjd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_ovMhEOZKI7Cxmg5YmUcMCQ_DUFBcorp';
+const SUPABASE_URL='https://fdcorgoppgldblhjghjd.supabase.co';
+const SUPABASE_KEY='sb_publishable_ovMhEOZKI7Cxmg5YmUcMCQ_DUFBcorp';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const DEFAULT_TASKS=[
@@ -256,21 +256,67 @@ let isPasswordRecovery=false;
 
 function show(id){document.getElementById('loading').style.display='none';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function initials(n){return n?n.trim()[0].toUpperCase():'?';}
+// Génère un code 6 caractères sans tiret
 function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+// Normalise un code : majuscules, sans tiret, sans espace
+function normalizeCode(code){return code.trim().toUpperCase().replace(/[-\s]/g,'');}
 
 document.getElementById('name1').addEventListener('input',e=>{document.getElementById('av1').textContent=initials(e.target.value)||'A';});
 document.getElementById('name2').addEventListener('input',e=>{document.getElementById('av2').textContent=initials(e.target.value)||'P';});
 
+// ============ CHECK USER HOUSE ============
 async function checkUserHouse(){
   const{data:{user},error:ue}=await sb.auth.getUser();
   if(ue||!user){show('screen-auth');return;}
   const{data:member,error:me}=await sb.from('members').select('house_id').eq('user_id',user.id).maybeSingle();
   if(me){console.error('checkUserHouse error:',me);show('screen-auth');return;}
-  if(member?.house_id){window.location.href='app.html';return;}
+  if(member?.house_id){
+    // Utilisateur déjà dans un foyer → app
+    sessionStorage.removeItem('pendingInvite');
+    window.location.href='app.html';
+    return;
+  }
+  // Pas de foyer — vérifier s'il y a une invitation en attente
+  const pendingInvite=sessionStorage.getItem('pendingInvite');
+  if(pendingInvite){
+    // Rejoindre automatiquement le foyer
+    await joinHouseByCode(pendingInvite);
+    return;
+  }
+  // Vérifier l'URL pour un code d'invitation
   const url=new URL(window.location.href);
   const inv=url.searchParams.get('invite');
-  if(inv){document.getElementById('join-code').value=inv;show('screen-join');}
-  else show('screen-choice');
+  if(inv){
+    document.getElementById('join-code').value=normalizeCode(inv);
+    show('screen-join');
+  } else {
+    show('screen-choice');
+  }
+}
+
+// ============ REJOINDRE UN FOYER PAR CODE ============
+async function joinHouseByCode(rawCode){
+  const code=normalizeCode(rawCode);
+  const{data:house,error}=await sb.from('houses').select('*')
+    .eq('invite_code',code)
+    .maybeSingle();
+  if(error||!house){
+    sessionStorage.removeItem('pendingInvite');
+    show('screen-join');
+    document.getElementById('join-err').textContent='Code invalide ou expiré. Vérifie le code et réessaie.';
+    return;
+  }
+  const{data:{user}}=await sb.auth.getUser();
+  const memberName=house.member2_name||'Partenaire';
+  const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:memberName,is_owner:false});
+  if(me){
+    sessionStorage.removeItem('pendingInvite');
+    show('screen-join');
+    document.getElementById('join-err').textContent='Erreur: '+me.message;
+    return;
+  }
+  sessionStorage.removeItem('pendingInvite');
+  window.location.href='app.html';
 }
 
 // ============ AUTH ============
@@ -319,9 +365,7 @@ document.getElementById('btn-forgot-send').addEventListener('click',async()=>{
   if(!email){document.getElementById('forgot-err').textContent='Entrez votre adresse email.';return;}
   const btn=document.getElementById('btn-forgot-send');
   btn.textContent='Envoi…';btn.disabled=true;
-  const{error}=await sb.auth.resetPasswordForEmail(email,{
-    redirectTo:window.location.origin+window.location.pathname
-  });
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
   btn.textContent='Envoyer le lien';btn.disabled=false;
   if(error){document.getElementById('forgot-err').textContent=error.message;return;}
   document.getElementById('forgot-success').textContent='Lien envoyé ! Vérifiez votre boîte email.';
@@ -339,7 +383,11 @@ document.getElementById('btn-reset-save').addEventListener('click',async()=>{
   btn.textContent='Enregistrement…';btn.disabled=true;
   const{error}=await sb.auth.updateUser({password:pwd});
   btn.textContent='Enregistrer';btn.disabled=false;
-  if(error){document.getElementById('reset-err').textContent=error.message;return;}
+  if(error){
+    const msgs={'New password should be different from the old password.':'Le nouveau mot de passe doit être différent de l\'ancien.'};
+    document.getElementById('reset-err').textContent=msgs[error.message]||error.message;
+    return;
+  }
   document.getElementById('reset-success').textContent='Mot de passe mis à jour ! Redirection…';
   isPasswordRecovery=false;
   setTimeout(()=>checkUserHouse(),1500);
@@ -352,6 +400,10 @@ document.getElementById('btn-after-confirm').addEventListener('click',async()=>{
   if(!user.email_confirmed_at){document.getElementById('confirm-err').textContent='Email pas encore confirmé. Vérifiez vos emails.';return;}
   checkUserHouse();
 });
+
+// ============ CHOIX ============
+document.getElementById('btn-choice-create').addEventListener('click',()=>show('screen-ob1'));
+document.getElementById('btn-choice-join').addEventListener('click',()=>show('screen-join'));
 
 // ============ ONBOARDING ============
 document.getElementById('btn-ob1-next').addEventListener('click',()=>{
@@ -368,7 +420,11 @@ document.getElementById('btn-ob1-next').addEventListener('click',()=>{
 document.getElementById('btn-invite-next').addEventListener('click',()=>{buildTasksUI();show('screen-ob2');});
 
 document.getElementById('invite-code-display').addEventListener('click',()=>{
-  navigator.clipboard.writeText(document.getElementById('invite-code-display').textContent).then(()=>alert('Code copié !'));
+  navigator.clipboard.writeText(document.getElementById('invite-code-display').textContent)
+    .then(()=>{
+      document.getElementById('share-link-confirm').textContent='✓ Code copié !';
+      setTimeout(()=>document.getElementById('share-link-confirm').textContent='',2500);
+    });
 });
 
 document.getElementById('btn-share-link').addEventListener('click',()=>{
@@ -398,21 +454,15 @@ document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
   window.location.href='app.html';
 });
 
+// ============ REJOINDRE ============
 document.getElementById('btn-join').addEventListener('click',async()=>{
-  const code=document.getElementById('join-code').value.trim().toUpperCase().replace(/-/g,'');
+  const raw=document.getElementById('join-code').value;
   document.getElementById('join-err').textContent='';
-  const{data:house,error}=await sb.from('houses').select('*').eq('invite_code',code).maybeSingle();
-  if(error||!house){document.getElementById('join-err').textContent='Code invalide ou expiré.';return;}
-  const{data:{user}}=await sb.auth.getUser();
-  const memberName=house.member2_name||'Partenaire';
-  const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:memberName,is_owner:false});
-  if(me){document.getElementById('join-err').textContent='Erreur: '+me.message;return;}
-  window.location.href='app.html';
+  if(!raw.trim()){document.getElementById('join-err').textContent='Entre le code d\'invitation.';return;}
+  await joinHouseByCode(raw);
 });
 
 document.getElementById('btn-create-instead').addEventListener('click',()=>show('screen-ob1'));
-document.getElementById('btn-choice-create').addEventListener('click',()=>show('screen-ob1'));
-document.getElementById('btn-choice-join').addEventListener('click',()=>show('screen-join'));
 
 // ============ TÂCHES ONBOARDING ============
 function buildTasksUI(){
@@ -453,16 +503,18 @@ sb.auth.onAuthStateChange((event,session)=>{
 
 // ============ INIT ============
 (async()=>{
-  // Détecter un flux de reset AVANT tout — le lien Supabase contient type=recovery
+  // Détecter un flux de reset AVANT tout
   const hashParams=new URLSearchParams(window.location.hash.replace('#',''));
   const queryParams=new URLSearchParams(window.location.search);
   const isRecovery=hashParams.get('type')==='recovery'||queryParams.get('type')==='recovery';
   if(isRecovery){
-    // Bloquer toute redirection — laisser onAuthStateChange afficher screen-reset
     isPasswordRecovery=true;
     document.getElementById('loading').style.display='none';
     return;
   }
+  // Sauvegarder le code d'invitation en sessionStorage AVANT toute redirection
+  const inv=queryParams.get('invite');
+  if(inv)sessionStorage.setItem('pendingInvite',normalizeCode(inv));
   const{data:{session}}=await sb.auth.getSession();
   if(session){checkUserHouse();}
   else{document.getElementById('loading').style.display='none';show('screen-auth');}
