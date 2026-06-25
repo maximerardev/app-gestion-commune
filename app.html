@@ -844,12 +844,33 @@ function buildMembersCard(members){
     row.appendChild(renBtn);
     mc.appendChild(row);
   });
-  // Bouton invitation foyer — visible seulement si moins de 2 membres
+  // Si foyer incomplet (1 seul membre) : afficher code + lien d'invitation
   if(members.length<2){
-    const invRow=document.createElement('div');invRow.className='member-row';invRow.style.justifyContent='center';invRow.style.cursor='pointer';
-    invRow.innerHTML=`<span style="font-size:12px;color:var(--p1);">+ Inviter quelqu'un à rejoindre le foyer</span>`;
-    invRow.addEventListener('click',shareInviteLink);
-    mc.appendChild(invRow);
+    const code=house?.invite_code||'';
+    const inviteUrl=`${window.location.origin}${window.location.pathname.replace('app.html','index.html')}?invite=${code}`;
+    const invBlock=document.createElement('div');
+    invBlock.style.cssText='padding:12px 14px;border-top:0.5px solid var(--border);';
+    invBlock.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;">EN ATTENTE DE VOTRE PARTENAIRE</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Code d'invitation</div>
+      <div style="font-size:22px;font-weight:700;letter-spacing:4px;color:var(--p1);margin-bottom:10px;">${code}</div>
+      <button class="link-btn" id="btn-copy-invite-code" style="font-size:12px;margin-bottom:6px;display:block;">Copier le code</button>
+      <button class="link-btn" id="btn-copy-invite-link" style="font-size:12px;display:block;">Copier le lien d'invitation</button>
+      <div id="invite-copy-confirm" style="font-size:11px;color:var(--p2);margin-top:6px;min-height:14px;"></div>
+    `;
+    mc.appendChild(invBlock);
+    document.getElementById('btn-copy-invite-code').addEventListener('click',()=>{
+      navigator.clipboard.writeText(code).then(()=>{
+        document.getElementById('invite-copy-confirm').textContent='✓ Code copié !';
+        setTimeout(()=>document.getElementById('invite-copy-confirm').textContent='',2500);
+      });
+    });
+    document.getElementById('btn-copy-invite-link').addEventListener('click',()=>{
+      navigator.clipboard.writeText(inviteUrl).then(()=>{
+        document.getElementById('invite-copy-confirm').textContent='✓ Lien copié !';
+        setTimeout(()=>document.getElementById('invite-copy-confirm').textContent='',2500);
+      });
+    });
   }
 }
 
