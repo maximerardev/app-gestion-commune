@@ -1108,20 +1108,22 @@ document.getElementById('btn-delete-account').addEventListener('click',async()=>
   if(!confirm('Supprimer votre compte ?\n\nVos données personnelles et entrées seront supprimées. Si vous êtes le dernier membre du foyer, celui-ci sera également supprimé.\n\nVotre adresse email restera enregistrée. Pour une suppression complète, contactez contact@partache.fr.'))return;
   setSyncDot('ing');
   const hid=house.id;
+  // Compter les membres AVANT suppression — une fois supprimé de members,
+  // la RLS (house_id = get_my_house_id()) ne retourne plus rien et houses_delete échoue silencieusement
+  const{data:allMembers}=await sb.from('members').select('id').eq('house_id',hid);
+  const isLastMember=!allMembers||allMembers.length<=1;
   // Supprimer les entrées de ce membre
   const{error:e1}=await sb.from('entries').delete().eq('house_id',hid).eq('who',me.name);
   if(e1){alert('Erreur: '+e1.message);setSyncDot('');return;}
-  // Supprimer le membre
-  const{error:e2}=await sb.from('members').delete().eq('id',me.id);
-  if(e2){alert('Erreur: '+e2.message);setSyncDot('');return;}
-  // Vérifier s'il reste des membres dans le foyer
-  const{data:remaining}=await sb.from('members').select('id').eq('house_id',hid);
-  if(!remaining||remaining.length===0){
-    // Dernier membre → supprimer le foyer complet
-    // houses EN PREMIER pendant que get_my_house_id() fonctionne encore
+  // Si dernier membre : supprimer foyer et tâches AVANT de quitter members
+  // (houses_delete policy : id IN (SELECT house_id FROM members WHERE user_id = auth.uid()))
+  if(isLastMember){
     await sb.from('houses').delete().eq('id',hid);
     await sb.from('house_tasks').delete().eq('house_id',hid);
   }
+  // Supprimer le membre en dernier
+  const{error:e2}=await sb.from('members').delete().eq('id',me.id);
+  if(e2){alert('Erreur: '+e2.message);setSyncDot('');return;}
   await sb.auth.signOut();
   window.location.href='index.html';
 });
