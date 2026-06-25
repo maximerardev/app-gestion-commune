@@ -27,16 +27,16 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 body{max-width:480px;margin:0 auto;}
 
 /* Layout */
-.app{display:flex;flex-direction:column;min-height:100dvh;}
-.header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:10;}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;}
+.header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
-/* Les panes prennent tout l'espace entre header et bottom-nav */
+/* Zone scrollable entre header et bottom-nav */
+.app-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;}
+/* Panes */
 .pane{display:none;padding:12px;padding-bottom:24px;}
 .pane.active{display:block;}
-/* Le contenu interne des panes reste en block normal */
-.pane.active > *{display:block;}
-/* Spacer pour pousser bottom-nav en bas quand contenu court */
-.pane-spacer{flex:1;}
+/* Bottom nav + footer collés en bas */
+.app-bottom{flex-shrink:0;}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
@@ -53,17 +53,17 @@ body{max-width:480px;margin:0 auto;}
 .sum-card.p1 .sum-value{color:var(--p1);}.sum-card.p2 .sum-value{color:var(--p2);}
 .bar-wrap{padding:0 12px 10px;display:none;}.bar-wrap.visible{display:block;}
 .bar-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
-.bar-name{font-size:11px;color:var(--muted);width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.bar-name{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;max-width:80px;}
+.bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:40px;}
 .bar-fill{height:100%;border-radius:3px;transition:width .4s;}
 .bar-fill.p1{background:var(--p1);}.bar-fill.p2{background:var(--p2);}
-.bar-pct{font-size:11px;color:var(--muted);min-width:30px;text-align:right;}
+.bar-pct{font-size:11px;color:var(--muted);min-width:30px;text-align:right;flex-shrink:0;}
 
 /* Panes */
 .pane{display:none;padding:12px;padding-bottom:24px;}.pane.active{display:block;}
 
 /* Bottom nav */
-.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);flex-shrink:0;margin-top:auto;position:sticky;bottom:0;z-index:10;}
+.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);}
 .nav-row{display:flex;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:10px 4px 14px;min-height:44px;-webkit-tap-highlight-color:transparent;}
 .nav-item svg{width:22px;height:22px;stroke:var(--hint);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
@@ -76,7 +76,7 @@ body{max-width:480px;margin:0 auto;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:13px;color:var(--muted);}
-.field select,.field input{font-size:15px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;}
+.field select,.field input{font-size:15px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:42px;}
 .field-full{margin-bottom:9px;}
 .date-hint{font-size:11px;color:var(--p1);text-align:right;margin-top:2px;min-height:14px;}
 .section-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;}
@@ -121,7 +121,7 @@ body{max-width:480px;margin:0 auto;}
 .week-hdr-btn{background:none;border:0.5px solid var(--border-md);border-radius:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;}
 .pct-wrap{margin-bottom:9px;}
 .pct-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
-.pct-name{font-size:12px;color:var(--muted);width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pct-name{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;max-width:80px;}
 .pct-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .pct-fill{height:100%;border-radius:3px;}
 .pct-fill.p1{background:var(--p1);}.pct-fill.p2{background:var(--p2);}
@@ -274,18 +274,17 @@ body{max-width:480px;margin:0 auto;}
     </div>
   </div>
 
-  <!-- SUMMARY -->
-  <div class="summary">
-    <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
-    <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
-  </div>
-  <div class="bar-wrap" id="bar-wrap">
-    <div class="bar-row"><span class="bar-name" id="bar-n1">P1</span><div class="bar-track"><div class="bar-fill p1" id="bar-p1" style="width:0%"></div></div><span class="bar-pct" id="bar-pct1">–</span></div>
-    <div class="bar-row"><span class="bar-name" id="bar-n2">P2</span><div class="bar-track"><div class="bar-fill p2" id="bar-p2" style="width:0%"></div></div><span class="bar-pct" id="bar-pct2">–</span></div>
-  </div>
-
+  <div class="app-body">
   <!-- AJOUTER -->
   <div class="pane active" id="pane-add">
+    <div class="summary" style="padding:0 0 10px;">
+      <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
+      <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
+    </div>
+    <div class="bar-wrap" id="bar-wrap">
+      <div class="bar-row"><span class="bar-name" id="bar-n1">P1</span><div class="bar-track"><div class="bar-fill p1" id="bar-p1" style="width:0%"></div></div><span class="bar-pct" id="bar-pct1">–</span></div>
+      <div class="bar-row"><span class="bar-name" id="bar-n2">P2</span><div class="bar-track"><div class="bar-fill p2" id="bar-p2" style="width:0%"></div></div><span class="bar-pct" id="bar-pct2">–</span></div>
+    </div>
     <div class="form-card">
       <div class="form-grid">
         <div class="field"><label>Personne</label><select id="f-who"></select></div>
@@ -409,6 +408,9 @@ body{max-width:480px;margin:0 auto;}
     </div>
   </div>
 
+  </div><!-- end .app-body -->
+
+  <div class="app-bottom">
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
     <div class="nav-row">
@@ -444,6 +446,7 @@ body{max-width:480px;margin:0 auto;}
       <button class="footer-link" id="btn-footer-partache" style="font-size:10px;">Partâche</button>
     </div>
   </div>
+  </div><!-- end .app-bottom -->
 
 </div><!-- end .app -->
 
