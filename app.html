@@ -30,13 +30,11 @@ body{max-width:480px;margin:0 auto;}
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;}
 .header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
-/* Zone scrollable entre header et bottom-nav */
-.app-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;}
-/* Panes */
-.pane{display:none;padding:12px;padding-bottom:24px;}
+/* Zone de contenu : fixe, c'est le pane qui scrolle */
+.app-body{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+/* Panes : occupent tout l'espace et scrollent */
+.pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;padding-bottom:24px;}
 .pane.active{display:block;}
-/* Bottom nav + footer collés en bas */
-.app-bottom{flex-shrink:0;}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
@@ -58,9 +56,6 @@ body{max-width:480px;margin:0 auto;}
 .bar-fill{height:100%;border-radius:3px;transition:width .4s;}
 .bar-fill.p1{background:var(--p1);}.bar-fill.p2{background:var(--p2);}
 .bar-pct{font-size:11px;color:var(--muted);min-width:30px;text-align:right;flex-shrink:0;}
-
-/* Panes */
-.pane{display:none;padding:12px;padding-bottom:24px;}.pane.active{display:block;}
 
 /* Bottom nav */
 .bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);}
@@ -109,13 +104,15 @@ body{max-width:480px;margin:0 auto;}
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
 .stats-controls{
-  position:sticky;top:0;
+  position:sticky;
+  top:0;
   background:var(--bg);
   z-index:5;
   padding-bottom:4px;
-  /* Anti-rebond desktop : will-change force le GPU à composer sur un layer séparé */
-  will-change:transform;
-  transform:translateZ(0);
+  margin:-12px -12px 0;
+  padding-left:12px;
+  padding-right:12px;
+  padding-top:8px;
 }
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
