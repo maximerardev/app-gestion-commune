@@ -164,15 +164,24 @@ body{max-width:480px;margin:0 auto;}
 <!-- ONBOARDING 1 : Membres -->
 <div class="screen" id="screen-ob1">
   <div class="pad" style="flex:1;">
-    <div class="breadcrumb">
-      <div class="bc-step"><div class="bc-num active">1</div><span class="bc-label active">Votre foyer</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num todo">2</div><span class="bc-label todo">Vos tâches</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num todo">3</div><span class="bc-label todo">Invitation</span></div>
+    <div style="display:flex;align-items:center;margin-bottom:20px;gap:4px;">
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">1</div>
+        <span style="font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;">Votre foyer</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--border-md);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">2</div>
+        <span style="font-size:10px;font-weight:600;color:var(--hint);white-space:nowrap;">Vos tâches</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--border-md);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">3</div>
+        <span style="font-size:10px;font-weight:600;color:var(--hint);white-space:nowrap;">Invitation</span>
+      </div>
     </div>
     <div class="h1">Votre foyer</div>
-    <div class="sub">Commençons ! Donnez un prénom ou un surnom à chaque membre ainsi qu'à votre foyer. Si votre partenaire n'apprécie pas son surnom, vous pourrez tout modifier ensuite 😉</div>
+    <div class="sub">Commençons ! Donnez un prénom ou un surnom à chaque membre ainsi qu'à votre foyer.<br/><br/>Si votre partenaire n'apprécie pas son surnom, vous pourrez tout modifier ensuite 😉</div>
     <div class="avatar-row">
       <div class="avatar-field">
         <div class="avatar-circle p1" id="av1">A</div>
@@ -197,12 +206,21 @@ body{max-width:480px;margin:0 auto;}
 <!-- INVITE -->
 <div class="screen" id="screen-invite">
   <div class="pad" style="flex:1;">
-    <div class="breadcrumb">
-      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Votre foyer</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Vos tâches</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num active">3</div><span class="bc-label active">Invitation</span></div>
+    <div style="display:flex;align-items:center;margin-bottom:16px;gap:4px;">
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:#0d7a5f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">✓</div>
+        <span style="font-size:10px;font-weight:700;color:#0d7a5f;white-space:nowrap;">Votre foyer</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:#0d7a5f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">✓</div>
+        <span style="font-size:10px;font-weight:700;color:#0d7a5f;white-space:nowrap;">Vos tâches</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">3</div>
+        <span style="font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;">Invitation</span>
+      </div>
     </div>
     <div class="h1">Votre foyer est prêt !</div>
     <div class="sub">Partagez ce code ou ce lien à votre partenaire pour qu'il/elle vous rejoigne.</div>
@@ -237,12 +255,21 @@ body{max-width:480px;margin:0 auto;}
 <!-- ONBOARDING 2 : Tâches -->
 <div class="screen" id="screen-ob2">
   <div class="pad" style="padding-bottom:0;">
-    <div class="breadcrumb">
-      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Votre foyer</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num active">2</div><span class="bc-label active">Vos tâches</span></div>
-      <span class="bc-arrow">›</span>
-      <div class="bc-step"><div class="bc-num todo">3</div><span class="bc-label todo">Invitation</span></div>
+    <div style="display:flex;align-items:center;margin-bottom:16px;gap:4px;">
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:#0d7a5f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">✓</div>
+        <span style="font-size:10px;font-weight:700;color:#0d7a5f;white-space:nowrap;">Votre foyer</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">2</div>
+        <span style="font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;">Vos tâches</span>
+      </div>
+      <span style="font-size:10px;color:var(--hint);flex-shrink:0;">›</span>
+      <div style="display:flex;align-items:center;gap:5px;flex:1;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--border-md);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">3</div>
+        <span style="font-size:10px;font-weight:600;color:var(--hint);white-space:nowrap;">Invitation</span>
+      </div>
     </div>
     <div class="h1">Vos tâches</div>
     <div class="sub">Quelles tâches partagez-vous ? Cochez ce qui vous concerne — vous pourrez tout modifier ensuite.</div>
@@ -292,11 +319,12 @@ async function checkUserHouse(){
   if(member?.house_id){
     // Utilisateur déjà dans un foyer → app
     sessionStorage.removeItem('pendingInvite');
+    localStorage.removeItem('pendingInvite');
     window.location.href='app.html';
     return;
   }
   // Pas de foyer — vérifier s'il y a une invitation en attente
-  const pendingInvite=sessionStorage.getItem('pendingInvite');
+  const pendingInvite=sessionStorage.getItem('pendingInvite')||localStorage.getItem('pendingInvite')||'';
   if(pendingInvite){
     // Rejoindre automatiquement le foyer
     await joinHouseByCode(pendingInvite);
@@ -321,6 +349,7 @@ async function joinHouseByCode(rawCode){
     .maybeSingle();
   if(error||!house){
     sessionStorage.removeItem('pendingInvite');
+    localStorage.removeItem('pendingInvite');
     show('screen-join');
     document.getElementById('join-err').textContent='Code invalide ou expiré. Vérifie le code et réessaie.';
     return;
@@ -330,11 +359,13 @@ async function joinHouseByCode(rawCode){
   const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:memberName,is_owner:false});
   if(me){
     sessionStorage.removeItem('pendingInvite');
+    localStorage.removeItem('pendingInvite');
     show('screen-join');
     document.getElementById('join-err').textContent='Erreur: '+me.message;
     return;
   }
   sessionStorage.removeItem('pendingInvite');
+  localStorage.removeItem('pendingInvite');
   window.location.href='app.html';
 }
 
@@ -360,7 +391,12 @@ document.getElementById('btn-signup').addEventListener('click',async()=>{
     document.getElementById('auth-err').textContent='Veuillez accepter la politique de confidentialité pour continuer.';return;
   }
   if(pwd.length<8){document.getElementById('auth-err').textContent='Mot de passe trop court (8 caractères min.)';return;}
-  const{error}=await sb.auth.signUp({email,password:pwd,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
+  // Inclure le code d'invitation dans l'URL de redirection si présent
+  const pendingInvite=sessionStorage.getItem('pendingInvite')||localStorage.getItem('pendingInvite')||'';
+  const redirectTo=pendingInvite
+    ?`${window.location.origin}${window.location.pathname}?invite=${pendingInvite}`
+    :`${window.location.origin}${window.location.pathname}`;
+  const{error}=await sb.auth.signUp({email,password:pwd,options:{emailRedirectTo:redirectTo}});
   if(error){document.getElementById('auth-err').textContent=error.message;return;}
   pendingEmail=email;
   document.getElementById('confirm-email').textContent=email;
@@ -537,7 +573,11 @@ sb.auth.onAuthStateChange((event,session)=>{
   }
   // Sauvegarder le code d'invitation en sessionStorage AVANT toute redirection
   const inv=queryParams.get('invite');
-  if(inv)sessionStorage.setItem('pendingInvite',normalizeCode(inv));
+  if(inv){
+    const nc=normalizeCode(inv);
+    sessionStorage.setItem('pendingInvite',nc);
+    localStorage.setItem('pendingInvite',nc);
+  }
   const{data:{session}}=await sb.auth.getSession();
   if(session){checkUserHouse();}
   else{document.getElementById('loading').style.display='none';show('screen-auth');}
