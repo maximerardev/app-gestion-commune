@@ -30,6 +30,13 @@ body{max-width:480px;margin:0 auto;}
 .app{display:flex;flex-direction:column;min-height:100dvh;}
 .header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
+/* Les panes prennent tout l'espace entre header et bottom-nav */
+.pane{display:none;padding:12px;padding-bottom:24px;}
+.pane.active{display:block;}
+/* Le contenu interne des panes reste en block normal */
+.pane.active > *{display:block;}
+/* Spacer pour pousser bottom-nav en bas quand contenu court */
+.pane-spacer{flex:1;}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
@@ -56,7 +63,7 @@ body{max-width:480px;margin:0 auto;}
 .pane{display:none;padding:12px;padding-bottom:24px;}.pane.active{display:block;}
 
 /* Bottom nav */
-.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);flex-shrink:0;position:sticky;bottom:0;z-index:10;}
+.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);flex-shrink:0;margin-top:auto;position:sticky;bottom:0;z-index:10;}
 .nav-row{display:flex;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:10px 4px 14px;min-height:44px;-webkit-tap-highlight-color:transparent;}
 .nav-item svg{width:22px;height:22px;stroke:var(--hint);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
@@ -277,44 +284,6 @@ body{max-width:480px;margin:0 auto;}
     <div class="bar-row"><span class="bar-name" id="bar-n2">P2</span><div class="bar-track"><div class="bar-fill p2" id="bar-p2" style="width:0%"></div></div><span class="bar-pct" id="bar-pct2">–</span></div>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <div class="nav-row">
-      <button class="nav-item active" data-tab="add">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        <span>Ajouter</span>
-      </button>
-      <button class="nav-item" data-tab="stats">
-        <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-        <span>Stats</span>
-      </button>
-      <button class="nav-item" data-tab="history">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-        <span>Historique</span>
-      </button>
-      <button class="nav-item" data-tab="settings">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Paramètres</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="app-footer">
-    <div class="footer-links" style="gap:7px;flex-wrap:nowrap;">
-      <a class="footer-link" href="faq.html" style="font-size:10px;">FAQ</a>
-      <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener" style="font-size:10px;">Donner son avis</a>
-      <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener" style="font-size:10px;">Déclarer une erreur</a>
-      <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener" style="font-size:10px;">Nous soutenir</a>
-      <span style="font-size:9px;color:var(--border);">·</span>
-      <button class="footer-link" id="btn-footer-partache" style="font-size:10px;">Partâche</button>
-    </div>
-  </div>
-
-</div><!-- end .app -->
-
   <!-- AJOUTER -->
   <div class="pane active" id="pane-add">
     <div class="form-card">
@@ -440,6 +409,43 @@ body{max-width:480px;margin:0 auto;}
     </div>
   </div>
 
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <button class="nav-item active" data-tab="add">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Ajouter</span>
+      </button>
+      <button class="nav-item" data-tab="stats">
+        <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+        <span>Stats</span>
+      </button>
+      <button class="nav-item" data-tab="history">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+        <span>Historique</span>
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Paramètres</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="app-footer">
+    <div class="footer-links" style="gap:7px;flex-wrap:nowrap;">
+      <a class="footer-link" href="faq.html" style="font-size:10px;">FAQ</a>
+      <span style="font-size:9px;color:var(--border);">·</span>
+      <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener" style="font-size:10px;">Donner son avis</a>
+      <span style="font-size:9px;color:var(--border);">·</span>
+      <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener" style="font-size:10px;">Déclarer une erreur</a>
+      <span style="font-size:9px;color:var(--border);">·</span>
+      <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener" style="font-size:10px;">Nous soutenir</a>
+      <span style="font-size:9px;color:var(--border);">·</span>
+      <button class="footer-link" id="btn-footer-partache" style="font-size:10px;">Partâche</button>
+    </div>
+  </div>
+
+</div><!-- end .app -->
 
 <script>
 const SUPABASE_URL='https://nwowzjctzjytvucduhgo.supabase.co';
