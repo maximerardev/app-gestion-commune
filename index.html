@@ -164,9 +164,15 @@ body{max-width:480px;margin:0 auto;}
 <!-- ONBOARDING 1 : Membres -->
 <div class="screen" id="screen-ob1">
   <div class="pad" style="flex:1;">
-    <div class="step-ind">Étape 1 sur 2</div>
+    <div class="breadcrumb">
+      <div class="bc-step"><div class="bc-num active">1</div><span class="bc-label active">Votre foyer</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num todo">2</div><span class="bc-label todo">Vos tâches</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num todo">3</div><span class="bc-label todo">Invitation</span></div>
+    </div>
     <div class="h1">Votre foyer</div>
-    <div class="sub">Comment vous appelez-vous ?</div>
+    <div class="sub">Commençons ! Donnez un prénom ou un surnom à chaque membre ainsi qu'à votre foyer. Si votre partenaire n'apprécie pas son surnom, vous pourrez tout modifier ensuite 😉</div>
     <div class="avatar-row">
       <div class="avatar-field">
         <div class="avatar-circle p1" id="av1">A</div>
@@ -191,8 +197,15 @@ body{max-width:480px;margin:0 auto;}
 <!-- INVITE -->
 <div class="screen" id="screen-invite">
   <div class="pad" style="flex:1;">
-    <div class="h1">Invitez votre partenaire</div>
-    <div class="sub">Partagez ce code ou ce lien pour qu'il/elle rejoigne votre foyer.</div>
+    <div class="breadcrumb">
+      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Votre foyer</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Vos tâches</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num active">3</div><span class="bc-label active">Invitation</span></div>
+    </div>
+    <div class="h1">Votre foyer est prêt !</div>
+    <div class="sub">Partagez ce code ou ce lien à votre partenaire pour qu'il/elle vous rejoigne.</div>
     <div class="invite-card">
       <div class="invite-card-title">Code d'invitation</div>
       <div class="invite-code" id="invite-code-display" title="Appuyer pour copier">–</div>
@@ -203,7 +216,7 @@ body{max-width:480px;margin:0 auto;}
     <div style="margin-top:16px;text-align:center;font-size:13px;color:var(--muted)">Votre partenaire peut rejoindre plus tard.</div>
   </div>
   <div class="sticky-bottom">
-    <button class="btn btn-primary" id="btn-invite-next">Continuer vers les tâches</button>
+    <button class="btn btn-primary" id="btn-invite-next">Accéder à l'application</button>
   </div>
 </div>
 
@@ -224,9 +237,15 @@ body{max-width:480px;margin:0 auto;}
 <!-- ONBOARDING 2 : Tâches -->
 <div class="screen" id="screen-ob2">
   <div class="pad" style="padding-bottom:0;">
-    <div class="step-ind">Étape 2 sur 2</div>
+    <div class="breadcrumb">
+      <div class="bc-step"><div class="bc-num done">✓</div><span class="bc-label done">Votre foyer</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num active">2</div><span class="bc-label active">Vos tâches</span></div>
+      <span class="bc-arrow">›</span>
+      <div class="bc-step"><div class="bc-num todo">3</div><span class="bc-label todo">Invitation</span></div>
+    </div>
     <div class="h1">Vos tâches</div>
-    <div class="sub">Cochez ce qui vous concerne. Modifiable à tout moment.</div>
+    <div class="sub">Quelles tâches partagez-vous ? Cochez ce qui vous concerne — vous pourrez tout modifier ensuite.</div>
   </div>
   <div class="tasks-scroll" id="tasks-scroll"></div>
   <div class="sticky-bottom">
@@ -411,13 +430,12 @@ document.getElementById('btn-ob1-next').addEventListener('click',()=>{
   const n2=document.getElementById('name2').value.trim();
   if(!n1||!n2){document.getElementById('ob1-err').textContent='Entrez les deux prénoms.';return;}
   const foyer=document.getElementById('foyer-name').value.trim()||`Chez ${n1} & ${n2}`;
-  const code=genCode();
-  houseData={name1:n1,name2:n2,foyer,code};
-  document.getElementById('invite-code-display').textContent=code;
-  show('screen-invite');
+  houseData={name1:n1,name2:n2,foyer};
+  buildTasksUI();
+  show('screen-ob2');
 });
 
-document.getElementById('btn-invite-next').addEventListener('click',()=>{buildTasksUI();show('screen-ob2');});
+document.getElementById('btn-invite-next').addEventListener('click',()=>window.location.href='app.html');
 
 document.getElementById('invite-code-display').addEventListener('click',()=>{
   navigator.clipboard.writeText(document.getElementById('invite-code-display').textContent)
@@ -443,7 +461,10 @@ document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
   btn.textContent='Création…';btn.disabled=true;
   const{data:{user}}=await sb.auth.getUser();
   if(!user){show('screen-auth');return;}
-  const{data:house,error:he}=await sb.from('houses').insert({name:houseData.foyer,invite_code:houseData.code,member1_name:houseData.name1,member2_name:houseData.name2}).select().single();
+  // Générer le code au moment de la création en base
+  const code=genCode();
+  houseData.code=code;
+  const{data:house,error:he}=await sb.from('houses').insert({name:houseData.foyer,invite_code:code,member1_name:houseData.name1,member2_name:houseData.name2}).select().single();
   if(he){console.error('house insert error:',he);btn.textContent='Commencer !';btn.disabled=false;alert('Erreur création foyer: '+he.message);return;}
   const{error:me}=await sb.from('members').insert({house_id:house.id,user_id:user.id,name:houseData.name1,is_owner:true});
   if(me){console.error('member insert error:',me);btn.textContent='Commencer !';btn.disabled=false;alert('Erreur création membre: '+me.message);return;}
@@ -451,7 +472,9 @@ document.getElementById('btn-ob2-finish').addEventListener('click',async()=>{
     const{error:te}=await sb.from('house_tasks').insert(selectedTasks.map(t=>({house_id:house.id,category:t.cat,task_name:t.task})));
     if(te)console.error('tasks insert error:',te);
   }
-  window.location.href='app.html';
+  // Foyer créé → afficher l'écran d'invitation avec le vrai code
+  document.getElementById('invite-code-display').textContent=code;
+  show('screen-invite');
 });
 
 // ============ REJOINDRE ============
