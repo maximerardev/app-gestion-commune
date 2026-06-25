@@ -13,18 +13,12 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);}
 body{max-width:480px;margin:0 auto;}
-
-/* Header */
 .faq-header{padding:14px 16px 10px;background:var(--surface);border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;}
 .faq-back{font-size:13px;color:var(--p1);cursor:pointer;background:none;border:none;padding:4px 0;display:flex;align-items:center;gap:4px;}
 .faq-title{font-size:14px;font-weight:700;flex:1;}
-
-/* Content */
-.faq-content{padding:16px;}
+.faq-content{padding:20px 16px 40px;}
 .section{margin-bottom:24px;}
 .section-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
-
-/* Accordion */
 .accordion{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px;}
 .accordion-item{border-bottom:0.5px solid var(--border);}
 .accordion-item:last-child{border-bottom:none;}
@@ -36,8 +30,7 @@ body{max-width:480px;margin:0 auto;}
 .accordion-item.open .accordion-body{display:block;}
 .accordion-body p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px;}
 .accordion-body p:last-child{margin-bottom:0;}
-
-/* Team card */
+.accordion-body a{color:var(--p1);}
 .team-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px;}
 .team-member{display:flex;align-items:flex-start;gap:12px;padding:14px;}
 .team-member:not(:last-child){border-bottom:0.5px solid var(--border);}
@@ -47,16 +40,12 @@ body{max-width:480px;margin:0 auto;}
 .team-info{flex:1;}
 .team-name{font-size:14px;font-weight:700;margin-bottom:4px;}
 .team-bio{font-size:12px;color:var(--muted);line-height:1.5;}
-
-/* Contact card */
 .contact-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .contact-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:0.5px solid var(--border);text-decoration:none;color:var(--text);}
 .contact-row:last-child{border-bottom:none;}
 .contact-icon{font-size:16px;width:28px;text-align:center;flex-shrink:0;}
 .contact-label{font-size:13px;flex:1;}
 .contact-arrow{font-size:12px;color:var(--hint);}
-
-/* Footer */
 .faq-footer{padding:20px 16px;text-align:center;font-size:11px;color:var(--hint);border-top:0.5px solid var(--border);margin-top:8px;}
 </style>
 </head>
@@ -80,9 +69,9 @@ body{max-width:480px;margin:0 auto;}
           <span class="accordion-icon">▾</span>
         </button>
         <div class="accordion-body">
-          <p>Partâche est une application d'aide au partage équitable des tâches ménagères. Elle a pour but d'objectiver la répartition des tâches entre les membres du couple, là où certaines tâches peuvent parfois être invisibilisées.</p>
-          <p>Nous avons intégré la question de la charge mentale afin que les membres du couple puissent déclarer à la fois les actions effectuées et les actions planifiées ou conçues.</p>
-          <p>Si vous pensez que la répartition des tâches dans votre foyer n'est pas satisfaisante, ou si vous souhaitez simplement l'objectiver, Partâche est fait pour vous.</p>
+          <p>Partâche est une application d'aide au partage équitable des tâches ménagères. Elle a pour but d'objectiver, dans un premier temps, la répartition des tâches ménagères entre les membres du couple, là où certaines tâches peuvent parfois être invisibilisées.</p>
+          <p>Nous avons essayé d'intégrer au mieux la question de la charge mentale dans l'application, afin que les membres du couple puissent à la fois déclarer les actions effectuées, mais également les actions qu'ils ont planifiées et conçues.</p>
+          <p>Si vous pensez que la répartition des tâches ménagères dans votre foyer n'est pas satisfaisante, ou si vous souhaitez simplement objectiver la répartition au sein de votre couple, Partâche est fait pour vous.</p>
         </div>
       </div>
 
@@ -92,8 +81,8 @@ body{max-width:480px;margin:0 auto;}
           <span class="accordion-icon">▾</span>
         </button>
         <div class="accordion-body">
-          <p>Partâche ne résout pas par elle-même un déséquilibre dans la répartition des corvées, mais elle doit être un outil au service du dialogue pour permettre un modèle plus équitable.</p>
-          <p>Sur la base de ces données objectives (nous partons du principe que les déclarations sont de bonne foi !), elle permet d'engager une discussion sereine sur le partage des tâches au sein du couple.</p>
+          <p>L'application Partâche par elle-même ne résout pas un déséquilibre dans la répartition des corvées ou tâches domestiques, mais elle doit être un outil au service du dialogue pour permettre un modèle plus équitable.</p>
+          <p>Elle doit permettre, sur la base de ces données objectives (nous partons du principe que les déclarations sont de bonne foi !), d'engager une discussion sereine sur le partage des tâches au sein du couple.</p>
         </div>
       </div>
 
@@ -104,28 +93,39 @@ body{max-width:480px;margin:0 auto;}
         </button>
         <div class="accordion-body">
           <p>Partâche n'a aucun effet indésirable.</p>
-          <p>Tout comme certaines applications de sport, Partâche peut avoir comme effet secondaire positif d'inciter les deux membres du couple à équilibrer la répartition des tâches : celui/celle qui voit qu'il a 30 minutes de retard peut sauter sur l'occasion pour laver le linge et vider le lave-vaisselle !</p>
+          <p>Tout comme certaines applications de sport ou liées à la santé, Partâche peut avoir comme effet secondaire positif d'inciter les deux membres du couple à équilibrer la répartition des tâches : celui/celle qui voit qu'il a 30 minutes de retard sur son/sa partenaire peut ainsi sauter sur l'occasion pour laver le linge et vider le lave-vaisselle ! A contrario, celui/celle qui voit son avance dans l'application peut se permettre de ne pas se précipiter pour passer l'aspirateur.</p>
         </div>
       </div>
 
       <div class="accordion-item">
         <button class="accordion-btn">
-          <span class="accordion-question">Comment partager Partâche avec mes amis ?</span>
+          <span class="accordion-question">Je souhaite partager Partâche avec mes amis, comment faire ?</span>
           <span class="accordion-icon">▾</span>
         </button>
         <div class="accordion-body">
-          <p>Si vous utilisez Partâche et que cela vous aide, n'hésitez pas à répandre la bonne parole : partagez notre page Instagram <strong>@Partache_</strong> ou le lien de l'application à vos amis et à votre famille !</p>
-          <p><a href="https://maximerardev.github.io/app-gestion-commune/index.html" target="_blank" rel="noopener" style="color:var(--p1);font-size:13px;word-break:break-all;">https://maximerardev.github.io/app-gestion-commune/index.html</a></p>
+          <p>Si vous utilisez Partâche et que cela vous aide, n'hésitez pas à répandre la bonne parole : partagez notre page Instagram <strong>@Partache_</strong>, ou partagez le lien de l'application présent dans l'onglet Paramètres à vos amis et à votre famille !</p>
+          <p><a href="https://partache.fr" target="_blank" rel="noopener">https://partache.fr</a></p>
         </div>
       </div>
 
       <div class="accordion-item">
         <button class="accordion-btn">
-          <span class="accordion-question">Puis-je utiliser Partâche en colocation ?</span>
+          <span class="accordion-question">J'habite en colocation ou je souhaite créer un foyer de plus de deux personnes, puis-je utiliser Partâche ?</span>
           <span class="accordion-icon">▾</span>
         </button>
         <div class="accordion-body">
-          <p>Pour le moment, Partâche ne permet de créer que des foyers de deux personnes, mais nous travaillons sur une version permettant des foyers de trois personnes ou plus.</p>
+          <p>Pour le moment, Partâche ne permet de créer que des foyers de deux personnes (oui, c'est un peu « à l'ancienne »), mais nous travaillerons bientôt sur une version permettant des foyers de trois personnes ou plus.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn">
+          <span class="accordion-question">Que fait Partâche de mes données personnelles ?</span>
+          <span class="accordion-icon">▾</span>
+        </button>
+        <div class="accordion-body">
+          <p>Partâche n'utilise vos données qu'à des fins strictes d'utilisation de l'application. Elle ne revend ni ne partage aucune de vos données. Vos données sont stockées en Europe et sont soumises au Règlement Général sur la Protection des Données (et vive l'Europe !).</p>
+          <p>Pour en savoir plus, consultez notre <a href="cgu.html">politique de confidentialité</a>.</p>
         </div>
       </div>
 
@@ -140,7 +140,7 @@ body{max-width:480px;margin:0 auto;}
         <div class="team-avatar p2">A</div>
         <div class="team-info">
           <div class="team-name">Anaïs</div>
-          <div class="team-bio"><!-- À compléter par Anaïs --></div>
+          <div class="team-bio">Diplomate et Présidente d'un syndicat, elle ne cède rien en négo et est toujours prête à initier un combat : pour la France, l'égalité Femmes-Hommes, ou les droits sociaux ! À l'occasion de chamailleries pour savoir si « cette fois tu as bien pensé à arroser les fleurs », elle décide de créer l'application Partâche.</div>
         </div>
       </div>
       <div class="team-member">
@@ -162,9 +162,9 @@ body{max-width:480px;margin:0 auto;}
         <span class="contact-label">Instagram — @Partache_</span>
         <span class="contact-arrow">›</span>
       </a>
-      <a class="contact-row" href="mailto:partache@gmail.com">
+      <a class="contact-row" href="mailto:contact@partache.fr">
         <span class="contact-icon">✉️</span>
-        <span class="contact-label">partache@gmail.com</span>
+        <span class="contact-label">contact@partache.fr</span>
         <span class="contact-arrow">›</span>
       </a>
       <a class="contact-row" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">
@@ -187,7 +187,7 @@ body{max-width:480px;margin:0 auto;}
 
 </div>
 
-<div class="faq-footer">Partâche — 2026</div>
+<div class="faq-footer">Partâche — 2026 · <a href="mailto:contact@partache.fr" style="color:var(--hint);">contact@partache.fr</a></div>
 
 <script>
 document.querySelectorAll('.accordion-btn').forEach(btn=>{
