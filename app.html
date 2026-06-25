@@ -46,7 +46,7 @@ body{max-width:480px;margin:0 auto;}
 
 /* Summary */
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;}
-.sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 6px;text-align:center;}
+.sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 6px;text-align:center;}
 .sum-label{font-size:11px;color:var(--muted);margin-bottom:2px;}
 .sum-value{font-size:19px;font-weight:700;letter-spacing:-0.4px;}
 .sum-sub{font-size:11px;color:var(--hint);margin-top:1px;}
@@ -75,8 +75,8 @@ body{max-width:480px;margin:0 auto;}
 .form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:13px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
 .field{display:flex;flex-direction:column;gap:3px;}
-.field label{font-size:13px;color:var(--muted);}
-.field select,.field input{font-size:15px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:42px;}
+.field label{font-size:12px;color:var(--muted);}
+.field select,.field input{font-size:14px;padding:6px 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:36px;}
 .field-full{margin-bottom:9px;}
 .date-hint{font-size:11px;color:var(--p1);text-align:right;margin-top:2px;min-height:14px;}
 .section-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;}
@@ -88,15 +88,15 @@ body{max-width:480px;margin:0 auto;}
 .chip.active-task{background:var(--p1);color:#fff;border-color:var(--p1);}
 
 /* Duration & CM */
-.dur-input{font-size:15px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;}
-.cm-box{background:var(--amber-bg);border:0.5px solid rgba(186,117,23,.3);border-radius:var(--radius-sm);padding:11px 12px;margin-bottom:9px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
-.cm-checkbox{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--amber);background:var(--surface);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.dur-input{font-size:14px;padding:6px 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;height:36px;}
+.cm-box{background:var(--amber-bg);border:0.5px solid rgba(186,117,23,.3);border-radius:var(--radius-sm);padding:0 12px;margin-bottom:9px;display:flex;align-items:center;gap:10px;cursor:pointer;height:36px;}
+.cm-checkbox{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--amber);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .15s;}
 .cm-checkbox.checked{background:var(--amber);border-color:var(--amber);}
-.cm-check-icon{color:#fff;font-size:12px;font-weight:700;display:none;}
+.cm-check-icon{color:#fff;font-size:10px;font-weight:700;display:none;}
 .cm-checkbox.checked .cm-check-icon{display:block;}
 .cm-label{font-size:13px;font-weight:600;color:var(--amber);}
-.cm-sub{font-size:11px;color:var(--amber);margin-top:2px;line-height:1.4;opacity:.8;}
-.btn-save{width:100%;padding:13px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;}
+.cm-sub{font-size:11px;color:var(--amber);opacity:.8;margin-left:4px;}
+.btn-save{width:100%;padding:10px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;}
 .toast{margin-top:8px;border-radius:var(--radius-sm);padding:9px 11px;display:none;}
 .toast.show{display:block;}
 .toast.ok{background:var(--p2-bg);border:0.5px solid rgba(13,122,95,.2);}
@@ -108,7 +108,15 @@ body{max-width:480px;margin:0 auto;}
 
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
-.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding-bottom:2px;}
+.stats-controls{
+  position:sticky;top:0;
+  background:var(--bg);
+  z-index:5;
+  padding-bottom:4px;
+  /* Anti-rebond desktop : will-change force le GPU à composer sur un layer séparé */
+  will-change:transform;
+  transform:translateZ(0);
+}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
@@ -303,9 +311,9 @@ body{max-width:480px;margin:0 auto;}
       </div>
       <div class="cm-box" id="cm-box">
         <div class="cm-checkbox" id="cm-checkbox"><span class="cm-check-icon">✓</span></div>
-        <div>
-          <div class="cm-label">Charge mentale</div>
-          <div class="cm-sub">J'ai aussi pensé à / planifié cette tâche</div>
+        <div style="display:flex;align-items:center;gap:0;flex:1;min-width:0;">
+          <span class="cm-label">Charge mentale</span>
+          <span class="cm-sub"> — J'ai aussi pensé à / planifié cette tâche</span>
         </div>
       </div>
       <button class="btn-save" id="btn-save">Enregistrer</button>
