@@ -27,14 +27,15 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 body{max-width:480px;margin:0 auto;}
 
 /* Layout */
-.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100svh;overflow:hidden;}
 .header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
-/* Zone de contenu : fixe, c'est le pane qui scrolle */
-.app-body{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative;}
-/* Panes : occupent tout l'espace et scrollent */
-.pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;padding-bottom:24px;}
+/* Zone scrollable — min-height:0 essentiel pour que flex:1 scrolle sur iOS Safari */
+.app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* Panes */
+.pane{display:none;padding:12px;padding-bottom:24px;}
 .pane.active{display:block;}
+.app-bottom{flex-shrink:0;}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
@@ -43,7 +44,7 @@ body{max-width:480px;margin:0 auto;}
 .week-label{font-size:11px;color:var(--muted);min-width:50px;text-align:center;}
 
 /* Summary */
-.summary{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 0;}
 .sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 6px;text-align:center;}
 .sum-label{font-size:11px;color:var(--muted);margin-bottom:2px;}
 .sum-value{font-size:19px;font-weight:700;letter-spacing:-0.4px;}
@@ -108,11 +109,8 @@ body{max-width:480px;margin:0 auto;}
   top:0;
   background:var(--bg);
   z-index:5;
-  padding-bottom:4px;
-  margin:-12px -12px 0;
-  padding-left:12px;
-  padding-right:12px;
-  padding-top:8px;
+  padding:8px 0 6px;
+  box-shadow:0 4px 8px -2px var(--bg);
 }
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
@@ -126,14 +124,14 @@ body{max-width:480px;margin:0 auto;}
 .week-hdr-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 .week-hdr-nav{display:flex;gap:4px;flex-shrink:0;}
 .week-hdr-btn{background:none;border:0.5px solid var(--border-md);border-radius:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;}
-.pct-wrap{margin-bottom:9px;}
-.pct-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.pct-wrap{margin-bottom:14px;}
+.pct-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
 .pct-name{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;max-width:80px;}
 .pct-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .pct-fill{height:100%;border-radius:3px;}
 .pct-fill.p1{background:var(--p1);}.pct-fill.p2{background:var(--p2);}
 .pct-val{font-size:12px;color:var(--muted);min-width:30px;text-align:right;}
-.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;}
 .card-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
 .donut-wrap{position:relative;width:140px;height:140px;margin:0 auto 10px;}
 .legend{display:flex;flex-direction:column;gap:5px;}
@@ -257,9 +255,9 @@ body{max-width:480px;margin:0 auto;}
 .hide-cat-btn{width:100%;padding:11px;background:none;border:0.5px solid rgba(226,75,74,.3);border-radius:var(--radius-sm);font-size:14px;color:#e24b4a;cursor:pointer;}
 
 /* Footer */
-.app-footer{padding:10px 16px 16px;text-align:center;border-top:0.5px solid var(--border);}
-.footer-links{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
-.footer-link{font-size:11px;color:var(--p1);text-decoration:none;background:none;border:none;cursor:pointer;}
+.app-footer{padding:6px 8px 10px;padding-bottom:max(10px,env(safe-area-inset-bottom));text-align:center;border-top:0.5px solid var(--border);}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;overflow:hidden;}
+.footer-link{font-size:11px;color:var(--p1);text-decoration:none;background:none;border:none;cursor:pointer;white-space:nowrap;}
 .footer-copy{font-size:10px;color:var(--hint);}
 </style>
 </head>
@@ -303,15 +301,12 @@ body{max-width:480px;margin:0 auto;}
         <div class="chips-wrap" id="task-chips"></div>
       </div>
       <div class="field-full">
-        <label class="section-lbl">Durée (minutes) <span style="color:var(--hint);font-weight:400;">— optionnel si charge mentale</span></label>
-        <input class="dur-input" type="number" id="f-min" min="0" max="480" placeholder="ex : 30" inputmode="numeric"/>
+        <label class="section-lbl">Durée (minutes)</label>
+        <input class="dur-input" type="number" id="f-min" min="0" max="480" placeholder="ex : 30 — ou cocher Charge mentale ci-dessous" inputmode="numeric"/>
       </div>
       <div class="cm-box" id="cm-box">
         <div class="cm-checkbox" id="cm-checkbox"><span class="cm-check-icon">✓</span></div>
-        <div style="display:flex;align-items:center;gap:0;flex:1;min-width:0;">
-          <span class="cm-label">Charge mentale</span>
-          <span class="cm-sub"> — J'ai aussi pensé à / planifié cette tâche</span>
-        </div>
+        <span class="cm-label">Charge mentale</span>
       </div>
       <button class="btn-save" id="btn-save">Enregistrer</button>
     </div>
@@ -454,15 +449,15 @@ body{max-width:480px;margin:0 auto;}
 
   <div class="app-footer">
     <div class="footer-links" style="gap:7px;flex-wrap:nowrap;">
-      <a class="footer-link" href="faq.html" style="font-size:10px;">FAQ</a>
+      <a class="footer-link" href="faq.html">FAQ</a>
       <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener" style="font-size:10px;">Donner son avis</a>
+      <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Avis</a>
       <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener" style="font-size:10px;">Déclarer une erreur</a>
+      <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Bug</a>
       <span style="font-size:9px;color:var(--border);">·</span>
-      <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener" style="font-size:10px;">Nous soutenir</a>
+      <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener">Soutenir</a>
       <span style="font-size:9px;color:var(--border);">·</span>
-      <button class="footer-link" id="btn-footer-partache" style="font-size:10px;">Partâche</button>
+      <button class="footer-link" id="btn-footer-partache">Partâche</button>
     </div>
   </div>
   </div><!-- end .app-bottom -->
@@ -764,18 +759,10 @@ function renderDetaillee(containerId,byTask,byCat,n1,n2){
 function renderCM(containerId,entries,totals,byTask,n1,n2){
   const cont=document.getElementById(containerId);
   const cm1=totals[n1]?.cm||0, cm2=totals[n2]?.cm||0, cmTotal=cm1+cm2;
-  const totRow=document.createElement('div');totRow.className='cm-total-row';
-  totRow.innerHTML=`<div class="cm-tot-card"><div class="cm-tot-label">${n1}</div><div class="cm-tot-val p1">${cm1}</div><div class="cm-tot-sub">occurrence(s)</div></div><div class="cm-tot-card"><div class="cm-tot-label">${n2}</div><div class="cm-tot-val p2">${cm2}</div><div class="cm-tot-sub">occurrence(s)</div></div>`;
-  cont.appendChild(totRow);
-  if(cmTotal>0){
-    const p1pct=Math.round(cm1/cmTotal*100);
-    const pctBlock=document.createElement('div');pctBlock.className='card';
-    pctBlock.innerHTML=`<div class="card-title">Répartition charge mentale</div><div class="pct-wrap" style="margin-bottom:0"><div class="pct-row"><span class="pct-name">${n1}</span><div class="pct-track"><div class="pct-fill p1" style="width:${p1pct}%"></div></div><span class="pct-val">${p1pct}%</span></div><div class="pct-row"><span class="pct-name">${n2}</span><div class="pct-track"><div class="pct-fill p2" style="width:${100-p1pct}%"></div></div><span class="pct-val">${100-p1pct}%</span></div></div>`;
-    cont.appendChild(pctBlock);
-  }
+  if(cmTotal===0){cont.innerHTML+='<div class="empty">Aucune charge mentale déclarée cette période.</div>';return;}
   const cmTasks=Object.entries(byTask).filter(([,d])=>d.total.cm>0).sort((a,b)=>b[1].total.cm-a[1].total.cm);
   if(cmTasks.length>0){
-    const listTitle=document.createElement('div');listTitle.className='card-title';listTitle.textContent='Tâches déclarées comme charge mentale';cont.appendChild(listTitle);
+    const listTitle=document.createElement('div');listTitle.className='card-title';listTitle.style.marginTop='4px';listTitle.textContent='Tâches déclarées comme charge mentale';cont.appendChild(listTitle);
     const list=document.createElement('div');list.className='cm-task-list';
     cmTasks.forEach(([task,d])=>{const item=document.createElement('div');item.className='cm-task-item';item.innerHTML=`<div class="cm-item-name">${task}</div><div class="cm-item-who p1"><div class="cm-circle p1"></div>${d[n1]?.cm||0}</div><div class="cm-item-who p2"><div class="cm-circle p2"></div>${d[n2]?.cm||0}</div>`;list.appendChild(item);});
     cont.appendChild(list);
@@ -784,7 +771,7 @@ function renderCM(containerId,entries,totals,byTask,n1,n2){
   if(cmTotal>0&&cm1/cmTotal>0.6)insights.push(`${n1} porte ${Math.round(cm1/cmTotal*100)}% de la charge mentale déclarée.`);
   else if(cmTotal>0&&cm2/cmTotal>0.6)insights.push(`${n2} porte ${Math.round(cm2/cmTotal*100)}% de la charge mentale déclarée.`);
   if(insights.length>0){const box=document.createElement('div');box.className='cm-insight-box';box.innerHTML='<div class="cm-insight-title">Cette période</div>'+insights.map(i=>`<div class="cm-insight-item"><div class="cm-insight-dot"></div><div class="cm-insight-txt">${i}</div></div>`).join('');cont.appendChild(box);}
-  if(cmTotal===0)cont.innerHTML+='<div class="empty">Aucune charge mentale déclarée.</div>';
+}
 }
 
 function renderSubMois(){
