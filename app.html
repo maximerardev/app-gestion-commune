@@ -394,9 +394,13 @@ body{max-width:480px;margin:0 auto;}
     <!-- Compte -->
     <div class="settings-section">
       <div class="settings-title">Compte</div>
-      <button class="btn-danger soft" id="btn-leave-house">Se déconnecter du foyer</button>
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
       <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
+      <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Zone de danger</div>
+        <button class="btn-danger soft" id="btn-delete-house" style="margin-bottom:8px;">Supprimer le foyer</button>
+        <button class="btn-danger soft" id="btn-delete-account">Supprimer mon compte</button>
+      </div>
     </div>
   </div>
 
@@ -1081,9 +1085,42 @@ document.getElementById('btn-rename-foyer').addEventListener('click',async()=>{
   document.getElementById('foyer-display').textContent=name.trim();
 });
 
-document.getElementById('btn-leave-house').addEventListener('click',async()=>{
-  if(!confirm('Se déconnecter du foyer ? Vous pourrez en rejoindre un autre.'))return;
-  await sb.from('members').delete().eq('id',me.id);
+// ============ SUPPRIMER LE FOYER ============
+document.getElementById('btn-delete-house').addEventListener('click',async()=>{
+  if(!confirm('Supprimer définitivement ce foyer ?\n\nToutes les entrées, tâches et données du foyer seront supprimées pour tous les membres. Vos comptes seront conservés.'))return;
+  setSyncDot('ing');
+  const hid=house.id;
+  // Suppression en cascade : entries → house_tasks → members → houses
+  const{error:e1}=await sb.from('entries').delete().eq('house_id',hid);
+  if(e1){alert('Erreur suppression entrées: '+e1.message);setSyncDot('');return;}
+  const{error:e2}=await sb.from('house_tasks').delete().eq('house_id',hid);
+  if(e2){alert('Erreur suppression tâches: '+e2.message);setSyncDot('');return;}
+  const{error:e3}=await sb.from('members').delete().eq('house_id',hid);
+  if(e3){alert('Erreur suppression membres: '+e3.message);setSyncDot('');return;}
+  const{error:e4}=await sb.from('houses').delete().eq('id',hid);
+  if(e4){alert('Erreur suppression foyer: '+e4.message);setSyncDot('');return;}
+  window.location.href='index.html';
+});
+
+// ============ SUPPRIMER MON COMPTE ============
+document.getElementById('btn-delete-account').addEventListener('click',async()=>{
+  if(!confirm('Supprimer votre compte ?\n\nVos données personnelles et entrées seront supprimées. Si vous êtes le dernier membre du foyer, celui-ci sera également supprimé.\n\nVotre adresse email restera enregistrée. Pour une suppression complète, contactez contact@partache.fr.'))return;
+  setSyncDot('ing');
+  const hid=house.id;
+  // Supprimer les entrées de ce membre
+  const{error:e1}=await sb.from('entries').delete().eq('house_id',hid).eq('who',me.name);
+  if(e1){alert('Erreur: '+e1.message);setSyncDot('');return;}
+  // Supprimer le membre
+  const{error:e2}=await sb.from('members').delete().eq('id',me.id);
+  if(e2){alert('Erreur: '+e2.message);setSyncDot('');return;}
+  // Vérifier s'il reste des membres dans le foyer
+  const{data:remaining}=await sb.from('members').select('id').eq('house_id',hid);
+  if(!remaining||remaining.length===0){
+    // Dernier membre → supprimer le foyer complet
+    await sb.from('house_tasks').delete().eq('house_id',hid);
+    await sb.from('houses').delete().eq('id',hid);
+  }
+  await sb.auth.signOut();
   window.location.href='index.html';
 });
 
