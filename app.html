@@ -268,10 +268,10 @@ body{max-width:480px;margin:0 auto;}
         <span class="app-title" id="app-title">Partâche</span>
         <div class="sync-dot" id="sync-dot"></div>
       </div>
-      <div class="week-nav" id="week-nav">
-        <button class="week-btn" id="prev-week">‹</button>
+      <div class="week-nav" id="week-nav" style="display:none;">
+        <button class="week-btn" id="prev-week-hdr">‹</button>
         <span class="week-label" id="week-label">sem. –</span>
-        <button class="week-btn" id="next-week">›</button>
+        <button class="week-btn" id="next-week-hdr">›</button>
       </div>
     </div>
   </div>
@@ -279,6 +279,7 @@ body{max-width:480px;margin:0 auto;}
   <div class="app-body">
   <!-- AJOUTER -->
   <div class="pane active" id="pane-add">
+    <div class="week-hdr" style="margin-bottom:8px;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
     <div class="summary" style="padding:0 0 10px;">
       <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
       <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
@@ -314,6 +315,7 @@ body{max-width:480px;margin:0 auto;}
 
   <!-- STATS -->
   <div class="pane" id="pane-stats">
+    <!-- Contrôles fixes -->
     <div class="stats-controls">
       <div class="sub-tabs">
         <button class="sub-tab active" data-sub="semaine">Semaine</button>
@@ -325,24 +327,32 @@ body{max-width:480px;margin:0 auto;}
         <button class="vt-btn" data-vision="detaillee">Vue détaillée</button>
         <button class="vt-btn" data-vision="cm">Charge mentale</button>
       </div>
+      <!-- Nav semaine (visible sur onglet Semaine) -->
+      <div id="stats-nav-semaine" style="margin-top:6px;">
+        <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
+      </div>
+      <!-- Nav mois (visible sur onglet Mois) -->
+      <div id="stats-nav-mois" style="display:none;margin-top:6px;">
+        <div class="month-nav" style="margin-bottom:0;"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
+      </div>
+      <!-- Nav plage (visible sur onglet Plage) -->
+      <div id="stats-nav-plage" style="display:none;margin-top:6px;">
+        <div class="range-row"><div class="range-field"><label>Du</label><input type="date" id="p-from"/></div><div class="range-field"><label>Au</label><input type="date" id="p-to"/></div></div>
+        <button class="btn-calc" id="btn-calc">Calculer</button>
+      </div>
     </div>
+    <!-- Contenu scrollable -->
     <div id="sub-semaine">
-      <div class="week-hdr" style="margin-top:8px;"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
       <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
       <div id="s-content"></div>
     </div>
     <div id="sub-mois" style="display:none">
-      <div class="month-nav" style="margin-top:8px;"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
       <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
       <div id="m-content"></div>
     </div>
     <div id="sub-plage" style="display:none">
-      <div style="margin-top:8px;">
-        <div class="range-row"><div class="range-field"><label>Du</label><input type="date" id="p-from"/></div><div class="range-field"><label>Au</label><input type="date" id="p-to"/></div></div>
-        <button class="btn-calc" id="btn-calc">Calculer</button>
-      </div>
       <div id="plage-result" style="display:none">
         <div class="result-hdr"><div class="result-hdr-txt" id="p-hdr-txt">–</div><div class="result-hdr-sub" id="p-hdr-sub">–</div></div>
         <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
@@ -584,10 +594,10 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   if(!date||!taskName){showToast(false,'Sélectionne une catégorie, une tâche et une date.');return;}
   if(!cmChecked&&(!minVal||parseInt(minVal)<1)){showToast(false,'Saisis une durée ou coche Charge mentale.');return;}
   setSyncDot('ing');
-  const{error}=await sb.from('entries').insert({house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked});
+  const{data:inserted,error}=await sb.from('entries').insert({house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked}).select().single();
   if(error){setSyncDot('');showToast(false,'Erreur: '+error.message);return;}
-  // Mettre à jour localement immédiatement sans attendre Realtime
-  allEntries=[{house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked,id:'tmp-'+Date.now()},...allEntries];
+  // Mettre à jour localement avec le vrai ID (permet suppression immédiate sans attendre Realtime)
+  allEntries=[inserted,...allEntries];
   setSyncDot('ok');
   render();renderStats();renderHistoryPane();
   document.getElementById('f-min').value='';
@@ -645,7 +655,12 @@ function calcStats(entries){
 // ============ RENDER HEADER ============
 function render(){
   if(!me)return;
-  document.getElementById('week-label').textContent='sem. '+currentWeek;
+  const{mon,sun}=weekBounds(currentWeek,currentYear);
+  // Bandeau semaine dans pane-add
+  const titleEl=document.getElementById('add-wk-title');
+  const subEl=document.getElementById('add-wk-sub');
+  if(titleEl)titleEl.textContent='Semaine '+currentWeek;
+  if(subEl)subEl.textContent=fmtShort(mon)+' → '+fmtFull(sun);
   const entries=filterW(currentWeek,currentYear);
   const{totals}=calcStats(entries);
   const n1=me.name, n2=partner?.name||'P2';
@@ -653,16 +668,6 @@ function render(){
   document.getElementById('cnt-p1').textContent=totals[n1]?.cnt||0;
   document.getElementById('tot-p2').textContent=totals[n2]?.min||0;
   document.getElementById('cnt-p2').textContent=totals[n2]?.cnt||0;
-  const total=(totals[n1]?.min||0)+(totals[n2]?.min||0);
-  const bw=document.getElementById('bar-wrap');
-  if(total>0){
-    bw.classList.add('visible');
-    const p=Math.round((totals[n1]?.min||0)/total*100);
-    document.getElementById('bar-p1').style.width=p+'%';
-    document.getElementById('bar-p2').style.width=(100-p)+'%';
-    document.getElementById('bar-pct1').textContent=p+'%';
-    document.getElementById('bar-pct2').textContent=(100-p)+'%';
-  } else bw.classList.remove('visible');
 }
 
 // ============ STATS ============
@@ -1198,19 +1203,21 @@ function switchTab(tab){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
   document.getElementById('pane-'+tab).classList.add('active');
-  // Week nav visible uniquement sur l'onglet Ajouter
-  document.getElementById('week-nav').style.visibility=(tab==='add')?'visible':'hidden';
   if(tab==='history'){historyWeek=currentWeek;historyYear=currentYear;renderHistoryPane();}
   if(tab==='stats'){statsWeek=currentWeek;statsYear=currentYear;renderStats();}
-  if(tab==='add'){buildCatChips();}
+  if(tab==='add'){buildCatChips();render();}
 }
 document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 
 document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  ['semaine','mois','plage'].forEach(s=>document.getElementById('sub-'+s).style.display='none');
+  ['semaine','mois','plage'].forEach(s=>{
+    document.getElementById('sub-'+s).style.display='none';
+    document.getElementById('stats-nav-'+s).style.display='none';
+  });
   currentSub=btn.dataset.sub;
   document.getElementById('sub-'+currentSub).style.display='block';
+  document.getElementById('stats-nav-'+currentSub).style.display='block';
   if(currentSub==='semaine')renderStats();else if(currentSub==='mois')renderSubMois();
 }));
 
@@ -1220,9 +1227,10 @@ document.querySelectorAll('.vt-btn').forEach(btn=>btn.addEventListener('click',(
   if(currentSub==='semaine')renderStats();else if(currentSub==='mois')renderSubMois();else if(currentSub==='plage')renderSubPlage();
 }));
 
-// Week navigation
+// Navigation semaine dans pane-add
 document.getElementById('prev-week').addEventListener('click',()=>{currentWeek--;if(currentWeek<1){currentYear--;currentWeek=52;}render();});
 document.getElementById('next-week').addEventListener('click',()=>{currentWeek++;if(currentWeek>52){currentYear++;currentWeek=1;}render();});
+// Navigation semaine dans stats
 document.getElementById('s-prev').addEventListener('click',()=>{statsWeek--;if(statsWeek<1){statsYear--;statsWeek=52;}renderStats();});
 document.getElementById('s-next').addEventListener('click',()=>{statsWeek++;if(statsWeek>52){statsYear++;statsWeek=1;}renderStats();});
 document.getElementById('h-prev').addEventListener('click',()=>{historyWeek--;if(historyWeek<1){historyYear--;historyWeek=52;}renderHistoryPane();});
