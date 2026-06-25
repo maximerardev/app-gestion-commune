@@ -107,10 +107,12 @@ body{max-width:480px;margin:0 auto;}
 .toast.ok .toast-sub{color:var(--p2);}.toast.err .toast-sub{color:#e24b4a;}
 
 /* Stats */
-.sub-tabs{display:flex;gap:4px;margin-bottom:10px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
+/* Stats pane : contrôles sticky + contenu scrollable */
+.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding-bottom:2px;}
+.sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
-.vision-toggle{display:flex;gap:3px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);margin-bottom:10px;}
+.vision-toggle{display:flex;gap:3px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);margin-bottom:0;}
 .vt-btn{flex:1;text-align:center;padding:6px 2px;font-size:11px;border-radius:5px;cursor:pointer;color:var(--muted);border:none;background:none;line-height:1.3;}
 .vt-btn.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
 .week-hdr{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
@@ -281,10 +283,6 @@ body{max-width:480px;margin:0 auto;}
       <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
       <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
     </div>
-    <div class="bar-wrap" id="bar-wrap">
-      <div class="bar-row"><span class="bar-name" id="bar-n1">P1</span><div class="bar-track"><div class="bar-fill p1" id="bar-p1" style="width:0%"></div></div><span class="bar-pct" id="bar-pct1">–</span></div>
-      <div class="bar-row"><span class="bar-name" id="bar-n2">P2</span><div class="bar-track"><div class="bar-fill p2" id="bar-p2" style="width:0%"></div></div><span class="bar-pct" id="bar-pct2">–</span></div>
-    </div>
     <div class="form-card">
       <div class="form-grid">
         <div class="field"><label>Personne</label><select id="f-who"></select></div>
@@ -316,34 +314,38 @@ body{max-width:480px;margin:0 auto;}
 
   <!-- STATS -->
   <div class="pane" id="pane-stats">
-    <div class="sub-tabs">
-      <button class="sub-tab active" data-sub="semaine">Semaine</button>
-      <button class="sub-tab" data-sub="mois">Mois</button>
-      <button class="sub-tab" data-sub="plage">Plage</button>
-    </div>
-    <div class="vision-toggle">
-      <button class="vt-btn active" data-vision="generale">Vue générale</button>
-      <button class="vt-btn" data-vision="detaillee">Vue détaillée</button>
-      <button class="vt-btn" data-vision="cm">Charge mentale</button>
+    <div class="stats-controls">
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="semaine">Semaine</button>
+        <button class="sub-tab" data-sub="mois">Mois</button>
+        <button class="sub-tab" data-sub="plage">Plage</button>
+      </div>
+      <div class="vision-toggle">
+        <button class="vt-btn active" data-vision="generale">Vue générale</button>
+        <button class="vt-btn" data-vision="detaillee">Vue détaillée</button>
+        <button class="vt-btn" data-vision="cm">Charge mentale</button>
+      </div>
     </div>
     <div id="sub-semaine">
-      <div class="week-hdr"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
-      <div class="summary" style="padding:0 0 8px;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
+      <div class="week-hdr" style="margin-top:8px;"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
+      <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
       <div id="s-content"></div>
     </div>
     <div id="sub-mois" style="display:none">
-      <div class="month-nav"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
-      <div class="summary" style="padding:0 0 8px;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
+      <div class="month-nav" style="margin-top:8px;"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
+      <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
       <div id="m-content"></div>
     </div>
     <div id="sub-plage" style="display:none">
-      <div class="range-row"><div class="range-field"><label>Du</label><input type="date" id="p-from"/></div><div class="range-field"><label>Au</label><input type="date" id="p-to"/></div></div>
-      <button class="btn-calc" id="btn-calc">Calculer</button>
+      <div style="margin-top:8px;">
+        <div class="range-row"><div class="range-field"><label>Du</label><input type="date" id="p-from"/></div><div class="range-field"><label>Au</label><input type="date" id="p-to"/></div></div>
+        <button class="btn-calc" id="btn-calc">Calculer</button>
+      </div>
       <div id="plage-result" style="display:none">
         <div class="result-hdr"><div class="result-hdr-txt" id="p-hdr-txt">–</div><div class="result-hdr-sub" id="p-hdr-sub">–</div></div>
-        <div class="summary" style="padding:0 0 8px;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
+        <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
         <div class="pct-wrap" id="p-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="p-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="p-pf1" style="width:0%"></div></div><span class="pct-val" id="p-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="p-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="p-pf2" style="width:0%"></div></div><span class="pct-val" id="p-pv2">–</span></div></div>
         <div id="p-content"></div>
       </div>
@@ -352,8 +354,10 @@ body{max-width:480px;margin:0 auto;}
 
   <!-- HISTORIQUE -->
   <div class="pane" id="pane-history">
-    <div class="week-hdr"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
-    <div class="summary" style="padding:0 0 8px;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
+    <div class="stats-controls">
+      <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
+    </div>
+    <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
     <div class="bar-wrap" id="h-bar-wrap" style="padding:0 0 10px;display:none;"><div class="bar-row"><span class="bar-name" id="h-bn1">P1</span><div class="bar-track"><div class="bar-fill p1" id="h-bp1" style="width:0%"></div></div><span class="bar-pct" id="h-bpct1">–</span></div><div class="bar-row"><span class="bar-name" id="h-bn2">P2</span><div class="bar-track"><div class="bar-fill p2" id="h-bp2" style="width:0%"></div></div><span class="bar-pct" id="h-bpct2">–</span></div></div>
     <div class="entries-list" id="entries-list"><div class="empty">Aucune entrée.</div></div>
   </div>
@@ -582,6 +586,10 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   setSyncDot('ing');
   const{error}=await sb.from('entries').insert({house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked});
   if(error){setSyncDot('');showToast(false,'Erreur: '+error.message);return;}
+  // Mettre à jour localement immédiatement sans attendre Realtime
+  allEntries=[{house_id:house.id,who,date,task_name:taskName,category:taskCat,minutes,is_cm:cmChecked,id:'tmp-'+Date.now()},...allEntries];
+  setSyncDot('ok');
+  render();renderStats();renderHistoryPane();
   document.getElementById('f-min').value='';
   document.getElementById('f-date').value=today();
   document.getElementById('date-hint').textContent='↺ remis à aujourd\'hui';
@@ -780,23 +788,37 @@ function renderSubMois(){
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
+  if(currentVision==='generale')renderGenerale('m-content',entries,byTask,byCat,'pieM');
+  else if(currentVision==='detaillee')renderDetaillee('m-content',byTask,byCat,n1,n2);
+  else renderCM('m-content',entries,totals,byTask,n1,n2);
+  // 4 dernières semaines en bas
   const last4=getLast4Weeks(currentMonth,currentMonthYear);
   const allMins=last4.flatMap(({w,y})=>{const{totals:wt}=calcStats(filterW(w,y));return[wt[n1]?.min||0,wt[n2]?.min||0];});
   const gMax=Math.max(...allMins,1);
   const wCard=document.createElement('div');wCard.className='card';
   wCard.innerHTML=`<div class="card-title">4 dernières semaines</div><div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;"><span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p1);display:inline-block"></span>${n1}</span><span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p2);display:inline-block"></span>${n2}</span></div>`+last4.map(({w,y,label})=>{const{totals:wt}=calcStats(filterW(w,y));return`<div class="week-chart-row"><span class="week-chart-lbl">${label}</span><div class="week-chart-bars">${(wt[n1]?.min||0)>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round((wt[n1]?.min||0)/gMax*100)}px;background:var(--p1)"></div><span class="mini-val">${wt[n1]?.min}</span></div>`:''} ${(wt[n2]?.min||0)>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round((wt[n2]?.min||0)/gMax*100)}px;background:var(--p2)"></div><span class="mini-val">${wt[n2]?.min}</span></div>`:''}</div></div>`;}).join('');
   mCont.appendChild(wCard);
-  if(currentVision==='generale')renderGenerale('m-content',entries,byTask,byCat,'pieM');
-  else if(currentVision==='detaillee')renderDetaillee('m-content',byTask,byCat,n1,n2);
-  else renderCM('m-content',entries,totals,byTask,n1,n2);
 }
 
 function getLast4Weeks(month,year){
   const result=[],seen=new Set();
-  let d=new Date(year,month+1,0);
-  while(result.length<4&&d>=new Date(year,month,1)){
+  // Partir de la semaine courante (pas de la fin du mois)
+  const today=new Date();
+  const curW=isoWeek(today),curY=today.getFullYear();
+  // Chercher jusqu'à 8 semaines en arrière pour trouver 4 semaines dans le mois
+  let d=new Date(today);
+  // Aligner sur lundi de la semaine courante
+  d.setDate(d.getDate()-(d.getDay()||7)+1);
+  for(let i=0;i<8&&result.length<4;i++){
     const w=isoWeek(d),y=d.getFullYear(),key=y+'-'+w;
-    if(!seen.has(key)){seen.add(key);result.unshift({w,y,label:'Sem. '+w});}
+    // Inclure seulement si dans le mois demandé ET pas dans le futur
+    const inMonth=d.getMonth()===month&&d.getFullYear()===year;
+    // Vérifier aussi si la fin de semaine (dimanche) touche le mois
+    const sun=new Date(d);sun.setDate(d.getDate()+6);
+    const sunInMonth=sun.getMonth()===month&&sun.getFullYear()===year;
+    if(!seen.has(key)&&(inMonth||sunInMonth)){
+      seen.add(key);result.unshift({w,y,label:'Sem. '+w});
+    }
     d.setDate(d.getDate()-7);
   }
   return result;
