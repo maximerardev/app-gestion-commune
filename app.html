@@ -1090,15 +1090,16 @@ document.getElementById('btn-delete-house').addEventListener('click',async()=>{
   if(!confirm('Supprimer définitivement ce foyer ?\n\nToutes les entrées, tâches et données du foyer seront supprimées pour tous les membres. Vos comptes seront conservés.'))return;
   setSyncDot('ing');
   const hid=house.id;
-  // Suppression en cascade : entries → house_tasks → members → houses
+  // Suppression dans l'ordre : houses EN PREMIER (avant members pour que la RLS fonctionne)
+  // puis entries, house_tasks, members
+  const{error:e4}=await sb.from('houses').delete().eq('id',hid);
+  if(e4){alert('Erreur suppression foyer: '+e4.message);setSyncDot('');return;}
   const{error:e1}=await sb.from('entries').delete().eq('house_id',hid);
   if(e1){alert('Erreur suppression entrées: '+e1.message);setSyncDot('');return;}
   const{error:e2}=await sb.from('house_tasks').delete().eq('house_id',hid);
   if(e2){alert('Erreur suppression tâches: '+e2.message);setSyncDot('');return;}
   const{error:e3}=await sb.from('members').delete().eq('house_id',hid);
   if(e3){alert('Erreur suppression membres: '+e3.message);setSyncDot('');return;}
-  const{error:e4}=await sb.from('houses').delete().eq('id',hid);
-  if(e4){alert('Erreur suppression foyer: '+e4.message);setSyncDot('');return;}
   window.location.href='index.html';
 });
 
@@ -1117,8 +1118,9 @@ document.getElementById('btn-delete-account').addEventListener('click',async()=>
   const{data:remaining}=await sb.from('members').select('id').eq('house_id',hid);
   if(!remaining||remaining.length===0){
     // Dernier membre → supprimer le foyer complet
-    await sb.from('house_tasks').delete().eq('house_id',hid);
+    // houses EN PREMIER pendant que get_my_house_id() fonctionne encore
     await sb.from('houses').delete().eq('id',hid);
+    await sb.from('house_tasks').delete().eq('house_id',hid);
   }
   await sb.auth.signOut();
   window.location.href='index.html';
