@@ -30,7 +30,7 @@ body{max-width:480px;margin:0 auto;}
 .app{display:flex;flex-direction:column;min-height:100dvh;}
 .header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
-.app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+.app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
 .week-nav{display:flex;align-items:center;gap:6px;flex-shrink:0;}
@@ -406,15 +406,17 @@ body{max-width:480px;margin:0 auto;}
 
 
 <div class="app-footer">
-  <div class="footer-links" style="gap:10px;flex-wrap:nowrap;">
-    <a class="footer-link" href="cgu.html" style="font-size:10px;">Confidentialité</a>
+  <div class="footer-links" style="gap:7px;flex-wrap:nowrap;">
     <a class="footer-link" href="faq.html" style="font-size:10px;">FAQ</a>
+    <span style="font-size:9px;color:var(--border);">·</span>
     <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener" style="font-size:10px;">Donner son avis</a>
+    <span style="font-size:9px;color:var(--border);">·</span>
     <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener" style="font-size:10px;">Déclarer une erreur</a>
+    <span style="font-size:9px;color:var(--border);">·</span>
     <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener" style="font-size:10px;">Nous soutenir</a>
-    <button class="footer-link" id="btn-footer-share-app" style="font-size:10px;">Inviter un.e ami.e</button>
+    <span style="font-size:9px;color:var(--border);">·</span>
+    <button class="footer-link" id="btn-footer-partache" style="font-size:10px;">Partâche</button>
   </div>
-  <div class="footer-copy">Partâche — 2026</div>
 </div>
 
 </div><!-- end .app -->
@@ -1025,13 +1027,16 @@ async function shareInviteLink(){
 }
 
 async function shareAppLink(){
-  const url='https://maximerardev.github.io/app-gestion-commune/index.html';
+  const url='https://partache.fr';
   const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if(isMobile&&navigator.share){
     const msg=`Essaie Partâche, l'appli pour mieux répartir les tâches du quotidien en couple ! ${url}`;
     navigator.share({title:'Partâche',text:msg,url});
   } else {
-    navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Prêt à être collé dans un message.'));
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn=document.getElementById('btn-footer-partache');
+      if(btn){const orig=btn.textContent;btn.textContent='✓ Lien copié !';setTimeout(()=>btn.textContent=orig,2500);}
+    });
   }
 }
 
@@ -1134,7 +1139,7 @@ document.getElementById('btn-signout').addEventListener('click',async()=>{
 });
 
 document.getElementById('btn-share-app').addEventListener('click',shareAppLink);
-document.getElementById('btn-footer-share-app').addEventListener('click',shareAppLink);
+document.getElementById('btn-footer-partache').addEventListener('click',shareAppLink);
 
 // Tab navigation
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
