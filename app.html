@@ -68,12 +68,12 @@ body{max-width:480px;margin:0 auto;}
 .nav-item.active span{color:var(--p1);font-weight:700;}
 
 /* Form */
-.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:13px;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
+.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:12px;color:var(--muted);}
-.field select,.field input{font-size:14px;padding:6px 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:36px;}
-.field-full{margin-bottom:9px;}
+.field select,.field input{font-size:14px;padding:0 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:40px;}
+.field-full{}
 .date-hint{font-size:11px;color:var(--p1);text-align:right;margin-top:2px;min-height:14px;}
 .section-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;}
 
@@ -84,8 +84,8 @@ body{max-width:480px;margin:0 auto;}
 .chip.active-task{background:var(--p1);color:#fff;border-color:var(--p1);}
 
 /* Duration & CM */
-.dur-input{font-size:14px;padding:6px 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;height:36px;}
-.cm-box{background:var(--amber-bg);border:0.5px solid rgba(186,117,23,.3);border-radius:var(--radius-sm);padding:0 12px;margin-bottom:9px;display:flex;align-items:center;gap:10px;cursor:pointer;height:36px;}
+.dur-input{font-size:14px;padding:0 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;height:40px;}
+.cm-box{background:var(--amber-bg);border:0.5px solid rgba(186,117,23,.3);border-radius:var(--radius-sm);padding:0 12px;display:flex;align-items:center;gap:10px;cursor:pointer;height:40px;}
 .cm-checkbox{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--amber);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .15s;}
 .cm-checkbox.checked{background:var(--amber);border-color:var(--amber);}
 .cm-check-icon{color:#fff;font-size:10px;font-weight:700;display:none;}
@@ -104,7 +104,7 @@ body{max-width:480px;margin:0 auto;}
 
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
-.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:8px 0 8px;border-bottom:1px solid var(--border);margin-bottom:2px;}
+.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:8px 0 6px;border-bottom:1.5px solid var(--border-md);margin:0 -12px;padding-left:12px;padding-right:12px;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
@@ -178,12 +178,19 @@ body{max-width:480px;margin:0 auto;}
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .month-label{font-size:15px;font-weight:700;}
 .month-btn{background:none;border:0.5px solid var(--border-md);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:15px;}
-.week-chart-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
-.week-chart-lbl{font-size:12px;color:var(--muted);width:52px;flex-shrink:0;}
-.week-chart-bars{flex:1;display:flex;flex-direction:column;gap:2px;}
-.mini-bar-row{display:flex;align-items:center;gap:6px;min-height:16px;}
-.mini-bar{height:5px;border-radius:2px;min-width:2px;}
-.mini-val{font-size:11px;color:var(--muted);}
+/* Histogramme 4 semaines */
+.hist-wrap{display:flex;align-items:flex-end;gap:8px;height:110px;border-bottom:0.5px solid var(--border);margin-bottom:8px;}
+.hist-wk{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:100%;}
+.hist-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+.hist-val{font-size:9px;font-weight:600;margin-bottom:3px;white-space:nowrap;text-align:center;line-height:1.2;}
+.hist-val.p1{color:var(--p1);}.hist-val.p2{color:var(--p2);}.hist-val.empty{color:var(--hint);}
+.hist-bar{width:100%;border-radius:3px 3px 0 0;}
+.hist-lbls{display:flex;gap:8px;margin-bottom:0;}
+.hist-lbl{flex:1;text-align:center;font-size:11px;color:var(--muted);}
+/* Légende histogramme */
+.hist-legend{display:flex;gap:12px;margin-bottom:10px;}
+.hist-leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.hist-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
 .range-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px;}
 .range-field input{font-size:14px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;}
@@ -210,12 +217,12 @@ body{max-width:480px;margin:0 auto;}
 
 /* Settings */
 .settings-section{margin-bottom:16px;}
-.settings-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
+.settings-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;margin-top:0;}
 .settings-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.settings-row{display:flex;align-items:center;padding:13px 14px;border-bottom:0.5px solid var(--border);gap:10px;}
+.settings-row{display:flex;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--border);gap:10px;}
 .settings-row:last-child{border-bottom:none;}
 .settings-row-label{font-size:14px;flex:1;}
-.member-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:0.5px solid var(--border);}
+.member-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--border);}
 .member-row:last-child{border-bottom:none;}
 .member-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
 .member-avatar.p1{background:var(--p1-bg);color:var(--p1);}.member-avatar.p2{background:var(--p2-bg);color:var(--p2);}
@@ -227,12 +234,12 @@ body{max-width:480px;margin:0 auto;}
 .btn-danger.dark{background:var(--text);color:var(--bg);}
 
 /* Cat list in settings */
-.cat-list-row{display:flex;align-items:center;padding:14px;border-bottom:0.5px solid var(--border);gap:10px;cursor:pointer;min-height:52px;}
+.cat-list-row{display:flex;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--border);gap:10px;cursor:pointer;}
 .cat-list-row:last-child{border-bottom:none;}
 .cat-list-name{font-size:14px;flex:1;}
 .cat-list-count{font-size:12px;color:var(--muted);}
 .cat-list-arrow{font-size:13px;color:var(--hint);}
-.cat-hidden-lbl{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px 4px;border-top:0.5px solid var(--border);}
+.cat-hidden-lbl{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px 4px;}
 .cat-hidden-row{display:flex;align-items:center;padding:14px;border-top:0.5px solid var(--border);gap:10px;min-height:52px;}
 .cat-hidden-name{font-size:14px;flex:1;color:var(--muted);}
 
@@ -336,8 +343,13 @@ body{max-width:480px;margin:0 auto;}
       </div>
       <!-- Nav plage (visible sur onglet Plage) -->
       <div id="stats-nav-plage" style="display:none;margin-top:6px;">
-        <div class="range-row"><div class="range-field"><label>Du</label><input type="date" id="p-from"/></div><div class="range-field"><label>Au</label><input type="date" id="p-to"/></div></div>
-        <button class="btn-calc" id="btn-calc">Calculer</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:12px;color:var(--muted);flex-shrink:0;">Du</span>
+          <input type="date" id="p-from" style="flex:1;font-size:13px;padding:6px 8px;height:36px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;"/>
+          <span style="font-size:12px;color:var(--muted);flex-shrink:0;">au</span>
+          <input type="date" id="p-to" style="flex:1;font-size:13px;padding:6px 8px;height:36px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;"/>
+          <button id="btn-calc" style="height:36px;padding:0 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;">OK</button>
+        </div>
       </div>
     </div>
     <!-- Contenu scrollable -->
@@ -353,7 +365,7 @@ body{max-width:480px;margin:0 auto;}
     </div>
     <div id="sub-plage" style="display:none">
       <div id="plage-result" style="display:none">
-        <div class="result-hdr"><div class="result-hdr-txt" id="p-hdr-txt">–</div><div class="result-hdr-sub" id="p-hdr-sub">–</div></div>
+        <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
         <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
         <div class="pct-wrap" id="p-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="p-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="p-pf1" style="width:0%"></div></div><span class="pct-val" id="p-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="p-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="p-pf2" style="width:0%"></div></div><span class="pct-val" id="p-pv2">–</span></div></div>
         <div id="p-content"></div>
@@ -701,9 +713,9 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    // Masquer/afficher summary+jauges selon la vue (CM a ses propres cards)
-    const showGenStats=currentVision!=='cm';
-    const sSummary=document.querySelector('#pane-stats .summary');
+    // Masquer summary+jauges sur CM et Vue détaillée
+    const showGenStats=currentVision==='generale';
+    const sSummary=document.querySelector('#sub-semaine .summary');
     const sPct=document.getElementById('s-pct');
     if(sSummary)sSummary.style.display=showGenStats?'':'none';
     if(sPct)sPct.style.display='none';
@@ -795,7 +807,7 @@ function renderSubMois(){
   document.getElementById('m-lbl1').textContent=n1;document.getElementById('m-lbl2').textContent=n2;
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
-  const showMStats=currentVision!=='cm';
+  const showMStats=currentVision==='generale';
   const mSummaryEl=document.querySelector('#sub-mois .summary');
   if(mSummaryEl)mSummaryEl.style.display=showMStats?'':'none';
   document.getElementById('m-pct').style.display='none';
@@ -803,17 +815,24 @@ function renderSubMois(){
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='generale'){
     renderGenerale('m-content',entries,byTask,byCat,'pieM');
-    // 4 dernières semaines en bas — minutes, même échelle, couleurs p1/p2
+    // 4 dernières semaines — histogramme barres verticales, format 160' · 10×
     const last4=getLast4Weeks(currentMonth,currentMonthYear);
-    const allMins=last4.flatMap(({w,y})=>{const{totals:wt}=calcStats(filterW(w,y));return[wt[n1]?.min||0,wt[n2]?.min||0];});
-    const gMax=Math.max(...allMins,1);
+    const weekData=last4.map(({w,y,label})=>{const{totals:wt,byTask:wbt}=calcStats(filterW(w,y));return{label,m1:wt[n1]?.min||0,m2:wt[n2]?.min||0,c1:wt[n1]?.cnt||0,c2:wt[n2]?.cnt||0};});
+    const gMax=Math.max(...weekData.flatMap(d=>[d.m1,d.m2]),1);
+    const H=90; // hauteur max des barres en px
     const wCard=document.createElement('div');wCard.className='card';
-    wCard.innerHTML=`<div class="card-title">4 dernières semaines</div><div style="display:flex;gap:12px;margin-bottom:10px;"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p1);display:inline-block"></span>${n1}</span><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p2);display:inline-block"></span>${n2}</span></div>`+last4.map(({w,y,label})=>{
-      const{totals:wt}=calcStats(filterW(w,y));
-      const m1=wt[n1]?.min||0, m2=wt[n2]?.min||0;
+    const legend=`<div class="hist-legend"><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p1)"></div>${n1}</div><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p2)"></div>${n2}</div></div>`;
+    const bars=weekData.map(({label,m1,m2,c1,c2})=>{
       const isEmpty=m1===0&&m2===0;
-      return`<div class="week-chart-row"><span class="week-chart-lbl">${label}</span><div class="week-chart-bars">${isEmpty?'<span style="font-size:11px;color:var(--hint)">—</span>':`${m1>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round(m1/gMax*120)}px;background:var(--p1)"></div><span class="mini-val">${m1} min</span></div>`:'<div class="mini-bar-row" style="min-height:14px;"></div>'}${m2>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round(m2/gMax*120)}px;background:var(--p2)"></div><span class="mini-val">${m2} min</span></div>`:'<div class="mini-bar-row" style="min-height:14px;"></div>'}`}</div></div>`;
+      const h1=isEmpty?4:Math.max(4,Math.round(m1/gMax*H));
+      const h2=isEmpty?4:Math.max(4,Math.round(m2/gMax*H));
+      const v1=isEmpty?'—':`${m1}' · ${c1}×`;
+      const v2=isEmpty?'':(`${m2}' · ${c2}×`);
+      const op=isEmpty?';opacity:.3':'';
+      return`<div class="hist-wk"><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p1'}">${v1}</span><div class="hist-bar" style="height:${h1}px;background:var(--p1)${op}"></div></div><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p2'}">${isEmpty?'&nbsp;':v2}</span><div class="hist-bar" style="height:${h2}px;background:var(--p2)${op}"></div></div></div>`;
     }).join('');
+    const lbls=weekData.map(({label})=>`<div class="hist-lbl">${label}</div>`).join('');
+    wCard.innerHTML=`<div class="card-title">4 dernières semaines</div>${legend}<div class="hist-wrap">${bars}</div><div class="hist-lbls">${lbls}</div>`;
     mCont.appendChild(wCard);
   } else if(currentVision==='detaillee'){
     renderDetaillee('m-content',byTask,byCat,n1,n2);
@@ -861,7 +880,7 @@ function renderSubPlage(){
   document.getElementById('p-hdr-sub').textContent=days+' jour(s) · '+totalCnt+' tâches · '+totalMin+' min';
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
-  const showPStats=currentVision!=='cm';
+  const showPStats=currentVision==='generale';
   const pSummaryEl=document.querySelector('#sub-plage .summary');
   if(pSummaryEl)pSummaryEl.style.display=showPStats?'':'none';
   document.getElementById('p-pct').style.display='none';
@@ -870,6 +889,8 @@ function renderSubPlage(){
   if(currentVision==='generale')renderGenerale('p-content',entries,byTask,byCat,'pieP');
   else if(currentVision==='detaillee')renderDetaillee('p-content',byTask,byCat,n1,n2);
   else renderCM('p-content',entries,totals,byTask,n1,n2);
+  // Masquer result-hdr (double affichage période)
+  const rh=document.getElementById('plage-result-hdr');if(rh)rh.style.display='none';
   document.getElementById('plage-result').style.display='block';
 }
 
