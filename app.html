@@ -75,7 +75,7 @@ body{max-width:480px;margin:0 auto;}
 .field label{font-size:12px;color:var(--muted);}
 .field select,.field input{font-size:14px;padding:0 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:40px;}
 .field-full{}
-.date-hint{font-size:11px;color:var(--p1);text-align:right;min-height:0;max-height:0;overflow:hidden;margin:0;transition:max-height .2s;}
+.date-hint{font-size:11px;color:var(--p1);text-align:right;overflow:hidden;margin:0;display:none;transition:max-height .2s;}
 .section-lbl{font-size:12px;color:var(--muted);margin-bottom:4px;display:block;}
 
 /* Chips */
@@ -261,9 +261,9 @@ body{max-width:480px;margin:0 auto;}
 .hide-cat-btn{width:100%;padding:11px;background:none;border:0.5px solid rgba(226,75,74,.3);border-radius:var(--radius-sm);font-size:14px;color:#e24b4a;cursor:pointer;}
 
 /* Footer */
-.app-footer{padding:6px 8px 8px;padding-bottom:max(8px,env(safe-area-inset-bottom));text-align:center;background:#BF3733;}
+.app-footer{padding:6px 8px 8px;padding-bottom:max(8px,env(safe-area-inset-bottom));text-align:center;background:var(--surface);border-top:2px solid #BF3733;}
 .footer-links{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;overflow:hidden;}
-.footer-link{font-size:11px;color:#fff;text-decoration:none;background:none;border:none;cursor:pointer;white-space:nowrap;}
+.footer-link{font-size:11px;color:var(--p1);text-decoration:none;background:none;border:none;cursor:pointer;white-space:nowrap;}
 .footer-copy{font-size:10px;color:var(--hint);}
 </style>
 </head>
@@ -287,11 +287,13 @@ body{max-width:480px;margin:0 auto;}
 
   <div class="app-body">
   <!-- AJOUTER -->
-  <div class="pane active" id="pane-add">
-    <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
-    <div class="summary" style="padding:0;">
-      <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
-      <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
+  <div class="pane active" id="pane-add" style="padding-top:0;">
+    <div class="add-sticky" style="position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 8px;">
+      <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
+      <div class="summary" style="padding:8px 0 0;">
+        <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
+        <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
+      </div>
     </div>
     <div class="form-card">
       <div class="form-grid">
@@ -464,13 +466,13 @@ body{max-width:480px;margin:0 auto;}
   <div class="app-footer">
     <div class="footer-links" style="gap:7px;flex-wrap:nowrap;">
       <a class="footer-link" href="faq.html">FAQ</a>
-      <span style="font-size:9px;color:rgba(255,255,255,.5);">·</span>
+      <span style="font-size:9px;color:var(--border);">·</span>
       <a class="footer-link" href="https://forms.gle/VXvBcCYa4hhJ4JUn6" target="_blank" rel="noopener">Avis</a>
-      <span style="font-size:9px;color:rgba(255,255,255,.5);">·</span>
+      <span style="font-size:9px;color:var(--border);">·</span>
       <a class="footer-link" href="https://forms.gle/JgTL2XaBNfyukGWB8" target="_blank" rel="noopener">Bug</a>
-      <span style="font-size:9px;color:rgba(255,255,255,.5);">·</span>
+      <span style="font-size:9px;color:var(--border);">·</span>
       <a class="footer-link" href="https://fr.tipeee.com/partache/" target="_blank" rel="noopener">Soutenir</a>
-      <span style="font-size:9px;color:rgba(255,255,255,.5);">·</span>
+      <span style="font-size:9px;color:var(--border);">·</span>
       <button class="footer-link" id="btn-footer-partache">Partâche</button>
     </div>
   </div>
@@ -616,8 +618,8 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   render();renderStats();renderHistoryPane();
   document.getElementById('f-min').value='';
   document.getElementById('f-date').value=today();
-  const dh=document.getElementById('date-hint');dh.textContent='↺ remis à aujourd\'hui';dh.style.maxHeight='20px';
-  setTimeout(()=>{dh.textContent='';dh.style.maxHeight='0';},3000);
+  const dh=document.getElementById('date-hint');dh.textContent='↺ remis à aujourd\'hui';dh.style.display='block';
+  setTimeout(()=>{dh.textContent='';dh.style.display='none';},3000);
   if(cmChecked){cmChecked=false;document.getElementById('cm-checkbox').classList.remove('checked');document.getElementById('f-min').placeholder='ex : 30';}
   document.querySelectorAll('#task-chips .chip').forEach(c=>c.classList.remove('active-task'));
   selectedTaskEl=null;
@@ -716,12 +718,12 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    // Masquer summary+jauges sur CM et Vue détaillée
+    // Masquer summary+jauges sur CM et Vue détaillée (visibility garde la hauteur)
     const showGenStats=currentVision==='generale';
     const sSummary=document.querySelector('#sub-semaine .summary');
     const sPct=document.getElementById('s-pct');
-    if(sSummary)sSummary.style.display=showGenStats?'':'none';
-    if(sPct)sPct.style.display='none';
+    if(sSummary){sSummary.style.visibility=showGenStats?'':'hidden';sSummary.style.pointerEvents=showGenStats?'':'none';}
+    if(sPct){sPct.style.visibility='hidden';sPct.style.pointerEvents='none';}
     if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='generale')renderGenerale('s-content',entries,byTask,byCat,'pieS');
@@ -812,8 +814,8 @@ function renderSubMois(){
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   const showMStats=currentVision==='generale';
   const mSummaryEl=document.querySelector('#sub-mois .summary');
-  if(mSummaryEl)mSummaryEl.style.display=showMStats?'':'none';
-  document.getElementById('m-pct').style.display='none';
+  if(mSummaryEl){mSummaryEl.style.visibility=showMStats?'':'hidden';mSummaryEl.style.pointerEvents=showMStats?'':'none';}
+  document.getElementById('m-pct').style.visibility='hidden';document.getElementById('m-pct').style.pointerEvents='none';
   if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='generale'){
@@ -885,8 +887,8 @@ function renderSubPlage(){
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
   const showPStats=currentVision==='generale';
   const pSummaryEl=document.querySelector('#sub-plage .summary');
-  if(pSummaryEl)pSummaryEl.style.display=showPStats?'':'none';
-  document.getElementById('p-pct').style.display='none';
+  if(pSummaryEl){pSummaryEl.style.visibility=showPStats?'':'hidden';pSummaryEl.style.pointerEvents=showPStats?'':'none';}
+  document.getElementById('p-pct').style.visibility='hidden';document.getElementById('p-pct').style.pointerEvents='none';
   if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='generale')renderGenerale('p-content',entries,byTask,byCat,'pieP');
@@ -1008,7 +1010,7 @@ function buildCatsList(){
   // Add category link
   const addRow=document.createElement('div');
   addRow.style.cssText='border-top:0.5px solid var(--border);';
-  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;padding:10px 14px;display:flex;align-items:center;min-height:44px;width:100%;" id="btn-add-cat">+ Ajouter une catégorie</button>`;
+  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;padding:11px 14px;display:flex;align-items:center;width:100%;" id="btn-add-cat">+ Ajouter une catégorie</button>`;
   card.appendChild(addRow);
   document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
   // Load hidden categories
