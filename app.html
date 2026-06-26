@@ -111,7 +111,7 @@ body{max-width:480px;margin:0 auto;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
-.vision-toggle{display:flex;gap:3px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);margin-bottom:0;}
+.vision-toggle{display:flex;gap:3px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .vt-btn{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .vt-btn.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
 .week-hdr{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:0;display:flex;align-items:center;justify-content:space-between;}
@@ -383,7 +383,7 @@ body{max-width:480px;margin:0 auto;}
     <div class="stats-controls">
       <div class="week-hdr" style="margin-bottom:0;" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
     </div>
-    <div class="summary" style="padding:0 0 8px;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
+    <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
     <div class="bar-wrap" id="h-bar-wrap" style="padding:0 0 10px;display:none;"><div class="bar-row"><span class="bar-name" id="h-bn1">P1</span><div class="bar-track"><div class="bar-fill p1" id="h-bp1" style="width:0%"></div></div><span class="bar-pct" id="h-bpct1">–</span></div><div class="bar-row"><span class="bar-name" id="h-bn2">P2</span><div class="bar-track"><div class="bar-fill p2" id="h-bp2" style="width:0%"></div></div><span class="bar-pct" id="h-bpct2">–</span></div></div>
     <div class="entries-list" id="entries-list"><div class="empty">Aucune entrée.</div></div>
   </div>
@@ -718,12 +718,12 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    // Masquer summary+jauges sur CM et Vue détaillée (visibility garde la hauteur)
+    // Masquer summary+jauges sur CM et Vue détaillée
     const showGenStats=currentVision==='generale';
     const sSummary=document.querySelector('#sub-semaine .summary');
     const sPct=document.getElementById('s-pct');
-    if(sSummary){sSummary.style.visibility=showGenStats?'':'hidden';sSummary.style.pointerEvents=showGenStats?'':'none';}
-    if(sPct){sPct.style.visibility='hidden';sPct.style.pointerEvents='none';}
+    if(sSummary)sSummary.style.display=showGenStats?'':'none';
+    if(sPct)sPct.style.display='none';
     if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='generale')renderGenerale('s-content',entries,byTask,byCat,'pieS');
@@ -814,8 +814,8 @@ function renderSubMois(){
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   const showMStats=currentVision==='generale';
   const mSummaryEl=document.querySelector('#sub-mois .summary');
-  if(mSummaryEl){mSummaryEl.style.visibility=showMStats?'':'hidden';mSummaryEl.style.pointerEvents=showMStats?'':'none';}
-  document.getElementById('m-pct').style.visibility='hidden';document.getElementById('m-pct').style.pointerEvents='none';
+  if(mSummaryEl)mSummaryEl.style.display=showMStats?'':'none';
+  document.getElementById('m-pct').style.display='none';
   if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='generale'){
@@ -887,8 +887,8 @@ function renderSubPlage(){
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
   const showPStats=currentVision==='generale';
   const pSummaryEl=document.querySelector('#sub-plage .summary');
-  if(pSummaryEl){pSummaryEl.style.visibility=showPStats?'':'hidden';pSummaryEl.style.pointerEvents=showPStats?'':'none';}
-  document.getElementById('p-pct').style.visibility='hidden';document.getElementById('p-pct').style.pointerEvents='none';
+  if(pSummaryEl)pSummaryEl.style.display=showPStats?'':'none';
+  document.getElementById('p-pct').style.display='none';
   if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='generale')renderGenerale('p-content',entries,byTask,byCat,'pieP');
