@@ -617,7 +617,7 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   document.getElementById('f-min').value='';
   document.getElementById('f-date').value=today();
   const dh=document.getElementById('date-hint');dh.textContent='↺ remis à aujourd\'hui';dh.style.maxHeight='20px';
-  setTimeout(()=>const dhc=document.getElementById('date-hint');dhc.textContent='';dhc.style.maxHeight='0';3000);
+  setTimeout(()=>{dh.textContent='';dh.style.maxHeight='0';},3000);
   if(cmChecked){cmChecked=false;document.getElementById('cm-checkbox').classList.remove('checked');document.getElementById('f-min').placeholder='ex : 30';}
   document.querySelectorAll('#task-chips .chip').forEach(c=>c.classList.remove('active-task'));
   selectedTaskEl=null;
