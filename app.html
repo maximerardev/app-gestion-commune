@@ -34,6 +34,7 @@ body{max-width:480px;margin:0 auto;}
 .app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none;}
 /* Panes */
 .pane{display:none;padding:12px;padding-bottom:24px;}
+.pane-sticky{padding-top:0;}
 .pane.active{display:block;}
 .app-bottom{flex-shrink:0;}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
@@ -69,16 +70,16 @@ body{max-width:480px;margin:0 auto;}
 
 /* Form */
 .form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0;}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:12px;color:var(--muted);}
 .field select,.field input{font-size:14px;padding:0 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:40px;}
 .field-full{}
 .date-hint{font-size:11px;color:var(--p1);text-align:right;margin-top:2px;min-height:14px;}
-.section-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;}
+.section-lbl{font-size:12px;color:var(--muted);margin-bottom:4px;display:block;}
 
 /* Chips */
-.chips-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:6px;}
 .chip{font-size:13px;padding:0 13px;height:34px;border-radius:20px;border:0.5px solid var(--border-md);background:var(--surface);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;transition:all .15s;white-space:nowrap;}
 .chip.active-cat{background:var(--text);color:var(--bg);border-color:var(--text);}
 .chip.active-task{background:var(--p1);color:#fff;border-color:var(--p1);}
@@ -92,7 +93,7 @@ body{max-width:480px;margin:0 auto;}
 .cm-checkbox.checked .cm-check-icon{display:block;}
 .cm-label{font-size:13px;font-weight:600;color:var(--amber);}
 .cm-sub{font-size:11px;color:var(--amber);opacity:.8;margin-left:4px;}
-.btn-save{width:100%;padding:10px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;}
+.btn-save{width:100%;height:46px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;}
 .toast{margin-top:8px;border-radius:var(--radius-sm);padding:9px 11px;display:none;}
 .toast.show{display:block;}
 .toast.ok{background:var(--p2-bg);border:0.5px solid rgba(13,122,95,.2);}
@@ -104,7 +105,7 @@ body{max-width:480px;margin:0 auto;}
 
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
-.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:8px 0 6px;border-bottom:1.5px solid var(--border-md);margin:0 -12px;padding-left:12px;padding-right:12px;}
+.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:0 0 8px;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
@@ -320,7 +321,7 @@ body{max-width:480px;margin:0 auto;}
   </div>
 
   <!-- STATS -->
-  <div class="pane" id="pane-stats">
+  <div class="pane pane-sticky" id="pane-stats">
     <!-- Contrôles fixes -->
     <div class="stats-controls">
       <div class="sub-tabs">
@@ -353,17 +354,17 @@ body{max-width:480px;margin:0 auto;}
       </div>
     </div>
     <!-- Contenu scrollable -->
-    <div id="sub-semaine">
+    <div id="sub-semaine" style="padding-top:10px;">
       <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
       <div id="s-content"></div>
     </div>
-    <div id="sub-mois" style="display:none">
+    <div id="sub-mois" style="display:none;padding-top:10px;">
       <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
       <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
       <div id="m-content"></div>
     </div>
-    <div id="sub-plage" style="display:none">
+    <div id="sub-plage" style="display:none;padding-top:10px;">
       <div id="plage-result" style="display:none">
         <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
         <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
@@ -374,11 +375,11 @@ body{max-width:480px;margin:0 auto;}
   </div>
 
   <!-- HISTORIQUE -->
-  <div class="pane" id="pane-history">
+  <div class="pane pane-sticky" id="pane-history">
     <div class="stats-controls">
-      <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
+      <div class="week-hdr" style="margin-bottom:0;" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
     </div>
-    <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
+    <div class="summary" style="padding:10px 0 8px;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
     <div class="bar-wrap" id="h-bar-wrap" style="padding:0 0 10px;display:none;"><div class="bar-row"><span class="bar-name" id="h-bn1">P1</span><div class="bar-track"><div class="bar-fill p1" id="h-bp1" style="width:0%"></div></div><span class="bar-pct" id="h-bpct1">–</span></div><div class="bar-row"><span class="bar-name" id="h-bn2">P2</span><div class="bar-track"><div class="bar-fill p2" id="h-bp2" style="width:0%"></div></div><span class="bar-pct" id="h-bpct2">–</span></div></div>
     <div class="entries-list" id="entries-list"><div class="empty">Aucune entrée.</div></div>
   </div>
