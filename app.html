@@ -286,8 +286,8 @@ body{max-width:480px;margin:0 auto;}
   <div class="app-body">
   <!-- AJOUTER -->
   <div class="pane active" id="pane-add">
-    <div class="week-hdr" style="margin-bottom:8px;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
-    <div class="summary" style="padding:0 0 10px;">
+    <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
+    <div class="summary" style="padding:0;">
       <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
       <div class="sum-card p2"><div class="sum-label" id="sum-lbl2">P2</div><div class="sum-value" id="tot-p2">0</div><div class="sum-sub"><span id="cnt-p2">0</span> tâche(s)</div></div>
     </div>
@@ -427,7 +427,7 @@ body{max-width:480px;margin:0 auto;}
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
       <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
       <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Gestion du compte</div>
+        <div class="settings-title" style="margin-top:0;">Gestion du compte</div>
         <button class="btn-danger soft" id="btn-delete-house" style="margin-bottom:8px;">Supprimer le foyer</button>
         <button class="btn-danger soft" id="btn-delete-account">Supprimer mon compte</button>
       </div>
@@ -1005,8 +1005,8 @@ function buildCatsList(){
   });
   // Add category link
   const addRow=document.createElement('div');
-  addRow.style.cssText='padding:11px 14px;border-top:0.5px solid var(--border);';
-  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;padding:14px;display:flex;align-items:center;min-height:52px;width:100%;border-top:0.5px solid var(--border);" id="btn-add-cat">+ Ajouter une catégorie</button>`;
+  addRow.style.cssText='border-top:0.5px solid var(--border);';
+  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;padding:10px 14px;display:flex;align-items:center;min-height:44px;width:100%;" id="btn-add-cat">+ Ajouter une catégorie</button>`;
   card.appendChild(addRow);
   document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
   // Load hidden categories
