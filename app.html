@@ -104,14 +104,7 @@ body{max-width:480px;margin:0 auto;}
 
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
-.stats-controls{
-  position:sticky;
-  top:0;
-  background:var(--bg);
-  z-index:5;
-  padding:8px 0 6px;
-  box-shadow:0 4px 8px -2px var(--bg);
-}
+.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:8px 0 8px;border-bottom:1px solid var(--border);margin-bottom:2px;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
@@ -148,9 +141,9 @@ body{max-width:480px;margin:0 auto;}
 .cat-total{font-size:12px;color:var(--muted);}
 .task-detail-row{padding:8px 12px;border-bottom:0.5px solid var(--border);}
 .task-detail-row:last-child{border-bottom:none;}
-.task-detail-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
-.task-detail-name{font-size:13px;font-weight:600;}
-.task-detail-total{font-size:11px;color:var(--muted);}
+.task-detail-hdr{display:flex;align-items:center;gap:4px;margin-bottom:8px;flex-wrap:wrap;}
+.task-detail-name{font-size:13px;font-weight:600;flex-shrink:0;}
+.task-detail-total{font-size:11px;color:var(--muted);display:none;}
 .task-who-row{display:flex;align-items:center;gap:5px;margin-bottom:3px;}
 .task-who-row:last-child{margin-bottom:0;}
 .task-who-name{font-size:11px;width:52px;flex-shrink:0;}
@@ -158,8 +151,11 @@ body{max-width:480px;margin:0 auto;}
 .task-who-track{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;}
 .task-who-fill{height:100%;border-radius:2px;}
 .task-who-fill.p1{background:var(--p1);}.task-who-fill.p2{background:var(--p2);}
-.task-who-vals{font-size:11px;color:var(--muted);min-width:72px;text-align:right;white-space:nowrap;}
+.task-who-vals{font-size:11px;color:var(--muted);min-width:44px;text-align:right;white-space:nowrap;}
 .cm-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--amber);background:var(--amber-bg);border-radius:10px;padding:2px 6px;margin-left:6px;}
+/* Deux badges séparés vue détaillée */
+.badge-cm{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--amber);background:var(--amber-bg);border-radius:8px;padding:2px 7px;margin-left:5px;white-space:nowrap;}
+.badge-cnt{display:inline-flex;align-items:center;font-size:11px;color:var(--muted);background:var(--bg);border:0.5px solid var(--border-md);border-radius:8px;padding:2px 7px;margin-left:4px;white-space:nowrap;}
 .cm-total-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
 .cm-tot-card{background:var(--surface);border:0.5px solid rgba(186,117,23,.25);border-radius:var(--radius-sm);padding:9px 6px;text-align:center;}
 .cm-tot-label{font-size:11px;color:var(--muted);margin-bottom:2px;}
@@ -183,11 +179,11 @@ body{max-width:480px;margin:0 auto;}
 .month-label{font-size:15px;font-weight:700;}
 .month-btn{background:none;border:0.5px solid var(--border-md);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:15px;}
 .week-chart-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
-.week-chart-lbl{font-size:11px;color:var(--muted);width:48px;flex-shrink:0;}
+.week-chart-lbl{font-size:12px;color:var(--muted);width:52px;flex-shrink:0;}
 .week-chart-bars{flex:1;display:flex;flex-direction:column;gap:2px;}
-.mini-bar-row{display:flex;align-items:center;gap:4px;}
+.mini-bar-row{display:flex;align-items:center;gap:6px;min-height:16px;}
 .mini-bar{height:5px;border-radius:2px;min-width:2px;}
-.mini-val{font-size:10px;color:var(--muted);}
+.mini-val{font-size:11px;color:var(--muted);}
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
 .range-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px;}
 .range-field input{font-size:14px;padding:9px 10px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;}
@@ -198,13 +194,13 @@ body{max-width:480px;margin:0 auto;}
 
 /* History */
 .entries-list{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.entry{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:0.5px solid var(--border);}
+.entry{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:0.5px solid var(--border);min-height:68px;}
 .entry:last-child{border-bottom:none;}
 .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
 .avatar.p1{background:var(--p1-bg);color:var(--p1);}.avatar.p2{background:var(--p2-bg);color:var(--p2);}
 .entry-body{flex:1;min-width:0;}
-.entry-task{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.entry-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.entry-task{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.entry-meta{font-size:12px;color:var(--muted);}
 .entry-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
 .entry-min{font-size:13px;color:var(--muted);}
 .entry-cm{font-size:10px;color:var(--amber);}
@@ -231,13 +227,13 @@ body{max-width:480px;margin:0 auto;}
 .btn-danger.dark{background:var(--text);color:var(--bg);}
 
 /* Cat list in settings */
-.cat-list-row{display:flex;align-items:center;padding:13px 14px;border-bottom:0.5px solid var(--border);gap:10px;cursor:pointer;min-height:44px;}
+.cat-list-row{display:flex;align-items:center;padding:14px;border-bottom:0.5px solid var(--border);gap:10px;cursor:pointer;min-height:52px;}
 .cat-list-row:last-child{border-bottom:none;}
 .cat-list-name{font-size:14px;flex:1;}
 .cat-list-count{font-size:12px;color:var(--muted);}
 .cat-list-arrow{font-size:13px;color:var(--hint);}
 .cat-hidden-lbl{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px 4px;border-top:0.5px solid var(--border);}
-.cat-hidden-row{display:flex;align-items:center;padding:11px 14px;border-top:0.5px solid var(--border);gap:10px;}
+.cat-hidden-row{display:flex;align-items:center;padding:14px;border-top:0.5px solid var(--border);gap:10px;min-height:52px;}
 .cat-hidden-name{font-size:14px;flex:1;color:var(--muted);}
 
 /* Cat detail */
@@ -418,7 +414,7 @@ body{max-width:480px;margin:0 auto;}
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
       <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
       <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Zone de danger</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Gestion du compte</div>
         <button class="btn-danger soft" id="btn-delete-house" style="margin-bottom:8px;">Supprimer le foyer</button>
         <button class="btn-danger soft" id="btn-delete-account">Supprimer mon compte</button>
       </div>
@@ -744,15 +740,18 @@ function renderDetaillee(containerId,byTask,byCat,n1,n2){
   if(!Object.keys(byTask).length){cont.innerHTML='<div class="empty">Aucune donnée.</div>';return;}
   const tasksByCat={};
   Object.entries(byTask).forEach(([task,d])=>{if(!tasksByCat[d.cat])tasksByCat[d.cat]=[];tasksByCat[d.cat].push([task,d]);});
+  // Échelle globale : max de toutes les durées par personne sur la période
+  const globalMax=Math.max(1,...Object.values(byTask).flatMap(d=>[d[n1]?.min||0,d[n2]?.min||0]));
   Object.entries(tasksByCat).forEach(([cat,tasks])=>{
     const block=document.createElement('div');block.className='cat-block';
     const catTotal=tasks.reduce((s,[,d])=>s+d.total.min,0);
     block.innerHTML=`<div class="cat-hdr"><div class="cat-hdr-left"><span class="cat-name-lg">${cat}</span></div><span class="cat-total">${catTotal} min</span></div>`;
     tasks.forEach(([task,d])=>{
       const tr=document.createElement('div');tr.className='task-detail-row';
-      const maxMin=Math.max(d[n1]?.min||0,d[n2]?.min||0,1);
-      const cmHtml=d.total.cm>0?`<span class="cm-badge">⚡ ${d.total.cm}</span>`:'';
-      tr.innerHTML=`<div class="task-detail-hdr"><span class="task-detail-name">${task}${cmHtml}</span><span class="task-detail-total">${d.total.min} min · ${d.total.cnt}×</span></div>${[n1,n2].map((who,idx)=>(d[who]?.cnt||0)>0?`<div class="task-who-row"><span class="task-who-name p${idx+1}">${who}</span><div class="task-who-track"><div class="task-who-fill p${idx+1}" style="width:${Math.round((d[who]?.min||0)/maxMin*100)}%"></div></div><span class="task-who-vals">${d[who]?.min||0} min · ${d[who]?.cnt||0}×${(d[who]?.cm||0)>0?' · ⚡'+d[who].cm:''}</span></div>`:'').join('')}`;
+      // Deux badges séparés : CM en amber, occurrences en gris
+      const cmBadge=d.total.cm>0?`<span class="badge-cm">⚡ ${d.total.cm}</span>`:'';
+      const cntBadge=`<span class="badge-cnt">${d.total.cnt}×</span>`;
+      tr.innerHTML=`<div class="task-detail-hdr"><span class="task-detail-name">${task}</span>${cmBadge}${cntBadge}</div>${[n1,n2].map((who,idx)=>(d[who]?.cnt||0)>0?`<div class="task-who-row"><span class="task-who-name p${idx+1}">${who}</span><div class="task-who-track"><div class="task-who-fill p${idx+1}" style="width:${Math.round((d[who]?.min||0)/globalMax*100)}%"></div></div><span class="task-who-vals">${d[who]?.min||0} min</span></div>`:'').join('')}`;
       block.appendChild(tr);
     });
     cont.appendChild(block);
@@ -763,9 +762,14 @@ function renderCM(containerId,entries,totals,byTask,n1,n2){
   const cont=document.getElementById(containerId);
   const cm1=totals[n1]?.cm||0, cm2=totals[n2]?.cm||0, cmTotal=cm1+cm2;
   if(cmTotal===0){cont.innerHTML+='<div class="empty">Aucune charge mentale déclarée cette période.</div>';return;}
+  // Cards : nombre de tâches CM uniquement (pas le total général)
+  const cmRow=document.createElement('div');cmRow.className='summary';cmRow.style.paddingBottom='14px';
+  cmRow.innerHTML=`<div class="sum-card" style="border-color:rgba(186,117,23,.2)"><div class="sum-label">${n1}</div><div class="sum-value" style="font-size:22px;font-weight:700;color:var(--amber)">${cm1}</div><div class="sum-sub">tâche(s) charge mentale</div></div><div class="sum-card" style="border-color:rgba(186,117,23,.2)"><div class="sum-label">${n2}</div><div class="sum-value" style="font-size:22px;font-weight:700;color:var(--amber)">${cm2}</div><div class="sum-sub">tâche(s) charge mentale</div></div>`;
+  cont.appendChild(cmRow);
+  // Liste tâches CM
   const cmTasks=Object.entries(byTask).filter(([,d])=>d.total.cm>0).sort((a,b)=>b[1].total.cm-a[1].total.cm);
   if(cmTasks.length>0){
-    const listTitle=document.createElement('div');listTitle.className='card-title';listTitle.style.marginTop='4px';listTitle.textContent='Tâches déclarées comme charge mentale';cont.appendChild(listTitle);
+    const listTitle=document.createElement('div');listTitle.className='card-title';listTitle.style.marginBottom='8px';listTitle.textContent='Tâches déclarées comme charge mentale';cont.appendChild(listTitle);
     const list=document.createElement('div');list.className='cm-task-list';
     cmTasks.forEach(([task,d])=>{const item=document.createElement('div');item.className='cm-task-item';item.innerHTML=`<div class="cm-item-name">${task}</div><div class="cm-item-who p1"><div class="cm-circle p1"></div>${d[n1]?.cm||0}</div><div class="cm-item-who p2"><div class="cm-circle p2"></div>${d[n2]?.cm||0}</div>`;list.appendChild(item);});
     cont.appendChild(list);
@@ -787,16 +791,24 @@ function renderSubMois(){
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
-  if(currentVision==='generale')renderGenerale('m-content',entries,byTask,byCat,'pieM');
-  else if(currentVision==='detaillee')renderDetaillee('m-content',byTask,byCat,n1,n2);
-  else renderCM('m-content',entries,totals,byTask,n1,n2);
-  // 4 dernières semaines en bas
-  const last4=getLast4Weeks(currentMonth,currentMonthYear);
-  const allMins=last4.flatMap(({w,y})=>{const{totals:wt}=calcStats(filterW(w,y));return[wt[n1]?.min||0,wt[n2]?.min||0];});
-  const gMax=Math.max(...allMins,1);
-  const wCard=document.createElement('div');wCard.className='card';
-  wCard.innerHTML=`<div class="card-title">4 dernières semaines</div><div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;"><span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p1);display:inline-block"></span>${n1}</span><span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p2);display:inline-block"></span>${n2}</span></div>`+last4.map(({w,y,label})=>{const{totals:wt}=calcStats(filterW(w,y));return`<div class="week-chart-row"><span class="week-chart-lbl">${label}</span><div class="week-chart-bars">${(wt[n1]?.min||0)>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round((wt[n1]?.min||0)/gMax*100)}px;background:var(--p1)"></div><span class="mini-val">${wt[n1]?.min}</span></div>`:''} ${(wt[n2]?.min||0)>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round((wt[n2]?.min||0)/gMax*100)}px;background:var(--p2)"></div><span class="mini-val">${wt[n2]?.min}</span></div>`:''}</div></div>`;}).join('');
-  mCont.appendChild(wCard);
+  if(currentVision==='generale'){
+    renderGenerale('m-content',entries,byTask,byCat,'pieM');
+    // 4 dernières semaines en bas — minutes, même échelle, couleurs p1/p2
+    const last4=getLast4Weeks(currentMonth,currentMonthYear);
+    const allMins=last4.flatMap(({w,y})=>{const{totals:wt}=calcStats(filterW(w,y));return[wt[n1]?.min||0,wt[n2]?.min||0];});
+    const gMax=Math.max(...allMins,1);
+    const wCard=document.createElement('div');wCard.className='card';
+    wCard.innerHTML=`<div class="card-title">4 dernières semaines</div><div style="display:flex;gap:12px;margin-bottom:10px;"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p1);display:inline-block"></span>${n1}</span><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:2px;background:var(--p2);display:inline-block"></span>${n2}</span></div>`+last4.map(({w,y,label})=>{
+      const{totals:wt}=calcStats(filterW(w,y));
+      const m1=wt[n1]?.min||0, m2=wt[n2]?.min||0;
+      const isEmpty=m1===0&&m2===0;
+      return`<div class="week-chart-row"><span class="week-chart-lbl">${label}</span><div class="week-chart-bars">${isEmpty?'<span style="font-size:11px;color:var(--hint)">—</span>':`${m1>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round(m1/gMax*120)}px;background:var(--p1)"></div><span class="mini-val">${m1} min</span></div>`:'<div class="mini-bar-row" style="min-height:14px;"></div>'}${m2>0?`<div class="mini-bar-row"><div class="mini-bar" style="width:${Math.round(m2/gMax*120)}px;background:var(--p2)"></div><span class="mini-val">${m2} min</span></div>`:'<div class="mini-bar-row" style="min-height:14px;"></div>'}`}</div></div>`;
+    }).join('');
+    mCont.appendChild(wCard);
+  } else if(currentVision==='detaillee'){
+    renderDetaillee('m-content',byTask,byCat,n1,n2);
+    // Pas de "4 dernières semaines" dans Vue détaillée
+  } else renderCM('m-content',entries,totals,byTask,n1,n2);
 }
 
 function getLast4Weeks(month,year){
