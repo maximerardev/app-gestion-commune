@@ -302,11 +302,14 @@ body{max-width:480px;margin:0 auto;}
       </div>
       <div class="field-full">
         <label class="section-lbl">Durée (minutes)</label>
-        <input class="dur-input" type="number" id="f-min" min="0" max="480" placeholder="ex : 30 — ou cocher Charge mentale ci-dessous" inputmode="numeric"/>
+        <input class="dur-input" type="number" id="f-min" min="0" max="480" placeholder="ex : 30" inputmode="numeric"/>
       </div>
-      <div class="cm-box" id="cm-box">
-        <div class="cm-checkbox" id="cm-checkbox"><span class="cm-check-icon">✓</span></div>
-        <span class="cm-label">Charge mentale</span>
+      <div class="field-full">
+        <span class="section-lbl">J'ai aussi pensé à / planifié cette tâche</span>
+        <div class="cm-box" id="cm-box">
+          <div class="cm-checkbox" id="cm-checkbox"><span class="cm-check-icon">✓</span></div>
+          <span class="cm-label">Charge mentale</span>
+        </div>
       </div>
       <button class="btn-save" id="btn-save">Enregistrer</button>
     </div>
@@ -771,7 +774,6 @@ function renderCM(containerId,entries,totals,byTask,n1,n2){
   if(cmTotal>0&&cm1/cmTotal>0.6)insights.push(`${n1} porte ${Math.round(cm1/cmTotal*100)}% de la charge mentale déclarée.`);
   else if(cmTotal>0&&cm2/cmTotal>0.6)insights.push(`${n2} porte ${Math.round(cm2/cmTotal*100)}% de la charge mentale déclarée.`);
   if(insights.length>0){const box=document.createElement('div');box.className='cm-insight-box';box.innerHTML='<div class="cm-insight-title">Cette période</div>'+insights.map(i=>`<div class="cm-insight-item"><div class="cm-insight-dot"></div><div class="cm-insight-txt">${i}</div></div>`).join('');cont.appendChild(box);}
-}
 }
 
 function renderSubMois(){
