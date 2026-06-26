@@ -75,7 +75,7 @@ body{max-width:480px;margin:0 auto;}
 .field label{font-size:12px;color:var(--muted);}
 .field select,.field input{font-size:14px;padding:0 9px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;outline:none;-webkit-appearance:none;height:40px;}
 .field-full{}
-.date-hint{font-size:11px;color:var(--p1);text-align:right;margin-top:2px;min-height:0;}
+.date-hint{font-size:11px;color:var(--p1);text-align:right;min-height:0;max-height:0;overflow:hidden;margin:0;transition:max-height .2s;}
 .section-lbl{font-size:12px;color:var(--muted);margin-bottom:4px;display:block;}
 
 /* Chips */
@@ -105,7 +105,9 @@ body{max-width:480px;margin:0 auto;}
 
 /* Stats */
 /* Stats pane : contrôles sticky + contenu scrollable */
-.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 8px;}
+.stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 0;}
+.stats-controls>*{margin-bottom:6px;}
+.stats-controls>*:last-child{margin-bottom:8px;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
 .sub-tab{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
@@ -335,15 +337,15 @@ body{max-width:480px;margin:0 auto;}
         <button class="vt-btn" data-vision="cm">Charge mentale</button>
       </div>
       <!-- Nav semaine (visible sur onglet Semaine) -->
-      <div id="stats-nav-semaine" style="margin-top:6px;">
+      <div id="stats-nav-semaine">
         <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
       </div>
       <!-- Nav mois (visible sur onglet Mois) -->
-      <div id="stats-nav-mois" style="display:none;margin-top:6px;">
+      <div id="stats-nav-mois" style="display:none;">
         <div class="month-nav" style="margin-bottom:0;"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
       </div>
       <!-- Nav plage (visible sur onglet Plage) -->
-      <div id="stats-nav-plage" style="display:none;margin-top:6px;">
+      <div id="stats-nav-plage" style="display:none;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <span style="font-size:12px;color:var(--muted);flex-shrink:0;">Du</span>
           <input type="date" id="p-from" style="flex:1;font-size:13px;padding:6px 8px;height:36px;border:0.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;"/>
@@ -614,8 +616,8 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   render();renderStats();renderHistoryPane();
   document.getElementById('f-min').value='';
   document.getElementById('f-date').value=today();
-  document.getElementById('date-hint').textContent='↺ remis à aujourd\'hui';
-  setTimeout(()=>document.getElementById('date-hint').textContent='',3000);
+  const dh=document.getElementById('date-hint');dh.textContent='↺ remis à aujourd\'hui';dh.style.maxHeight='20px';
+  setTimeout(()=>const dhc=document.getElementById('date-hint');dhc.textContent='';dhc.style.maxHeight='0';3000);
   if(cmChecked){cmChecked=false;document.getElementById('cm-checkbox').classList.remove('checked');document.getElementById('f-min').placeholder='ex : 30';}
   document.querySelectorAll('#task-chips .chip').forEach(c=>c.classList.remove('active-task'));
   selectedTaskEl=null;
