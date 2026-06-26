@@ -31,7 +31,7 @@ body{max-width:480px;margin:0 auto;}
 .header{padding:11px 14px 8px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
 /* Zone scrollable — min-height:0 essentiel pour que flex:1 scrolle sur iOS Safari */
-.app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none;}
 /* Panes */
 .pane{display:none;padding:12px;padding-bottom:24px;}
 .pane.active{display:block;}
@@ -52,7 +52,7 @@ body{max-width:480px;margin:0 auto;}
 .sum-card.p1 .sum-value{color:var(--p1);}.sum-card.p2 .sum-value{color:var(--p2);}
 .bar-wrap{padding:0 12px 10px;display:none;}.bar-wrap.visible{display:block;}
 .bar-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
-.bar-name{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;max-width:80px;}
+.bar-name{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;width:76px;}
 .bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:40px;}
 .bar-fill{height:100%;border-radius:3px;transition:width .4s;}
 .bar-fill.p1{background:var(--p1);}.bar-fill.p2{background:var(--p2);}
@@ -106,10 +106,10 @@ body{max-width:480px;margin:0 auto;}
 /* Stats pane : contrôles sticky + contenu scrollable */
 .stats-controls{position:sticky;top:0;background:var(--bg);z-index:5;padding:8px 0 8px;border-bottom:1px solid var(--border);margin-bottom:2px;}
 .sub-tabs{display:flex;gap:4px;margin-bottom:6px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);}
-.sub-tab{flex:1;text-align:center;padding:7px 2px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
+.sub-tab{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .sub-tab.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
 .vision-toggle{display:flex;gap:3px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;border:0.5px solid var(--border);margin-bottom:0;}
-.vt-btn{flex:1;text-align:center;padding:6px 2px;font-size:11px;border-radius:5px;cursor:pointer;color:var(--muted);border:none;background:none;line-height:1.3;}
+.vt-btn{flex:1;text-align:center;padding:9px 4px;font-size:13px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:none;}
 .vt-btn.active{background:var(--surface);color:var(--text);font-weight:700;border:0.5px solid var(--border);}
 .week-hdr{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
 .week-hdr-info{flex:1;}
@@ -119,7 +119,7 @@ body{max-width:480px;margin:0 auto;}
 .week-hdr-btn{background:none;border:0.5px solid var(--border-md);border-radius:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;}
 .pct-wrap{margin-bottom:14px;}
 .pct-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
-.pct-name{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;max-width:80px;}
+.pct-name{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;width:76px;}
 .pct-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .pct-fill{height:100%;border-radius:3px;}
 .pct-fill.p1{background:var(--p1);}.pct-fill.p2{background:var(--p2);}
@@ -146,7 +146,7 @@ body{max-width:480px;margin:0 auto;}
 .task-detail-total{font-size:11px;color:var(--muted);display:none;}
 .task-who-row{display:flex;align-items:center;gap:5px;margin-bottom:3px;}
 .task-who-row:last-child{margin-bottom:0;}
-.task-who-name{font-size:11px;width:52px;flex-shrink:0;}
+.task-who-name{font-size:12px;width:76px;flex-shrink:0;}
 .task-who-name.p1{color:var(--p1);}.task-who-name.p2{color:var(--p2);}
 .task-who-track{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;}
 .task-who-fill{height:100%;border-radius:2px;}
@@ -166,7 +166,7 @@ body{max-width:480px;margin:0 auto;}
 .cm-task-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:0.5px solid var(--border);}
 .cm-task-item:last-child{border-bottom:none;}
 .cm-item-name{font-size:13px;font-weight:500;flex:1;}
-.cm-item-who{display:flex;align-items:center;gap:3px;font-size:12px;min-width:30px;justify-content:flex-end;}
+.cm-item-who{display:flex;align-items:center;gap:5px;font-size:13px;min-width:40px;justify-content:flex-end;}
 .cm-item-who.p1{color:var(--p1);}.cm-item-who.p2{color:var(--p2);}
 .cm-circle{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .cm-circle.p1{background:var(--p1-bg);border:1px solid var(--p1);}.cm-circle.p2{background:var(--p2-bg);border:1px solid var(--p2);}
@@ -701,7 +701,13 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
+    // Masquer/afficher summary+jauges selon la vue (CM a ses propres cards)
+    const showGenStats=currentVision!=='cm';
+    const sSummary=document.querySelector('#pane-stats .summary');
+    const sPct=document.getElementById('s-pct');
+    if(sSummary)sSummary.style.display=showGenStats?'':'none';
+    if(sPct)sPct.style.display='none';
+    if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='generale')renderGenerale('s-content',entries,byTask,byCat,'pieS');
     else if(currentVision==='detaillee')renderDetaillee('s-content',byTask,byCat,n1,n2);
@@ -789,7 +795,11 @@ function renderSubMois(){
   document.getElementById('m-lbl1').textContent=n1;document.getElementById('m-lbl2').textContent=n2;
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
-  setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
+  const showMStats=currentVision!=='cm';
+  const mSummaryEl=document.querySelector('#sub-mois .summary');
+  if(mSummaryEl)mSummaryEl.style.display=showMStats?'':'none';
+  document.getElementById('m-pct').style.display='none';
+  if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='generale'){
     renderGenerale('m-content',entries,byTask,byCat,'pieM');
@@ -851,7 +861,11 @@ function renderSubPlage(){
   document.getElementById('p-hdr-sub').textContent=days+' jour(s) · '+totalCnt+' tâches · '+totalMin+' min';
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
-  setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
+  const showPStats=currentVision!=='cm';
+  const pSummaryEl=document.querySelector('#sub-plage .summary');
+  if(pSummaryEl)pSummaryEl.style.display=showPStats?'':'none';
+  document.getElementById('p-pct').style.display='none';
+  if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='generale')renderGenerale('p-content',entries,byTask,byCat,'pieP');
   else if(currentVision==='detaillee')renderDetaillee('p-content',byTask,byCat,n1,n2);
@@ -970,7 +984,7 @@ function buildCatsList(){
   // Add category link
   const addRow=document.createElement('div');
   addRow.style.cssText='padding:11px 14px;border-top:0.5px solid var(--border);';
-  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;" id="btn-add-cat">+ Ajouter une catégorie</button>`;
+  addRow.innerHTML=`<button class="link-btn" style="font-size:13px;padding:14px;display:flex;align-items:center;min-height:52px;width:100%;border-top:0.5px solid var(--border);" id="btn-add-cat">+ Ajouter une catégorie</button>`;
   card.appendChild(addRow);
   document.getElementById('btn-add-cat').addEventListener('click',addNewCategory);
   // Load hidden categories
