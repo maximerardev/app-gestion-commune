@@ -231,7 +231,8 @@ body{max-width:480px;margin:0 auto;}
 .member-avatar.p1{background:var(--p1-bg);color:var(--p1);}.member-avatar.p2{background:var(--p2-bg);color:var(--p2);}
 .member-name{font-size:14px;font-weight:500;flex:1;}
 .member-badge{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg);color:var(--muted);}
-.link-btn{font-size:13px;color:var(--p1);background:none;border:none;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;}
+.link-btn{font-size:13px;color:var(--p1);background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;}
+.task-edit-row .link-btn{min-height:unset;padding:2px 0;}
 .btn-danger{width:100%;padding:13px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;}
 .btn-danger.soft{background:rgba(226,75,74,.08);color:#e24b4a;border:0.5px solid rgba(226,75,74,.2);}
 .btn-danger.dark{background:var(--text);color:var(--bg);}
@@ -488,7 +489,7 @@ body{max-width:480px;margin:0 auto;}
 </div><!-- end .app -->
 
 <!-- Modal confirmation déconnexion -->
-<div id="modal-signout" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.45);display:flex;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+<div id="modal-signout" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.45);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 20px max(24px,env(safe-area-inset-bottom));">
     <div style="font-size:16px;font-weight:700;margin-bottom:8px;text-align:center;">Se déconnecter ?</div>
     <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;">Tu pourras te reconnecter à tout moment avec tes identifiants.</div>
