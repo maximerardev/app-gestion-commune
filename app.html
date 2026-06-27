@@ -252,7 +252,7 @@ body{max-width:480px;margin:0 auto;}
 .cat-detail-back{font-size:14px;color:var(--p1);cursor:pointer;padding:4px 8px 4px 0;flex-shrink:0;min-height:44px;display:flex;align-items:center;}
 .cat-detail-title{font-size:15px;font-weight:700;flex:1;}
 .task-edit-list{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px;}
-.task-edit-row{display:flex;align-items:center;padding:12px 14px;border-bottom:0.5px solid var(--border);gap:8px;min-height:44px;}
+.task-edit-row{display:flex;align-items:center;padding:11px 14px;border-bottom:0.5px solid var(--border);gap:8px;}
 .task-edit-row:last-child{border-bottom:none;}
 .task-edit-name{font-size:14px;flex:1;}
 .task-add-area{display:flex;align-items:center;gap:8px;padding:0 0 8px;}
@@ -435,8 +435,8 @@ body{max-width:480px;margin:0 auto;}
     <!-- Compte -->
     <div class="settings-section">
       <div class="settings-title">Compte</div>
+      <button class="btn-danger soft" id="btn-share-app" style="margin-bottom:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
       <button class="btn-danger dark" id="btn-signout">Se déconnecter</button>
-      <button class="btn-danger soft" id="btn-share-app" style="margin-top:4px;background:var(--p1-bg);color:var(--p1);border-color:rgba(26,111,191,.2);">Inviter un.e ami.e à tester Partâche</button>
       <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);">
         <div class="settings-title">Gestion du compte</div>
         <button class="btn-danger soft" id="btn-delete-house" style="margin-bottom:8px;">Supprimer le foyer</button>
@@ -486,6 +486,16 @@ body{max-width:480px;margin:0 auto;}
   </div><!-- end .app-bottom -->
 
 </div><!-- end .app -->
+
+<!-- Modal confirmation déconnexion -->
+<div id="modal-signout" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.45);display:flex;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 20px max(24px,env(safe-area-inset-bottom));">
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;text-align:center;">Se déconnecter ?</div>
+    <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;">Tu pourras te reconnecter à tout moment avec tes identifiants.</div>
+    <button id="btn-signout-confirm" style="width:100%;padding:14px;background:#c0392b;color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">Se déconnecter</button>
+    <button onclick="document.getElementById('modal-signout').style.display='none'" style="width:100%;padding:14px;background:var(--bg);color:var(--text);border:0.5px solid var(--border-md);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;">Annuler</button>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL='https://fdcorgoppgldblhjghjd.supabase.co';
@@ -1242,7 +1252,11 @@ document.getElementById('btn-delete-account').addEventListener('click',async()=>
   window.location.href='index.html';
 });
 
-document.getElementById('btn-signout').addEventListener('click',async()=>{
+document.getElementById('btn-signout').addEventListener('click',()=>{
+  document.getElementById('modal-signout').style.display='flex';
+});
+
+document.getElementById('btn-signout-confirm').addEventListener('click',async()=>{
   await sb.auth.signOut();
   window.location.href='index.html';
 });
