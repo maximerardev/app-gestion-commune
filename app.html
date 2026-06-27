@@ -356,23 +356,30 @@ body{max-width:480px;margin:0 auto;}
           <button id="btn-calc" style="height:36px;padding:0 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;">OK</button>
         </div>
       </div>
+      <!-- Summary (dans le sticky — même hauteur quelle que soit la vue) -->
+      <div id="stats-summary-semaine">
+        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
+        <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
+      </div>
+      <div id="stats-summary-mois" style="display:none;">
+        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
+        <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
+      </div>
+      <div id="stats-summary-plage" style="display:none;">
+        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
+        <div class="pct-wrap" id="p-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="p-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="p-pf1" style="width:0%"></div></div><span class="pct-val" id="p-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="p-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="p-pf2" style="width:0%"></div></div><span class="pct-val" id="p-pv2">–</span></div></div>
+      </div>
     </div>
     <!-- Contenu scrollable -->
     <div id="sub-semaine">
-      <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
-      <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
       <div id="s-content"></div>
     </div>
     <div id="sub-mois" style="display:none;">
-      <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
-      <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
       <div id="m-content"></div>
     </div>
     <div id="sub-plage" style="display:none;">
       <div id="plage-result" style="display:none">
         <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
-        <div class="summary" style="padding:8px 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
-        <div class="pct-wrap" id="p-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="p-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="p-pf1" style="width:0%"></div></div><span class="pct-val" id="p-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="p-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="p-pf2" style="width:0%"></div></div><span class="pct-val" id="p-pv2">–</span></div></div>
         <div id="p-content"></div>
       </div>
     </div>
@@ -718,16 +725,11 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    // Générale : summary visible | Détaillée : visibility:hidden (garde hauteur) | CM : display:none
+    // Summary sticky : visible en Générale, masquée (display:none) en Détaillée et CM
     const showGenStats=currentVision==='generale';
-    const isDetaillee=currentVision==='detaillee';
-    const sSummary=document.querySelector('#sub-semaine .summary');
+    const sSummaryWrap=document.getElementById('stats-summary-semaine');
+    if(sSummaryWrap)sSummaryWrap.style.display=showGenStats?'':'none';
     const sPct=document.getElementById('s-pct');
-    if(sSummary){
-      sSummary.style.display=(!showGenStats&&!isDetaillee)?'none':'';
-      sSummary.style.visibility=isDetaillee?'hidden':'';
-      sSummary.style.pointerEvents=isDetaillee?'none':'';
-    }
     if(sPct)sPct.style.display='none';
     if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
@@ -818,13 +820,8 @@ function renderSubMois(){
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
   const showMStats=currentVision==='generale';
-  const isMDetaillee=currentVision==='detaillee';
-  const mSummaryEl=document.querySelector('#sub-mois .summary');
-  if(mSummaryEl){
-    mSummaryEl.style.display=(!showMStats&&!isMDetaillee)?'none':'';
-    mSummaryEl.style.visibility=isMDetaillee?'hidden':'';
-    mSummaryEl.style.pointerEvents=isMDetaillee?'none':'';
-  }
+  const mSummaryWrap=document.getElementById('stats-summary-mois');
+  if(mSummaryWrap)mSummaryWrap.style.display=showMStats?'':'none';
   document.getElementById('m-pct').style.display='none';
   if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
@@ -896,13 +893,8 @@ function renderSubPlage(){
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
   const showPStats=currentVision==='generale';
-  const isPDetaillee=currentVision==='detaillee';
-  const pSummaryEl=document.querySelector('#sub-plage .summary');
-  if(pSummaryEl){
-    pSummaryEl.style.display=(!showPStats&&!isPDetaillee)?'none':'';
-    pSummaryEl.style.visibility=isPDetaillee?'hidden':'';
-    pSummaryEl.style.pointerEvents=isPDetaillee?'none':'';
-  }
+  const pSummaryWrap=document.getElementById('stats-summary-plage');
+  if(pSummaryWrap)pSummaryWrap.style.display=showPStats?'':'none';
   document.getElementById('p-pct').style.display='none';
   if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
@@ -1275,6 +1267,7 @@ document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',
   ['semaine','mois','plage'].forEach(s=>{
     document.getElementById('sub-'+s).style.display='none';
     document.getElementById('stats-nav-'+s).style.display='none';
+    document.getElementById('stats-summary-'+s).style.display='none';
   });
   currentSub=btn.dataset.sub;
   document.getElementById('sub-'+currentSub).style.display='block';
