@@ -973,7 +973,7 @@ function buildMembersCard(members){
   // Si foyer incomplet (1 seul membre) : afficher code + lien d'invitation
   if(members.length<2){
     const code=house?.invite_code||'';
-    const inviteUrl=`${window.location.origin}${window.location.pathname.replace('app.html','index.html')}?invite=${code}`;
+    const inviteUrl=`https://partache.fr/index.html?invite=${code}`;
     const invBlock=document.createElement('div');
     invBlock.style.cssText='padding:12px 14px;border-top:0.5px solid var(--border);';
     invBlock.innerHTML=`
@@ -1141,7 +1141,7 @@ async function deleteTask(id){
 
 async function shareInviteLink(){
   const code=house?.invite_code||'';
-  const url=`${window.location.origin}${window.location.pathname.replace('app.html','index.html')}?invite=${code}`;
+  const url=`https://partache.fr/index.html?invite=${code}`;
   if(navigator.share)navigator.share({title:'Rejoins mon foyer Partâche',url});
   else navigator.clipboard.writeText(url).then(()=>alert('Lien copié ! Colle-le dans un message pour inviter ton partenaire.'));
 }
