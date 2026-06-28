@@ -27,7 +27,8 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 
 /* Layout */
 .app{display:flex;flex-direction:column;height:100svh;overflow:hidden;background:var(--bg);}
-.header{padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
+.header{padding:12px 16px;background:var(--bg);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
+.header.hidden{display:none;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
 /* Zone scrollable — min-height:0 essentiel pour que flex:1 scrolle sur iOS Safari */
 .app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none;}
@@ -345,15 +346,15 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
         <button class="vt-btn" data-vision="tache">Par tâche</button>
         <button class="vt-btn" data-vision="cm">Charge mentale</button>
       </div>
-      <!-- Nav semaine (visible sur onglet Semaine) -->
+      <!-- Nav semaine -->
       <div id="stats-nav-semaine">
         <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="s-wk-title">–</div><div class="week-hdr-sub" id="s-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="s-prev">‹</button><button class="week-hdr-btn" id="s-next">›</button></div></div>
       </div>
-      <!-- Nav mois (visible sur onglet Mois) -->
+      <!-- Nav mois -->
       <div id="stats-nav-mois" style="display:none;">
         <div class="month-nav" style="margin-bottom:0;"><button class="month-btn" id="prev-month">‹</button><span class="month-label" id="month-label">–</span><button class="month-btn" id="next-month">›</button></div>
       </div>
-      <!-- Nav plage (visible sur onglet Plage) -->
+      <!-- Nav plage -->
       <div id="stats-nav-plage" style="display:none;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <span style="font-size:12px;color:var(--muted);flex-shrink:0;">Du</span>
@@ -363,26 +364,25 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
           <button id="btn-calc" style="height:36px;padding:0 12px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;">OK</button>
         </div>
       </div>
-      <!-- Summary (dans le sticky — même hauteur quelle que soit la vue) -->
-      <div id="stats-summary-semaine">
-        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
-      </div>
-      <div id="stats-summary-mois" style="display:none;">
-        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
-      </div>
-      <div id="stats-summary-plage" style="display:none;">
-        <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
-      </div>
     </div>
-    <!-- Contenu scrollable -->
+    <!-- Contenu scrollable — summary incluse -->
     <div id="sub-semaine">
+      <div id="stats-summary-semaine" style="padding:8px 0 0;">
+        <div class="summary"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
+      </div>
       <div id="s-content"></div>
     </div>
     <div id="sub-mois" style="display:none;">
+      <div id="stats-summary-mois" style="padding:8px 0 0;">
+        <div class="summary"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
+      </div>
       <div id="m-content"></div>
     </div>
     <div id="sub-plage" style="display:none;">
       <div id="plage-result" style="display:none">
+        <div id="stats-summary-plage" style="padding:8px 0 0;">
+          <div class="summary"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
+        </div>
         <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
         <div id="p-content"></div>
       </div>
@@ -395,7 +395,7 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
       <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
     </div>
     <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
-    <div class="entries-list" id="entries-list"><div class="empty">Aucune entrée.</div></div>
+    <div class="entries-list" id="entries-list" style="margin-top:12px;"><div class="empty">Aucune entrée.</div></div>
   </div>
 
   <!-- PARAMÈTRES -->
@@ -623,7 +623,7 @@ function selectCat(cat,chip){
     taskWrap.appendChild(chip);
   });
   document.getElementById('task-section').style.display='block';
-  scrollToBtnSave();
+  setTimeout(scrollToBtnSave, 60);
 }
 
 // ============ SAVE ENTRY ============
@@ -650,13 +650,20 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
   allEntries=[inserted,...allEntries];
   setSyncDot('ok');
   render();renderStats();renderHistoryPane();
+  // Reset formulaire complet
   document.getElementById('f-min').value='';
   document.getElementById('f-date').value=today();
   const dh=document.getElementById('date-hint');dh.textContent='↺ remis à aujourd\'hui';dh.style.display='block';
   setTimeout(()=>{dh.textContent='';dh.style.display='none';},3000);
   if(cmChecked){cmChecked=false;document.getElementById('cm-checkbox').classList.remove('checked');document.getElementById('f-min').placeholder='ex : 30';}
+  // Reset catégorie et tâches
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.remove('active-cat'));
   document.querySelectorAll('#task-chips .chip').forEach(c=>c.classList.remove('active-task'));
-  selectedTaskEl=null;
+  document.getElementById('task-section').style.display='none';
+  document.getElementById('task-chips').innerHTML='';
+  selectedTaskEl=null; selectedCat=null;
+  // Remonter en haut du pane
+  document.getElementById('pane-add').scrollTop=0;
   showToast(true,(minutes>0?minutes+' min':'Charge mentale')+' · '+taskName+' · '+who);
 });
 
@@ -752,9 +759,6 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    const showGenStats=currentVision==='membre';
-    const sSummaryWrap=document.getElementById('stats-summary-semaine');
-    if(sSummaryWrap)sSummaryWrap.style.display=showGenStats?'':'none';
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='membre')renderParMembre('s-content',entries,byTask,byCat,'pieS',totals,n1,n2,false,null);
     else if(currentVision==='tache')renderParTache('s-content',entries,byTask,byCat,'pieS',n1,n2);
@@ -887,9 +891,6 @@ function renderSubMois(){
   document.getElementById('m-lbl1').textContent=n1;document.getElementById('m-lbl2').textContent=n2;
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
-  const showMStats=currentVision==='membre';
-  const mSummaryWrap=document.getElementById('stats-summary-mois');
-  if(mSummaryWrap)mSummaryWrap.style.display=showMStats?'':'none';
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='membre'){
     const last4=getLast4Weeks(currentMonth,currentMonthYear);
@@ -940,9 +941,6 @@ function renderSubPlage(){
   document.getElementById('p-hdr-sub').textContent=days+' jour(s) · '+totalCnt+' tâches · '+totalMin+' min';
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
-  const showPStats=currentVision==='membre';
-  const pSummaryWrap=document.getElementById('stats-summary-plage');
-  if(pSummaryWrap)pSummaryWrap.style.display=showPStats?'':'none';
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='membre'){
     // Histogramme si plage >= 2 semaines
@@ -1313,9 +1311,9 @@ function switchTab(tab){
   // Sur onglet Ajouter et Paramètres : header se cache (intégré dans le pane scrollable)
   const hdr=document.querySelector('.header');
   if(tab==='add'||tab==='settings'){
-    hdr.style.display='none';
+    hdr.classList.add('hidden');
   } else {
-    hdr.style.display='';
+    hdr.classList.remove('hidden');
   }
   if(tab==='history'){historyWeek=currentWeek;historyYear=currentYear;renderHistoryPane();}
   if(tab==='stats'){statsWeek=currentWeek;statsYear=currentYear;renderStats();}
