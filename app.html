@@ -23,11 +23,11 @@
   --amber:#EF9F27;--amber-bg:#2a1e06;
 }}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);overscroll-behavior:none;overflow:hidden;height:100%;}
-body{max-width:480px;margin:0 auto;}
+html{background:var(--bg);overscroll-behavior:none;overflow:hidden;height:100%;}
+body{background:var(--surface);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);overscroll-behavior:none;overflow:hidden;height:100%;max-width:480px;margin:0 auto;}
 
 /* Layout */
-.app{display:flex;flex-direction:column;height:100svh;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100svh;overflow:hidden;background:var(--bg);}
 .header{padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
 /* Zone scrollable — min-height:0 essentiel pour que flex:1 scrolle sur iOS Safari */
@@ -288,8 +288,15 @@ body{max-width:480px;margin:0 auto;}
 
   <div class="app-body">
   <!-- AJOUTER -->
-  <div class="pane active" id="pane-add" style="padding-top:0;">
-    <div class="add-sticky" style="position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 0 8px;">
+  <div class="pane active" id="pane-add" style="padding-top:12px;">
+    <!-- Mini-header intégré (scrolle avec le contenu) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="app-title" id="add-foyer-title">–</span>
+        <div class="sync-dot" id="sync-dot-add"></div>
+      </div>
+    </div>
+    <div class="add-sticky" style="background:var(--bg);padding:0 0 8px;">
       <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
       <div class="summary" style="padding:8px 0 0;">
         <div class="sum-card p1"><div class="sum-label" id="sum-lbl1">P1</div><div class="sum-value" id="tot-p1">0</div><div class="sum-sub"><span id="cnt-p1">0</span> tâche(s)</div></div>
@@ -335,8 +342,8 @@ body{max-width:480px;margin:0 auto;}
         <button class="sub-tab" data-sub="plage">Plage</button>
       </div>
       <div class="vision-toggle">
-        <button class="vt-btn active" data-vision="generale">Vue générale</button>
-        <button class="vt-btn" data-vision="detaillee">Vue détaillée</button>
+        <button class="vt-btn active" data-vision="membre">Par membre</button>
+        <button class="vt-btn" data-vision="tache">Par tâche</button>
         <button class="vt-btn" data-vision="cm">Charge mentale</button>
       </div>
       <!-- Nav semaine (visible sur onglet Semaine) -->
@@ -398,21 +405,6 @@ body{max-width:480px;margin:0 auto;}
 
   <!-- PARAMÈTRES -->
   <div class="pane" id="pane-settings">
-    <!-- Foyer -->
-    <div class="settings-section">
-      <div class="settings-title">Foyer</div>
-      <div class="settings-card">
-        <div class="settings-row">
-          <div class="settings-row-label" id="foyer-display" style="font-size:14px;font-weight:500;">–</div>
-          <button class="link-btn" id="btn-rename-foyer">Modifier</button>
-        </div>
-      </div>
-    </div>
-    <!-- Membres -->
-    <div class="settings-section">
-      <div class="settings-title">Membres</div>
-      <div class="settings-card" id="members-card"></div>
-    </div>
     <!-- Catégories -->
     <div class="settings-section">
       <div class="settings-title">Catégories</div>
@@ -432,6 +424,21 @@ body{max-width:480px;margin:0 auto;}
         </div>
         <button class="hide-cat-btn" id="hide-cat-btn">Masquer cette catégorie</button>
       </div>
+    </div>
+    <!-- Foyer -->
+    <div class="settings-section">
+      <div class="settings-title">Foyer</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-label" id="foyer-display" style="font-size:14px;font-weight:500;">–</div>
+          <button class="link-btn" id="btn-rename-foyer">Modifier</button>
+        </div>
+      </div>
+    </div>
+    <!-- Membres -->
+    <div class="settings-section">
+      <div class="settings-title">Membres</div>
+      <div class="settings-card" id="members-card"></div>
     </div>
     <!-- Compte -->
     <div class="settings-section">
@@ -513,7 +520,7 @@ let currentWeek=isoWeek(new Date()), currentYear=new Date().getFullYear();
 let statsWeek=isoWeek(new Date()), statsYear=new Date().getFullYear();
 let historyWeek=isoWeek(new Date()), historyYear=new Date().getFullYear();
 let currentMonth=new Date().getMonth(), currentMonthYear=new Date().getFullYear();
-let currentVision='generale', currentSub='semaine';
+let currentVision='membre', currentSub='semaine';
 let cmChecked=false;
 let selectedCat=null, selectedTaskEl=null;
 let currentCatEdit=null;
@@ -525,7 +532,10 @@ function weekBounds(w,y){const j=new Date(Date.UTC(y,0,4));const s=new Date(j);s
 function fmtShort(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',timeZone:'UTC'});}
 function fmtFull(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
 function today(){return new Date().toISOString().split('T')[0];}
-function setSyncDot(s){const d=document.getElementById('sync-dot');d.className='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');}
+function setSyncDot(s){
+  const d=document.getElementById('sync-dot');d.className='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
+  const d2=document.getElementById('sync-dot-add');if(d2)d2.className='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
+}
 
 // ============ INIT ============
 async function init(){
@@ -541,6 +551,7 @@ async function init(){
   me=members.find(m=>m.user_id===user.id)||member;
   partner=members.find(m=>m.user_id!==user.id)||null;
   document.getElementById('app-title').textContent=house?.name||'Partâche';
+  const addTitle=document.getElementById('add-foyer-title');if(addTitle)addTitle.textContent=house?.name||'Partâche';
   document.getElementById('foyer-display').textContent=house?.name||'–';
   document.getElementById('f-date').value=today();
   const now=new Date();
@@ -605,6 +616,7 @@ function selectCat(cat,chip){
       document.querySelectorAll('#task-chips .chip').forEach(c=>c.classList.remove('active-task'));
       chip.classList.add('active-task');
       selectedTaskEl=chip;
+      scrollToBtnSave();
     });
     taskWrap.appendChild(chip);
   });
@@ -616,6 +628,7 @@ document.getElementById('cm-box').addEventListener('click',()=>{
   cmChecked=!cmChecked;
   document.getElementById('cm-checkbox').classList.toggle('checked',cmChecked);
   document.getElementById('f-min').placeholder=cmChecked?'0 si non exécutée':'ex : 30';
+  scrollToBtnSave();
 });
 
 document.getElementById('btn-save').addEventListener('click',async()=>{
@@ -737,21 +750,60 @@ function renderStats(){
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
     // Summary sticky : visible en Générale, masquée (display:none) en Détaillée et CM
-    const showGenStats=currentVision==='generale';
+    const showGenStats=currentVision==='membre';
     const sSummaryWrap=document.getElementById('stats-summary-semaine');
     if(sSummaryWrap)sSummaryWrap.style.display=showGenStats?'':'none';
     const sPct=document.getElementById('s-pct');
     if(sPct)sPct.style.display='none';
     if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
-    if(currentVision==='generale')renderGenerale('s-content',entries,byTask,byCat,'pieS');
-    else if(currentVision==='detaillee')renderDetaillee('s-content',byTask,byCat,n1,n2);
+    if(currentVision==='membre')renderParMembre('s-content',entries,byTask,byCat,'pieS',totals,n1,n2,false,null);
+    else if(currentVision==='tache')renderParTache('s-content',entries,byTask,byCat,'pieS',n1,n2);
     else renderCM('s-content',entries,totals,byTask,n1,n2);
   } else if(currentSub==='mois') renderSubMois();
 }
 
-function renderGenerale(containerId,entries,byTask,byCat,pieKey){
+function renderParMembre(containerId,entries,byTask,byCat,pieKey,totals,n1,n2,showHisto,histoData){
   const cont=document.getElementById(containerId);
+  // Donut P1 vs P2
+  const t1=totals[n1]?.min||0, t2=totals[n2]?.min||0, tTotal=t1+t2;
+  if(tTotal>0){
+    const card=document.createElement('div');card.className='card';
+    const dw=document.createElement('div');dw.className='donut-wrap';
+    const canvas=document.createElement('canvas');canvas.id=pieKey+'_mb';dw.appendChild(canvas);card.appendChild(dw);
+    const legDiv=document.createElement('div');legDiv.className='legend';
+    legDiv.innerHTML=`<div class="legend-row"><div class="legend-dot" style="background:var(--p1)"></div><span class="legend-name">${n1}</span><span class="legend-min">${t1} min</span><span class="legend-pct">${Math.round(t1/tTotal*100)}%</span></div><div class="legend-row"><div class="legend-dot" style="background:var(--p2)"></div><span class="legend-name">${n2}</span><span class="legend-min">${t2} min</span><span class="legend-pct">${Math.round(t2/tTotal*100)}%</span></div>`;
+    card.appendChild(legDiv);cont.appendChild(card);
+    const mbKey=pieKey+'_mb';
+    if(pieInstances[mbKey])pieInstances[mbKey].destroy();
+    pieInstances[mbKey]=new Chart(canvas,{type:'doughnut',data:{labels:[n1,n2],datasets:[{data:[t1,t2],backgroundColor:['var(--p1)','var(--p2)'],borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed} min (${Math.round(ctx.parsed/tTotal*100)}%)`}}}}});
+  } else {
+    cont.innerHTML='<div class="empty">Aucune donnée.</div>';
+  }
+  // Histogramme 4 dernières semaines (mois et plage uniquement)
+  if(showHisto&&histoData){
+    const gMax=Math.max(...histoData.flatMap(d=>[d.m1,d.m2]),1);
+    const H=90;
+    const wCard=document.createElement('div');wCard.className='card';
+    const legend=`<div class="hist-legend"><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p1)"></div>${n1}</div><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p2)"></div>${n2}</div></div>`;
+    const bars=histoData.map(({label,m1,m2,c1,c2})=>{
+      const isEmpty=m1===0&&m2===0;
+      const h1=isEmpty?4:Math.max(4,Math.round(m1/gMax*H));
+      const h2=isEmpty?4:Math.max(4,Math.round(m2/gMax*H));
+      const v1=isEmpty?'—':`${m1}' · ${c1}×`;
+      const v2=isEmpty?'':(`${m2}' · ${c2}×`);
+      const op=isEmpty?';opacity:.3':'';
+      return`<div class="hist-wk"><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p1'}">${v1}</span><div class="hist-bar" style="height:${h1}px;background:var(--p1)${op}"></div></div><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p2'}">${isEmpty?'&nbsp;':v2}</span><div class="hist-bar" style="height:${h2}px;background:var(--p2)${op}"></div></div></div>`;
+    }).join('');
+    const lbls=histoData.map(({label})=>`<div class="hist-lbl">${label}</div>`).join('');
+    wCard.innerHTML=`<div class="card-title">4 dernières semaines</div>${legend}<div class="hist-wrap">${bars}</div><div class="hist-lbls">${lbls}</div>`;
+    cont.appendChild(wCard);
+  }
+}
+
+function renderParTache(containerId,entries,byTask,byCat,pieKey,n1,n2){
+  const cont=document.getElementById(containerId);
+  // Donut par catégorie
   const nTasks=Object.keys(byTask).length;
   const useCategories=nTasks>5;
   const card=document.createElement('div');card.className='card';
@@ -774,6 +826,12 @@ function renderGenerale(containerId,entries,byTask,byCat,pieKey){
       legDiv.appendChild(row);
     });
   } else legDiv.innerHTML='<div class="empty" style="padding:8px 0;font-size:12px">Aucune donnée.</div>';
+  // Détail par catégorie (ex-renderDetaillee)
+  renderDetaillee(containerId,byTask,byCat,n1,n2);
+}
+
+function renderGenerale(containerId,entries,byTask,byCat,pieKey){
+  renderParTache(containerId,entries,byTask,byCat,pieKey,me?.name||'P1',partner?.name||'P2');
 }
 
 function renderDetaillee(containerId,byTask,byCat,n1,n2){
@@ -830,36 +888,18 @@ function renderSubMois(){
   document.getElementById('m-lbl1').textContent=n1;document.getElementById('m-lbl2').textContent=n2;
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
-  const showMStats=currentVision==='generale';
+  const showMStats=currentVision==='membre';
   const mSummaryWrap=document.getElementById('stats-summary-mois');
   if(mSummaryWrap)mSummaryWrap.style.display=showMStats?'':'none';
   document.getElementById('m-pct').style.display='none';
   if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
-  if(currentVision==='generale'){
-    renderGenerale('m-content',entries,byTask,byCat,'pieM');
-    // 4 dernières semaines — histogramme barres verticales, format 160' · 10×
+  if(currentVision==='membre'){
     const last4=getLast4Weeks(currentMonth,currentMonthYear);
-    const weekData=last4.map(({w,y,label})=>{const{totals:wt,byTask:wbt}=calcStats(filterW(w,y));return{label,m1:wt[n1]?.min||0,m2:wt[n2]?.min||0,c1:wt[n1]?.cnt||0,c2:wt[n2]?.cnt||0};});
-    const gMax=Math.max(...weekData.flatMap(d=>[d.m1,d.m2]),1);
-    const H=90; // hauteur max des barres en px
-    const wCard=document.createElement('div');wCard.className='card';
-    const legend=`<div class="hist-legend"><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p1)"></div>${n1}</div><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p2)"></div>${n2}</div></div>`;
-    const bars=weekData.map(({label,m1,m2,c1,c2})=>{
-      const isEmpty=m1===0&&m2===0;
-      const h1=isEmpty?4:Math.max(4,Math.round(m1/gMax*H));
-      const h2=isEmpty?4:Math.max(4,Math.round(m2/gMax*H));
-      const v1=isEmpty?'—':`${m1}' · ${c1}×`;
-      const v2=isEmpty?'':(`${m2}' · ${c2}×`);
-      const op=isEmpty?';opacity:.3':'';
-      return`<div class="hist-wk"><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p1'}">${v1}</span><div class="hist-bar" style="height:${h1}px;background:var(--p1)${op}"></div></div><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p2'}">${isEmpty?'&nbsp;':v2}</span><div class="hist-bar" style="height:${h2}px;background:var(--p2)${op}"></div></div></div>`;
-    }).join('');
-    const lbls=weekData.map(({label})=>`<div class="hist-lbl">${label}</div>`).join('');
-    wCard.innerHTML=`<div class="card-title">4 dernières semaines</div>${legend}<div class="hist-wrap">${bars}</div><div class="hist-lbls">${lbls}</div>`;
-    mCont.appendChild(wCard);
-  } else if(currentVision==='detaillee'){
-    renderDetaillee('m-content',byTask,byCat,n1,n2);
-    // Pas de "4 dernières semaines" dans Vue détaillée
+    const histoData=last4.map(({w,y,label})=>{const{totals:wt}=calcStats(filterW(w,y));return{label,m1:wt[n1]?.min||0,m2:wt[n2]?.min||0,c1:wt[n1]?.cnt||0,c2:wt[n2]?.cnt||0};});
+    renderParMembre('m-content',entries,byTask,byCat,'pieM',totals,n1,n2,true,histoData);
+  } else if(currentVision==='tache'){
+    renderParTache('m-content',entries,byTask,byCat,'pieM',n1,n2);
   } else renderCM('m-content',entries,totals,byTask,n1,n2);
 }
 
@@ -903,15 +943,27 @@ function renderSubPlage(){
   document.getElementById('p-hdr-sub').textContent=days+' jour(s) · '+totalCnt+' tâches · '+totalMin+' min';
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
-  const showPStats=currentVision==='generale';
+  const showPStats=currentVision==='membre';
   const pSummaryWrap=document.getElementById('stats-summary-plage');
   if(pSummaryWrap)pSummaryWrap.style.display=showPStats?'':'none';
   document.getElementById('p-pct').style.display='none';
   if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
-  if(currentVision==='generale')renderGenerale('p-content',entries,byTask,byCat,'pieP');
-  else if(currentVision==='detaillee')renderDetaillee('p-content',byTask,byCat,n1,n2);
-  else renderCM('p-content',entries,totals,byTask,n1,n2);
+  if(currentVision==='membre'){
+    // Histogramme si plage >= 2 semaines
+    const fromD=new Date(from+'T12:00:00Z'), toD=new Date(to+'T12:00:00Z');
+    const nbDays=Math.round((toD-fromD)/86400000)+1;
+    let histoData=null;
+    if(nbDays>=14){
+      const weeks=[];const seen=new Set();
+      let d=new Date(fromD);d.setDate(d.getDate()-(d.getDay()||7)+1);
+      while(d<=toD){const w=isoWeek(d),y=d.getFullYear(),k=y+'-'+w;if(!seen.has(k)){seen.add(k);weeks.push({w,y,label:'Sem. '+w});}d.setDate(d.getDate()+7);}
+      if(weeks.length>1)histoData=weeks.slice(-4).map(({w,y,label})=>{const{totals:wt}=calcStats(filterW(w,y));return{label,m1:wt[n1]?.min||0,m2:wt[n2]?.min||0,c1:wt[n1]?.cnt||0,c2:wt[n2]?.cnt||0};});
+    }
+    renderParMembre('p-content',entries,byTask,byCat,'pieP',totals,n1,n2,!!histoData,histoData);
+  } else if(currentVision==='tache'){
+    renderParTache('p-content',entries,byTask,byCat,'pieP',n1,n2);
+  } else renderCM('p-content',entries,totals,byTask,n1,n2);
   // Masquer result-hdr (double affichage période)
   const rh=document.getElementById('plage-result-hdr');if(rh)rh.style.display='none';
   document.getElementById('plage-result').style.display='block';
@@ -1271,6 +1323,13 @@ function switchTab(tab){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
   document.getElementById('pane-'+tab).classList.add('active');
+  // Sur onglet Ajouter : header se cache (il est intégré dans le pane qui scrolle)
+  const hdr=document.querySelector('.header');
+  if(tab==='add'){
+    hdr.style.display='none';
+  } else {
+    hdr.style.display='';
+  }
   if(tab==='history'){historyWeek=currentWeek;historyYear=currentYear;renderHistoryPane();}
   if(tab==='stats'){statsWeek=currentWeek;statsYear=currentYear;renderStats();}
   if(tab==='add'){buildCatChips();render();}
@@ -1289,6 +1348,11 @@ document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',
   document.getElementById('stats-nav-'+currentSub).style.display='block';
   if(currentSub==='semaine')renderStats();else if(currentSub==='mois')renderSubMois();
 }));
+
+function scrollToBtnSave(){
+  const btn=document.getElementById('btn-save');
+  if(btn)btn.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 
 document.querySelectorAll('.vt-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
