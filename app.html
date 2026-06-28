@@ -23,8 +23,7 @@
   --amber:#EF9F27;--amber-bg:#2a1e06;
 }}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html{background:var(--bg);overscroll-behavior:none;overflow:hidden;height:100%;}
-body{background:var(--surface);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);overscroll-behavior:none;overflow:hidden;height:100%;max-width:480px;margin:0 auto;}
+html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;color:var(--text);overscroll-behavior:none;overflow:hidden;height:100%;max-width:480px;margin:0 auto;}
 
 /* Layout */
 .app{display:flex;flex-direction:column;height:100svh;overflow:hidden;background:var(--bg);}
@@ -36,7 +35,7 @@ body{background:var(--surface);font-family:-apple-system,'SF Pro Text','Helvetic
 .pane{display:none;padding:12px;padding-bottom:24px;}
 .pane-sticky{padding-top:0;padding-left:12px;padding-right:12px;}
 .pane.active{display:block;}
-.app-bottom{flex-shrink:0;}
+.app-bottom{flex-shrink:0;background:var(--surface);}
 .app-title{font-size:14px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--hint);transition:background .3s;flex-shrink:0;}
 .sync-dot.ok{background:var(--p2);}.sync-dot.ing{background:#e8a020;}
@@ -367,15 +366,12 @@ body{background:var(--surface);font-family:-apple-system,'SF Pro Text','Helvetic
       <!-- Summary (dans le sticky — même hauteur quelle que soit la vue) -->
       <div id="stats-summary-semaine">
         <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
-        <div class="pct-wrap" id="s-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="s-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="s-pf1" style="width:0%"></div></div><span class="pct-val" id="s-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="s-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="s-pf2" style="width:0%"></div></div><span class="pct-val" id="s-pv2">–</span></div></div>
       </div>
       <div id="stats-summary-mois" style="display:none;">
         <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
-        <div class="pct-wrap" id="m-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="m-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="m-pf1" style="width:0%"></div></div><span class="pct-val" id="m-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="m-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="m-pf2" style="width:0%"></div></div><span class="pct-val" id="m-pv2">–</span></div></div>
       </div>
       <div id="stats-summary-plage" style="display:none;">
         <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
-        <div class="pct-wrap" id="p-pct" style="display:none"><div class="pct-row"><span class="pct-name" id="p-pn1">P1</span><div class="pct-track"><div class="pct-fill p1" id="p-pf1" style="width:0%"></div></div><span class="pct-val" id="p-pv1">–</span></div><div class="pct-row"><span class="pct-name" id="p-pn2">P2</span><div class="pct-track"><div class="pct-fill p2" id="p-pf2" style="width:0%"></div></div><span class="pct-val" id="p-pv2">–</span></div></div>
       </div>
     </div>
     <!-- Contenu scrollable -->
@@ -396,15 +392,20 @@ body{background:var(--surface);font-family:-apple-system,'SF Pro Text','Helvetic
   <!-- HISTORIQUE -->
   <div class="pane pane-sticky" id="pane-history">
     <div class="stats-controls">
-      <div class="week-hdr" style="margin-bottom:0;" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
-      <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
-      <div class="bar-wrap" id="h-bar-wrap" style="padding:0 0 0;display:none;"><div class="bar-row"><span class="bar-name" id="h-bn1">P1</span><div class="bar-track"><div class="bar-fill p1" id="h-bp1" style="width:0%"></div></div><span class="bar-pct" id="h-bpct1">–</span></div><div class="bar-row"><span class="bar-name" id="h-bn2">P2</span><div class="bar-track"><div class="bar-fill p2" id="h-bp2" style="width:0%"></div></div><span class="bar-pct" id="h-bpct2">–</span></div></div>
+      <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="h-wk-title">–</div><div class="week-hdr-sub" id="h-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="h-prev">‹</button><button class="week-hdr-btn" id="h-next">›</button></div></div>
     </div>
+    <div class="summary" style="padding:8px 0 0;"><div class="sum-card p1"><div class="sum-label" id="h-lbl1">P1</div><div class="sum-value" id="h-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="h-lbl2">P2</div><div class="sum-value" id="h-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="h-cnt2">0</span> tâche(s)</div></div></div>
     <div class="entries-list" id="entries-list"><div class="empty">Aucune entrée.</div></div>
   </div>
 
   <!-- PARAMÈTRES -->
-  <div class="pane" id="pane-settings">
+  <div class="pane" id="pane-settings" style="padding-top:12px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="app-title" id="settings-foyer-title">–</span>
+        <div class="sync-dot" id="sync-dot-settings"></div>
+      </div>
+    </div>
     <!-- Catégories -->
     <div class="settings-section">
       <div class="settings-title">Catégories</div>
@@ -533,8 +534,8 @@ function fmtShort(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'s
 function fmtFull(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
 function today(){return new Date().toISOString().split('T')[0];}
 function setSyncDot(s){
-  const d=document.getElementById('sync-dot');d.className='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
-  const d2=document.getElementById('sync-dot-add');if(d2)d2.className='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
+  const cls='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
+  ['sync-dot','sync-dot-add','sync-dot-settings'].forEach(id=>{const d=document.getElementById(id);if(d)d.className=cls;});
 }
 
 // ============ INIT ============
@@ -552,6 +553,7 @@ async function init(){
   partner=members.find(m=>m.user_id!==user.id)||null;
   document.getElementById('app-title').textContent=house?.name||'Partâche';
   const addTitle=document.getElementById('add-foyer-title');if(addTitle)addTitle.textContent=house?.name||'Partâche';
+  const settingsTitle=document.getElementById('settings-foyer-title');if(settingsTitle)settingsTitle.textContent=house?.name||'Partâche';
   document.getElementById('foyer-display').textContent=house?.name||'–';
   document.getElementById('f-date').value=today();
   const now=new Date();
@@ -621,6 +623,7 @@ function selectCat(cat,chip){
     taskWrap.appendChild(chip);
   });
   document.getElementById('task-section').style.display='block';
+  scrollToBtnSave();
 }
 
 // ============ SAVE ENTRY ============
@@ -749,13 +752,9 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
-    // Summary sticky : visible en Générale, masquée (display:none) en Détaillée et CM
     const showGenStats=currentVision==='membre';
     const sSummaryWrap=document.getElementById('stats-summary-semaine');
     if(sSummaryWrap)sSummaryWrap.style.display=showGenStats?'':'none';
-    const sPct=document.getElementById('s-pct');
-    if(sPct)sPct.style.display='none';
-    if(showGenStats)setPct('s-pct','s-pf1','s-pf2','s-pv1','s-pv2','s-pn1','s-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='membre')renderParMembre('s-content',entries,byTask,byCat,'pieS',totals,n1,n2,false,null);
     else if(currentVision==='tache')renderParTache('s-content',entries,byTask,byCat,'pieS',n1,n2);
@@ -776,7 +775,7 @@ function renderParMembre(containerId,entries,byTask,byCat,pieKey,totals,n1,n2,sh
     card.appendChild(legDiv);cont.appendChild(card);
     const mbKey=pieKey+'_mb';
     if(pieInstances[mbKey])pieInstances[mbKey].destroy();
-    pieInstances[mbKey]=new Chart(canvas,{type:'doughnut',data:{labels:[n1,n2],datasets:[{data:[t1,t2],backgroundColor:['var(--p1)','var(--p2)'],borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed} min (${Math.round(ctx.parsed/tTotal*100)}%)`}}}}});
+    pieInstances[mbKey]=new Chart(canvas,{type:'doughnut',data:{labels:[n1,n2],datasets:[{data:[t1,t2],backgroundColor:['#1A6FBF','#1D9E75'],borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed} min (${Math.round(ctx.parsed/tTotal*100)}%)`}}}}});
   } else {
     cont.innerHTML='<div class="empty">Aucune donnée.</div>';
   }
@@ -891,8 +890,6 @@ function renderSubMois(){
   const showMStats=currentVision==='membre';
   const mSummaryWrap=document.getElementById('stats-summary-mois');
   if(mSummaryWrap)mSummaryWrap.style.display=showMStats?'':'none';
-  document.getElementById('m-pct').style.display='none';
-  if(showMStats)setPct('m-pct','m-pf1','m-pf2','m-pv1','m-pv2','m-pn1','m-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='membre'){
     const last4=getLast4Weeks(currentMonth,currentMonthYear);
@@ -946,8 +943,6 @@ function renderSubPlage(){
   const showPStats=currentVision==='membre';
   const pSummaryWrap=document.getElementById('stats-summary-plage');
   if(pSummaryWrap)pSummaryWrap.style.display=showPStats?'':'none';
-  document.getElementById('p-pct').style.display='none';
-  if(showPStats)setPct('p-pct','p-pf1','p-pf2','p-pv1','p-pv2','p-pn1','p-pn2',totals[n1]?.min||0,totals[n2]?.min||0,n1,n2);
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='membre'){
     // Histogramme si plage >= 2 semaines
@@ -979,14 +974,6 @@ function renderHistoryPane(){
   document.getElementById('h-lbl1').textContent=n1;document.getElementById('h-lbl2').textContent=n2;
   document.getElementById('h-tot1').textContent=totals[n1]?.min||0;document.getElementById('h-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('h-tot2').textContent=totals[n2]?.min||0;document.getElementById('h-cnt2').textContent=totals[n2]?.cnt||0;
-  const total=(totals[n1]?.min||0)+(totals[n2]?.min||0);
-  const hw=document.getElementById('h-bar-wrap');
-  if(total>0){
-    hw.style.display='block';
-    const p=Math.round((totals[n1]?.min||0)/total*100);
-    document.getElementById('h-bp1').style.width=p+'%';document.getElementById('h-bp2').style.width=(100-p)+'%';
-    document.getElementById('h-bpct1').textContent=p+'%';document.getElementById('h-bpct2').textContent=(100-p)+'%';
-  } else hw.style.display='none';
   const list=document.getElementById('entries-list');
   if(!entries.length){list.innerHTML='<div class="empty">Aucune entrée cette semaine.</div>';return;}
   const sorted=[...entries].sort((a,b)=>b.date.localeCompare(a.date));
@@ -1323,9 +1310,9 @@ function switchTab(tab){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
   document.getElementById('pane-'+tab).classList.add('active');
-  // Sur onglet Ajouter : header se cache (il est intégré dans le pane qui scrolle)
+  // Sur onglet Ajouter et Paramètres : header se cache (intégré dans le pane scrollable)
   const hdr=document.querySelector('.header');
-  if(tab==='add'){
+  if(tab==='add'||tab==='settings'){
     hdr.style.display='none';
   } else {
     hdr.style.display='';
