@@ -28,7 +28,6 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 /* Layout */
 .app{display:flex;flex-direction:column;height:100svh;overflow:hidden;background:var(--bg);}
 .header{padding:12px 16px;background:var(--bg);border-bottom:0.5px solid var(--border);flex-shrink:0;z-index:10;}
-.header.hidden{display:none;}
 .header-row{display:flex;align-items:center;justify-content:space-between;}
 /* Zone scrollable — min-height:0 essentiel pour que flex:1 scrolle sur iOS Safari */
 .app-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none;}
@@ -289,13 +288,6 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
   <div class="app-body">
   <!-- AJOUTER -->
   <div class="pane active" id="pane-add" style="padding-top:12px;">
-    <!-- Mini-header intégré (scrolle avec le contenu) -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="app-title" id="add-foyer-title">–</span>
-        <div class="sync-dot" id="sync-dot-add"></div>
-      </div>
-    </div>
     <div class="add-sticky" style="background:var(--bg);padding:0 0 8px;">
       <div class="week-hdr" style="margin-bottom:0;"><div class="week-hdr-info"><div class="week-hdr-title" id="add-wk-title">–</div><div class="week-hdr-sub" id="add-wk-sub">–</div></div><div class="week-hdr-nav"><button class="week-hdr-btn" id="prev-week">‹</button><button class="week-hdr-btn" id="next-week">›</button></div></div>
       <div class="summary" style="padding:8px 0 0;">
@@ -400,12 +392,6 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 
   <!-- PARAMÈTRES -->
   <div class="pane" id="pane-settings" style="padding-top:12px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="app-title" id="settings-foyer-title">–</span>
-        <div class="sync-dot" id="sync-dot-settings"></div>
-      </div>
-    </div>
     <!-- Catégories -->
     <div class="settings-section">
       <div class="settings-title">Catégories</div>
@@ -535,7 +521,7 @@ function fmtFull(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'nu
 function today(){return new Date().toISOString().split('T')[0];}
 function setSyncDot(s){
   const cls='sync-dot'+(s==='ok'?' ok':s==='ing'?' ing':'');
-  ['sync-dot','sync-dot-add','sync-dot-settings'].forEach(id=>{const d=document.getElementById(id);if(d)d.className=cls;});
+  const d=document.getElementById('sync-dot');if(d)d.className=cls;
 }
 
 // ============ INIT ============
@@ -552,8 +538,6 @@ async function init(){
   me=members.find(m=>m.user_id===user.id)||member;
   partner=members.find(m=>m.user_id!==user.id)||null;
   document.getElementById('app-title').textContent=house?.name||'Partâche';
-  const addTitle=document.getElementById('add-foyer-title');if(addTitle)addTitle.textContent=house?.name||'Partâche';
-  const settingsTitle=document.getElementById('settings-foyer-title');if(settingsTitle)settingsTitle.textContent=house?.name||'Partâche';
   document.getElementById('foyer-display').textContent=house?.name||'–';
   document.getElementById('f-date').value=today();
   const now=new Date();
@@ -775,20 +759,20 @@ function renderParMembre(containerId,entries,byTask,byCat,pieKey,totals,n1,n2,sh
     const dw=document.createElement('div');dw.className='donut-wrap';
     const canvas=document.createElement('canvas');canvas.id=pieKey+'_mb';dw.appendChild(canvas);card.appendChild(dw);
     const legDiv=document.createElement('div');legDiv.className='legend';
-    legDiv.innerHTML=`<div class="legend-row"><div class="legend-dot" style="background:var(--p1)"></div><span class="legend-name">${n1}</span><span class="legend-min">${t1} min</span><span class="legend-pct">${Math.round(t1/tTotal*100)}%</span></div><div class="legend-row"><div class="legend-dot" style="background:var(--p2)"></div><span class="legend-name">${n2}</span><span class="legend-min">${t2} min</span><span class="legend-pct">${Math.round(t2/tTotal*100)}%</span></div>`;
+    legDiv.innerHTML=`<div class="legend-row"><div class="legend-dot" style="background:#1A6FBF"></div><span class="legend-name">${n1}</span><span class="legend-min">${t1} min</span><span class="legend-pct">${Math.round(t1/tTotal*100)}%</span></div><div class="legend-row"><div class="legend-dot" style="background:#1D9E75"></div><span class="legend-name">${n2}</span><span class="legend-min">${t2} min</span><span class="legend-pct">${Math.round(t2/tTotal*100)}%</span></div>`;
     card.appendChild(legDiv);cont.appendChild(card);
     const mbKey=pieKey+'_mb';
     if(pieInstances[mbKey])pieInstances[mbKey].destroy();
     pieInstances[mbKey]=new Chart(canvas,{type:'doughnut',data:{labels:[n1,n2],datasets:[{data:[t1,t2],backgroundColor:['#1A6FBF','#1D9E75'],borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed} min (${Math.round(ctx.parsed/tTotal*100)}%)`}}}}});
   } else {
-    cont.innerHTML='<div class="empty">Aucune donnée.</div>';
+    cont.innerHTML='<div class="empty">Aucune donnée.</div>';return;
   }
   // Histogramme 4 dernières semaines (mois et plage uniquement)
   if(showHisto&&histoData){
     const gMax=Math.max(...histoData.flatMap(d=>[d.m1,d.m2]),1);
     const H=90;
     const wCard=document.createElement('div');wCard.className='card';
-    const legend=`<div class="hist-legend"><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p1)"></div>${n1}</div><div class="hist-leg-item"><div class="hist-leg-dot" style="background:var(--p2)"></div>${n2}</div></div>`;
+    const legend=`<div class="hist-legend"><div class="hist-leg-item"><div class="hist-leg-dot" style="background:#1A6FBF"></div>${n1}</div><div class="hist-leg-item"><div class="hist-leg-dot" style="background:#1D9E75"></div>${n2}</div></div>`;
     const bars=histoData.map(({label,m1,m2,c1,c2})=>{
       const isEmpty=m1===0&&m2===0;
       const h1=isEmpty?4:Math.max(4,Math.round(m1/gMax*H));
@@ -796,12 +780,69 @@ function renderParMembre(containerId,entries,byTask,byCat,pieKey,totals,n1,n2,sh
       const v1=isEmpty?'—':`${m1}' · ${c1}×`;
       const v2=isEmpty?'':(`${m2}' · ${c2}×`);
       const op=isEmpty?';opacity:.3':'';
-      return`<div class="hist-wk"><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p1'}">${v1}</span><div class="hist-bar" style="height:${h1}px;background:var(--p1)${op}"></div></div><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p2'}">${isEmpty?'&nbsp;':v2}</span><div class="hist-bar" style="height:${h2}px;background:var(--p2)${op}"></div></div></div>`;
+      return`<div class="hist-wk"><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p1'}">${v1}</span><div class="hist-bar" style="height:${h1}px;background:#1A6FBF${op}"></div></div><div class="hist-bar-col"><span class="hist-val ${isEmpty?'empty':'p2'}">${isEmpty?'&nbsp;':v2}</span><div class="hist-bar" style="height:${h2}px;background:#1D9E75${op}"></div></div></div>`;
     }).join('');
     const lbls=histoData.map(({label})=>`<div class="hist-lbl">${label}</div>`).join('');
     wCard.innerHTML=`<div class="card-title">4 dernières semaines</div>${legend}<div class="hist-wrap">${bars}</div><div class="hist-lbls">${lbls}</div>`;
     cont.appendChild(wCard);
   }
+  // Sélecteur membre + liste de ses tâches
+  const membres=[n1,n2];
+  const memberSection=document.createElement('div');memberSection.style.cssText='margin-top:8px;';
+  // Toggle selector
+  const toggle=document.createElement('div');
+  toggle.style.cssText='display:flex;gap:4px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:3px;margin-bottom:10px;';
+  membres.forEach((name,idx)=>{
+    const btn=document.createElement('button');
+    btn.textContent=name;
+    btn.style.cssText=`flex:1;padding:6px 8px;border:none;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;background:${idx===0?'var(--surface)':'transparent'};color:${idx===0?'var(--text)':'var(--muted)'};`;
+    btn.dataset.idx=idx;
+    btn.addEventListener('click',()=>{
+      toggle.querySelectorAll('button').forEach((b,i)=>{
+        b.style.background=i===idx?'var(--surface)':'transparent';
+        b.style.color=i===idx?'var(--text)':'var(--muted)';
+      });
+      renderMemberTasks(taskListDiv,byTask,name,idx===0?n1:n2,idx===0?n2:n1);
+    });
+    toggle.appendChild(btn);
+  });
+  memberSection.appendChild(toggle);
+  const taskListDiv=document.createElement('div');
+  memberSection.appendChild(taskListDiv);
+  cont.appendChild(memberSection);
+  // Afficher n1 par défaut
+  renderMemberTasks(taskListDiv,byTask,n1,n1,n2);
+}
+
+function renderMemberTasks(container,byTask,who,n1,n2){
+  container.innerHTML='';
+  // Filtrer les tâches où ce membre a au moins une entrée
+  const tasksByCat={};
+  Object.entries(byTask).forEach(([task,d])=>{
+    if((d[who]?.cnt||0)>0){
+      if(!tasksByCat[d.cat])tasksByCat[d.cat]=[];
+      tasksByCat[d.cat].push([task,d]);
+    }
+  });
+  if(!Object.keys(tasksByCat).length){
+    container.innerHTML='<div class="empty" style="padding:8px 0;font-size:12px">Aucune tâche cette période.</div>';return;
+  }
+  const globalMax=Math.max(1,...Object.values(byTask).map(d=>d[who]?.min||0));
+  const isP1=who===n1;
+  Object.entries(tasksByCat).forEach(([cat,tasks])=>{
+    const block=document.createElement('div');block.className='cat-block';
+    const catTotal=tasks.reduce((s,[,d])=>s+(d[who]?.min||0),0);
+    block.innerHTML=`<div class="cat-hdr"><div class="cat-hdr-left"><span class="cat-name-lg">${cat}</span></div><span class="cat-total">${catTotal} min</span></div>`;
+    tasks.forEach(([task,d])=>{
+      const tr=document.createElement('div');tr.className='task-detail-row';
+      const cmBadge=d[who]?.cm>0?`<span class="badge-cm">⚡ ${d[who].cm}</span>`:'';
+      const cntBadge=`<span class="badge-cnt">${d[who]?.cnt||0}×</span>`;
+      const fillPct=Math.round((d[who]?.min||0)/globalMax*100);
+      tr.innerHTML=`<div class="task-detail-hdr"><span class="task-detail-name">${task}</span>${cmBadge}${cntBadge}</div><div class="task-who-row"><span class="task-who-name ${isP1?'p1':'p2'}">${who}</span><div class="task-who-track"><div class="task-who-fill ${isP1?'p1':'p2'}" style="width:${fillPct}%"></div></div><span class="task-who-vals">${d[who]?.min||0} min</span></div>`;
+      block.appendChild(tr);
+    });
+    container.appendChild(block);
+  });
 }
 
 function renderParTache(containerId,entries,byTask,byCat,pieKey,n1,n2){
@@ -1309,12 +1350,6 @@ function switchTab(tab){
   document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
   document.getElementById('pane-'+tab).classList.add('active');
   // Sur onglet Ajouter et Paramètres : header se cache (intégré dans le pane scrollable)
-  const hdr=document.querySelector('.header');
-  if(tab==='add'||tab==='settings'){
-    hdr.classList.add('hidden');
-  } else {
-    hdr.classList.remove('hidden');
-  }
   if(tab==='history'){historyWeek=currentWeek;historyYear=currentYear;renderHistoryPane();}
   if(tab==='stats'){statsWeek=currentWeek;statsYear=currentYear;renderStats();}
   if(tab==='add'){buildCatChips();render();}
@@ -1336,7 +1371,12 @@ document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',
 
 function scrollToBtnSave(){
   const btn=document.getElementById('btn-save');
-  if(btn)btn.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(btn)btn.scrollIntoView({behavior:'smooth',block:'end'});
+  // Aérer en ajoutant un léger over-scroll
+  setTimeout(()=>{
+    const pane=document.getElementById('pane-add');
+    if(pane)pane.scrollTop+=28;
+  },350);
 }
 
 document.querySelectorAll('.vt-btn').forEach(btn=>btn.addEventListener('click',()=>{
