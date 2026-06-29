@@ -68,7 +68,7 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
 .nav-item.active span{color:var(--p1);font-weight:700;}
 
 /* Form */
-.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:14px;}
+.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;padding-bottom:28px;display:flex;flex-direction:column;gap:14px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:12px;color:var(--muted);}
@@ -358,24 +358,24 @@ html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text','Helvetic
       </div>
     </div>
     <!-- Contenu scrollable — summary incluse -->
-    <div id="sub-semaine">
-      <div id="stats-summary-semaine" style="padding:8px 0 0;">
-        <div class="summary"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
+    <div id="sub-semaine" style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+      <div id="stats-summary-semaine">
+        <div class="summary" style="padding:4px 0 0;"><div class="sum-card p1"><div class="sum-label" id="s-lbl1">P1</div><div class="sum-value" id="s-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="s-lbl2">P2</div><div class="sum-value" id="s-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="s-cnt2">0</span> tâche(s)</div></div></div>
       </div>
       <div id="s-content"></div>
     </div>
-    <div id="sub-mois" style="display:none;">
-      <div id="stats-summary-mois" style="padding:8px 0 0;">
-        <div class="summary"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
+    <div id="sub-mois" style="display:none;flex-direction:column;gap:8px;padding-top:4px;">
+      <div id="stats-summary-mois">
+        <div class="summary" style="padding:4px 0 0;"><div class="sum-card p1"><div class="sum-label" id="m-lbl1">P1</div><div class="sum-value" id="m-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="m-lbl2">P2</div><div class="sum-value" id="m-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="m-cnt2">0</span> tâche(s)</div></div></div>
       </div>
       <div id="m-content"></div>
     </div>
     <div id="sub-plage" style="display:none;">
-      <div id="plage-result" style="display:none">
-        <div id="stats-summary-plage" style="padding:8px 0 0;">
-          <div class="summary"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
+      <div id="plage-result" style="display:none;flex-direction:column;gap:8px;padding-top:4px;">
+        <div id="stats-summary-plage">
+          <div class="summary" style="padding:4px 0 0;"><div class="sum-card p1"><div class="sum-label" id="p-lbl1">P1</div><div class="sum-value" id="p-tot1" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt1">0</span> tâche(s)</div></div><div class="sum-card p2"><div class="sum-label" id="p-lbl2">P2</div><div class="sum-value" id="p-tot2" style="font-size:17px">0</div><div class="sum-sub"><span id="p-cnt2">0</span> tâche(s)</div></div></div>
         </div>
-        <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
+        <div id="plage-result-hdr" style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;border:0.5px solid var(--border);display:none;"><div style="font-size:13px;font-weight:700;" id="p-hdr-txt">–</div><div style="font-size:11px;color:var(--muted);margin-top:2px;" id="p-hdr-sub">–</div></div>
         <div id="p-content"></div>
       </div>
     </div>
@@ -743,6 +743,8 @@ function renderStats(){
     document.getElementById('s-lbl1').textContent=n1;document.getElementById('s-lbl2').textContent=n2;
     document.getElementById('s-tot1').textContent=totals[n1]?.min||0;document.getElementById('s-cnt1').textContent=totals[n1]?.cnt||0;
     document.getElementById('s-tot2').textContent=totals[n2]?.min||0;document.getElementById('s-cnt2').textContent=totals[n2]?.cnt||0;
+    const sSumWrap=document.getElementById('stats-summary-semaine');
+    if(sSumWrap)sSumWrap.style.display=currentVision==='cm'?'none':'';
     document.getElementById('s-content').innerHTML='';
     if(currentVision==='membre')renderParMembre('s-content',entries,byTask,byCat,'pieS',totals,n1,n2,false,null);
     else if(currentVision==='tache')renderParTache('s-content',entries,byTask,byCat,'pieS',n1,n2);
@@ -932,6 +934,8 @@ function renderSubMois(){
   document.getElementById('m-lbl1').textContent=n1;document.getElementById('m-lbl2').textContent=n2;
   document.getElementById('m-tot1').textContent=totals[n1]?.min||0;document.getElementById('m-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('m-tot2').textContent=totals[n2]?.min||0;document.getElementById('m-cnt2').textContent=totals[n2]?.cnt||0;
+  const mSumWrap=document.getElementById('stats-summary-mois');
+  if(mSumWrap)mSumWrap.style.display=currentVision==='cm'?'none':'';
   const mCont=document.getElementById('m-content');mCont.innerHTML='';
   if(currentVision==='membre'){
     const last4=getLast4Weeks(currentMonth,currentMonthYear);
@@ -982,6 +986,8 @@ function renderSubPlage(){
   document.getElementById('p-hdr-sub').textContent=days+' jour(s) · '+totalCnt+' tâches · '+totalMin+' min';
   document.getElementById('p-tot1').textContent=totals[n1]?.min||0;document.getElementById('p-cnt1').textContent=totals[n1]?.cnt||0;
   document.getElementById('p-tot2').textContent=totals[n2]?.min||0;document.getElementById('p-cnt2').textContent=totals[n2]?.cnt||0;
+  const pSumWrap=document.getElementById('stats-summary-plage');
+  if(pSumWrap)pSumWrap.style.display=currentVision==='cm'?'none':'';
   const pCont=document.getElementById('p-content');pCont.innerHTML='';
   if(currentVision==='membre'){
     // Histogramme si plage >= 2 semaines
@@ -1361,10 +1367,9 @@ document.querySelectorAll('.sub-tab').forEach(btn=>btn.addEventListener('click',
   ['semaine','mois','plage'].forEach(s=>{
     document.getElementById('sub-'+s).style.display='none';
     document.getElementById('stats-nav-'+s).style.display='none';
-    document.getElementById('stats-summary-'+s).style.display='none';
   });
   currentSub=btn.dataset.sub;
-  document.getElementById('sub-'+currentSub).style.display='block';
+  document.getElementById('sub-'+currentSub).style.display=currentSub==='plage'?'block':'flex';
   document.getElementById('stats-nav-'+currentSub).style.display='block';
   if(currentSub==='semaine')renderStats();else if(currentSub==='mois')renderSubMois();
 }));
@@ -1375,7 +1380,7 @@ function scrollToBtnSave(){
   // Aérer en ajoutant un léger over-scroll
   setTimeout(()=>{
     const pane=document.getElementById('pane-add');
-    if(pane)pane.scrollTop+=28;
+    if(pane)pane.scrollTop+=56;
   },350);
 }
 
